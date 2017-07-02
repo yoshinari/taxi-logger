@@ -1,0 +1,43 @@
+<ion-header>
+    <ion-navbar>
+        <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+        <ion-title>Taxi Logger</ion-title>
+    </ion-navbar>
+</ion-header>
+<ion-content padding>
+    <ion-grid>
+        <ion-row>
+            <ion-col col-4>
+                乗務日<br>
+                <ion-item>
+                    <ion-datetime displayFormat="YYYY-MM-DD" [(ngModel)]="driveDate" (ngModelChange)="changeDriveDate($event) "></ion-datetime>
+                </ion-item>
+                {{clock["gengou"]}} {{clock["clock"]}}
+            </ion-col>
+            <ion-col col-4>
+                出庫時刻<br>
+                <ion-item>
+                    <ion-datetime displayFormat="HH:mm" [(ngModel)]="CarUnloadingTime" (ngModelChange)="changeCarUnloadingTime($event) " class="myStyle"></ion-datetime>
+                </ion-item>
+                帰庫予定時刻<br>
+                <ion-item>
+                    <ion-datetime displayFormat="HH:mm" [(ngModel)]="CarReturnBoxTime" (ngModelChange)="changeCarReturnBoxTime($event) " class="myStyle"></ion-datetime>
+                </ion-item>
+            </ion-col>
+            <ion-col col-4>
+                <span *ngIf="isDriving || isBreak">走行 {{drivingTime}}</span>
+                <ion-col *ngIf="!isDriving && !isBreak"><button ion-button small outline block (click)="startDrivingTime()">乗務開始</button></ion-col>
+                <ion-col *ngIf="isDriving && !isBreak"><button ion-button small outline block (click)="jobCloseoutConfirm()">乗務終了</button></ion-col>
+                <span *ngIf="isBreak"><br>休憩 {{breakTime}}<br></span>
+                <span *ngIf="isDriving || isBreak">総休憩時間 : {{elapsedBreakTime}}</span>
+                <ion-col *ngIf="!isBreak && isDriving"><button ion-button small outline block (click)="startBreakTime()">休憩開始</button></ion-col>
+                <ion-col *ngIf="isBreak"><button ion-button small outline block (click)="stopBreakTime()">休憩終了</button></ion-col>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+    <p class="warning">
+        これ以降、肝心のログ機能は未実装です。(再構築中)
+    </p>
+</ion-content>

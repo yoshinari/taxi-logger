@@ -1,26 +1,23 @@
-This is a starter template for [Ionic](http://ionicframework.com/docs/) projects.
+Taxi-Loggerを作りながら[Ionic3](http://ionicframework.com/docs/) 等を勉強するプロジェクト
 
-## How to use this template
+## 出来ること
+- 簡易料金計算(古いOSだと使えない？)
+- logger:
+    - 乗務日、出庫時刻、帰庫予定時刻をリマインダーとして設定出来ます。
+    - [乗務開始]ボタンを押すと、出庫からの走行時間を表示します。
+    - [休憩開始]ボタンを押すと、休憩時間および総休憩時間を表示します。
+    - [休憩終了]ボタンを押すと、休憩時間をリセットし、総休憩時間の加算を停止し、走行時間を表示します。
+    - 規定の時間(連続して15分)休憩すると、走行時間をリセットします。それまでは、走行時間も加算します。
+    - [乗務終了]ボタンを押すと、総休憩時間をリセットします。
 
-*This template does not work on its own*. The shared files for each starter are found in the [ionic2-app-base repo](https://github.com/ionic-team/ionic2-app-base).
+## まだ出来ないこと
+- logger機能
+    - 肝心な乗車、降車のログ全般
+- 設定
+- データ管理
+- その他、多くの機能
 
-To use this template, either create a new ionic project using the ionic node.js utility, or copy the files from this repository into the [Starter App Base](https://github.com/ionic-team/ionic2-app-base).
-
-### With the Ionic CLI:
-
-Take the name after `ionic2-starter-`, and that is the name of the template to be used when using the `ionic start` command below:
-
-```bash
-$ sudo npm install -g ionic cordova
-$ ionic start mySideMenu sidemenu
-```
-
-Then, to run it, cd into `mySideMenu` and run:
-
-```bash
-$ ionic cordova platform add ios
-$ ionic cordova run ios
-```
-
-Substitute ios for android if not on a Mac.
+## デモ
+[Ionic View](https://view.ionic.io)をインストールすると、このアプリを使えます。ただし、タイミングによってはGit Hubのものとバージョンが異なり、正しく動かない場合も有ります。
+app_idは 005a2895 です。
 
