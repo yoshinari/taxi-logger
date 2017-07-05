@@ -12,18 +12,18 @@
             <ion-col col-4>
                 乗務日<br>
                 <ion-item>
-                    <ion-datetime displayFormat="YYYY-MM-DD" [(ngModel)]="driveDate" (ngModelChange)="changeDriveDate($event) "></ion-datetime>
+                    <ion-datetime displayFormat="YYYY-MM-DD" [(ngModel)]="driveDate" (ngModelChange)="changeStrageValue('DriveDate', $event)"></ion-datetime>
                 </ion-item>
                 {{clock["gengou"]}} {{clock["clock"]}}
             </ion-col>
             <ion-col col-4>
                 出庫時刻<br>
                 <ion-item>
-                    <ion-datetime displayFormat="HH:mm" [(ngModel)]="CarUnloadingTime" (ngModelChange)="changeCarUnloadingTime($event) " class="myStyle"></ion-datetime>
+                    <ion-datetime displayFormat="HH:mm" [(ngModel)]="CarUnloadingTime" (ngModelChange)="changeStrageValue('CarUnloadingTime', $event)" class="myStyle"></ion-datetime>
                 </ion-item>
                 帰庫予定時刻<br>
                 <ion-item>
-                    <ion-datetime displayFormat="HH:mm" [(ngModel)]="CarReturnBoxTime" (ngModelChange)="changeCarReturnBoxTime($event) " class="myStyle"></ion-datetime>
+                    <ion-datetime displayFormat="HH:mm" [(ngModel)]="CarReturnBoxTime" (ngModelChange)="changeStrageValue('CarReturnBoxTime', $event)" class="myStyle"></ion-datetime>
                 </ion-item>
             </ion-col>
             <ion-col col-4>
@@ -40,4 +40,69 @@
     <p class="warning">
         これ以降、肝心のログ機能は未実装です。(再構築中)
     </p>
+    <ion-grid>
+        <ion-row>
+            <ion-col>
+                現在地: 〒151-0071 東京都渋谷区本町3丁目5<br> 最終確認時間: 20:09:08 誤差: 18m以内
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+    <ion-grid *ngIf="isDriving && !isBreak">
+        <ion-row>
+            <ion-col col-3>
+                <button ion-button block (click)="underConstuctionAlert()">取消</button>
+            </ion-col>
+            <ion-col col-9>
+                <button ion-button block (click)="underConstuctionAlert()">登録</button>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col col-4>
+                <button ion-button block (click)="underConstuctionAlert()">乗車</button>
+            </ion-col>
+            <ion-col col-4>
+                <button ion-button block (click)="underConstuctionAlert()">経由</button>
+            </ion-col>
+            <ion-col col-4>
+                <button ion-button block (click)="underConstuctionAlert()">降車</button>
+            </ion-col>
+        </ion-row>
+        <!-- 登録中データの表示 -->
+        <ion-row *ngIf="isDriving && !isBreak">
+            <ion-col col-4>
+                HH:MM:SS<br> 東)新宿区新宿2丁目
+            </ion-col>
+            <ion-col col-4>
+                HH:MM:SS<br> 東)中野区弥生町2丁目
+            </ion-col>
+            <ion-col col-4>
+                HH:MM:SS<br> 東)杉並区成田東2丁目
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+    <!-- LOG -->
+    <!-- https://v2.angular.io/docs/ts/latest/guide/displaying-data.html#!#ngFor -->
+    <ion-grid>
+        <ion-row *ngFor="let n of [52,51,50,49,48,47,46,32,31,5,4,3,2,1]">
+            <ion-col col-1>
+                <button ion-button block class="logSelect" [disabled]="isDriving && !isBreak" (click)="underConstuctionAlert()">{{n}}</button>
+            </ion-col>
+            <ion-col col-11 class="logCol">
+                <ion-grid>
+                    <ion-row>
+                        <ion-col col-4>
+                            HH:MM:SS<br> 東)新宿区新宿2丁目
+                        </ion-col>
+                        <ion-col col-4>
+                            HH:MM:SS<br> 東)中野区弥生町2丁目
+                        </ion-col>
+                        <ion-col col-4>
+                            HH:MM:SS<br> 東)杉並区成田東2丁目
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+    <!-- /LOG -->
 </ion-content>
