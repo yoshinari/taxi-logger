@@ -4,6 +4,9 @@ import { Storage } from '@ionic/storage';
 
 import MyTimer from "./timer";
 var myTimer: MyTimer = new MyTimer();
+
+import MyPending from "./pending";
+var myPending: MyPending = new MyPending();
 /**
  * Generated class for the LoggerPage page.
  *
@@ -48,6 +51,16 @@ export class LoggerPage {
   secs: number;
 
   hms: number[];
+
+  pending: { [key: string]: any; } = {};
+  requires: number = 1; // readyがrequiresになればDISABLEが解除される
+  ready: number = 0;
+
+  isGetIn: boolean = false;
+  isVia: boolean = false;
+  isGetOut: boolean = false;
+  isCancel: boolean = false;
+  isRegist: boolean = false;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, private storage: Storage) {
   }
@@ -145,6 +158,27 @@ export class LoggerPage {
     // isDrivingの設定
     this.loadTimer("drivingTime", "drivingStartTime");
     this.loadTimer("breakTime", "breakStartTime");
+
+    // 仕掛中データの取得
+
+    console.log("仕掛中データの取得");
+    this.storage.get("pending")
+      .then(
+      pending => {
+        if (pending === null) {
+          this.pending = myPending.initPending();
+        } else {
+          myPending.loadPending(pending);
+          this.pending = pending;
+        }
+        this.updatePending();
+        this.ready++;
+      },
+      error => {
+        console.error("ERROR KEY DOES NOT EXIST");
+      }
+      );
+
   }
 
   // 時計
@@ -320,5 +354,102 @@ export class LoggerPage {
       error => {
         console.error("Error: remove " + storageValue);
       });
+  }
+  updatePending(key = null) {
+    if (key != null) {
+      this.pending = myPending.updatePending(this.pending, key);
+      this.storage.set("pending", this.pending);
+    } else if (Object.keys(this.pending).length === 0) {
+      this.pending = myPending.initPending();
+    }
+    var isGetOutRequired:boolean=false;
+    var virLen:number = this.pending["ViaData"].length;
+    if (virLen>0 && this.pending["GetOutDate"].length>0){
+      var ViaDateTime = this.pending["ViaData"][virLen-1]["date"] + this.pending["ViaData"][virLen-1]["time"];
+      var GetOutDateTime = this.pending["GetOutDate"] + this.pending["GetOutTime"];
+      if (ViaDateTime>GetOutDateTime){
+        isGetOutRequired=true;
+      }
+    }
+    if (this.pending["GetInDate"].length == 0) {
+      this.isGetIn = true;
+      this.isVia = this.isGetOut = this.isCancel = this.isRegist = false;
+    } else if (isGetOutRequired){
+      this.pending["GetOutDate"]=this.pending["GetOutTime"]="";
+      this.isVia = this.isGetOut = this.isCancel = true;
+      this.isGetIn = this.isRegist = false;
+    } else if (this.pending["GetOutDate"].length > 0) {
+      this.isVia = this.isCancel = this.isRegist = true;
+      this.isGetIn = this.isGetOut = false;
+    } else {
+      this.isVia = this.isGetOut = this.isCancel = true;
+      this.isGetIn = this.isRegist = false;
+    }
+  }
+  registPendingToDB() {
+    let alert = this.alertCtrl.create({
+      title: 'ごめんなさい',
+      message: '作成中のため、仕掛りデータを削除します。<br>データベースには登録しません。<br>よろしいですか？',
+      buttons: [
+        {
+          text: 'キャンセル',
+          role: 'cancel',
+          handler: () => {
+            // console.log('Cancel clicked');
+          }
+        },
+        {
+          text: '削除する',
+          handler: () => {
+            this.ready--;
+            this.storage.remove("pending")
+              .then(
+              () => {
+                this.pending = myPending.initPending();
+                this.updatePending();
+                this.ready++;
+              },
+              error => {
+                console.error("Can not remove pending data!!");
+              }
+              )
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+  removePendingData() {
+    let alert = this.alertCtrl.create({
+      title: '取消',
+      message: '仕掛りデータを削除します。<br>よろしいですか？',
+      buttons: [
+        {
+          text: 'キャンセル',
+          role: 'cancel',
+          handler: () => {
+            // console.log('Cancel clicked');
+          }
+        },
+        {
+          text: '削除する',
+          handler: () => {
+            this.ready--;
+            this.storage.remove("pending")
+              .then(
+              () => {
+                this.pending = myPending.initPending();
+                this.updatePending();
+                this.ready++;
+              },
+              error => {
+                console.error("Can not remove pending data!!");
+              }
+              )
+          }
+        }
+      ]
+    });
+    alert.present();
   }
 }

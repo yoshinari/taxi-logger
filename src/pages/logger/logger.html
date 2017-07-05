@@ -7,6 +7,9 @@
     </ion-navbar>
 </ion-header>
 <ion-content padding>
+    <p *ngIf="ready != requires" text-center class="warning">
+        準備中です。暫くお待ちください。({{ready}}/{{requires}})
+    </p>
     <ion-grid>
         <ion-row>
             <ion-col col-4>
@@ -28,17 +31,17 @@
             </ion-col>
             <ion-col col-4>
                 <span *ngIf="isDriving || isBreak">走行 {{drivingTime}}</span>
-                <ion-col *ngIf="!isDriving && !isBreak"><button ion-button small outline block (click)="startDrivingTime()">乗務開始</button></ion-col>
-                <ion-col *ngIf="isDriving && !isBreak"><button ion-button small outline block (click)="jobCloseoutConfirm()">乗務終了</button></ion-col>
+                <ion-col *ngIf="!isDriving && !isBreak"><button ion-button small outline block [disabled]="ready != requires" (click)="startDrivingTime()">乗務開始</button></ion-col>
+                <ion-col *ngIf="isDriving && !isBreak"><button ion-button small outline block [disabled]="ready != requires||!isGetIn" (click)="jobCloseoutConfirm()">乗務終了</button></ion-col>
                 <span *ngIf="isBreak"><br>休憩 {{breakTime}}<br></span>
                 <span *ngIf="isDriving || isBreak">総休憩時間 : {{elapsedBreakTime}}</span>
-                <ion-col *ngIf="!isBreak && isDriving"><button ion-button small outline block (click)="startBreakTime()">休憩開始</button></ion-col>
-                <ion-col *ngIf="isBreak"><button ion-button small outline block (click)="stopBreakTime()">休憩終了</button></ion-col>
+                <ion-col *ngIf="!isBreak && isDriving"><button ion-button small outline block [disabled]="ready != requires||!isGetIn" (click)="startBreakTime()">休憩開始</button></ion-col>
+                <ion-col *ngIf="isBreak"><button ion-button small outline block [disabled]="ready != requires||!isGetIn" (click)="stopBreakTime()">休憩終了</button></ion-col>
             </ion-col>
         </ion-row>
     </ion-grid>
     <p class="warning">
-        これ以降、肝心のログ機能は未実装です。(再構築中)
+        これ以降、住所は既定値を表示しています。
     </p>
     <ion-grid>
         <ion-row>
@@ -50,40 +53,45 @@
     <ion-grid *ngIf="isDriving && !isBreak">
         <ion-row>
             <ion-col col-3>
-                <button ion-button block (click)="underConstuctionAlert()">取消</button>
+                <button ion-button block color="dark" [disabled]="ready != requires||!isCancel" (click)="removePendingData()">取消</button>
             </ion-col>
             <ion-col col-9>
-                <button ion-button block (click)="underConstuctionAlert()">登録</button>
+                <button ion-button block color="danger" [disabled]="ready != requires||!isRegist" (click)="registPendingToDB()">登録</button>
             </ion-col>
         </ion-row>
         <ion-row>
             <ion-col col-4>
-                <button ion-button block (click)="underConstuctionAlert()">乗車</button>
+                <button ion-button block [disabled]="ready != requires||!isGetIn" (click)="updatePending('GetIn')">乗車</button>
             </ion-col>
             <ion-col col-4>
-                <button ion-button block (click)="underConstuctionAlert()">経由</button>
+                <button ion-button block [disabled]="ready != requires||!isVia" (click)="updatePending('Via')">経由</button>
             </ion-col>
             <ion-col col-4>
-                <button ion-button block (click)="underConstuctionAlert()">降車</button>
+                <button ion-button block [disabled]="ready != requires||!isGetOut" (click)="updatePending('GetOut')">降車</button>
             </ion-col>
         </ion-row>
         <!-- 登録中データの表示 -->
         <ion-row *ngIf="isDriving && !isBreak">
-            <ion-col col-4>
-                HH:MM:SS<br> 東)新宿区新宿2丁目
+            <ion-col col-4 *ngIf="pending['GetInTime']">
+                {{pending["GetInTime"]}}<br> <span *ngIf="pending['GetInTime']">東)新宿区新宿2丁目</span>
             </ion-col>
-            <ion-col col-4>
-                HH:MM:SS<br> 東)中野区弥生町2丁目
+            <ion-col col-4 *ngIf="pending['ViaData']">
+                <span *ngFor="let via of pending['ViaData']">
+                    {{via.time}}<br> 東)中野区弥生町2丁目<br>
+                </span>
             </ion-col>
-            <ion-col col-4>
-                HH:MM:SS<br> 東)杉並区成田東2丁目
+            <ion-col col-4 *ngIf="pending['GetOutTime']">
+                {{pending["GetOutTime"]}}<br> <span *ngIf="pending['GetOutTime']">東)杉並区成田東2丁目</span>
             </ion-col>
         </ion-row>
     </ion-grid>
+    <p class="warning">
+        これ以降、肝心のログ機能は未実装です。
+    </p>
     <!-- LOG -->
     <!-- https://v2.angular.io/docs/ts/latest/guide/displaying-data.html#!#ngFor -->
     <ion-grid>
-        <ion-row *ngFor="let n of [52,51,50,49,48,47,46,32,31,5,4,3,2,1]">
+        <ion-row *ngFor="let n of [12,11,10,9,8,7,6,5,4,3,2,1]">
             <ion-col col-1>
                 <button ion-button block class="logSelect" [disabled]="isDriving && !isBreak" (click)="underConstuctionAlert()">{{n}}</button>
             </ion-col>
