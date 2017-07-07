@@ -14,6 +14,8 @@ import { AboutPage } from '../pages/about/about';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { IonicStorageModule } from '@ionic/storage';
+import { TimerProvider } from '../providers/timer/timer';
+import { PendingProvider } from '../providers/pending/pending';
 
 @NgModule({
   declarations: [
@@ -48,7 +50,9 @@ import { IonicStorageModule } from '@ionic/storage';
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    TimerProvider,
+    PendingProvider
   ]
 })
 export class AppModule {}

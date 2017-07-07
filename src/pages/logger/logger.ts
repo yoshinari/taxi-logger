@@ -1,12 +1,9 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
+import { TimerProvider } from '../../providers/timer/timer';
+import { PendingProvider } from '../../providers/pending/pending';
 
-import MyTimer from "./timer";
-var myTimer: MyTimer = new MyTimer();
-
-import MyPending from "./pending";
-var myPending: MyPending = new MyPending();
 /**
  * Generated class for the LoggerPage page.
  *
@@ -62,7 +59,7 @@ export class LoggerPage {
   isCancel: boolean = false;
   isRegist: boolean = false;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, private storage: Storage) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, private storage: Storage, private timerProvider: TimerProvider, private pendingProvider: PendingProvider) {
   }
   underConstuctionAlert() {
     let alert = this.alertCtrl.create({
@@ -99,65 +96,68 @@ export class LoggerPage {
     console.log('ionViewDidLoad LoggerPage');
     // this.resetStorage();
 
-
     // 日付がストレージに保存されていない場合、今日の日付を設定する
-    this.storage.get("DriveDate")
+    this.timerProvider.getDriveDate(this.driveDate)
       .then(
       date => {
-        // console.log("get drive date from strage:" + date);
-        if (date === null) {
-          // console.log("date is null;");
-          this.driveDate = new Date();
-          this.driveDate = this.driveDate.getFullYear() + '-'
-            + ("0" + (this.driveDate.getMonth() + 1)).substr(-2) + '-'
-            + ("0" + this.driveDate.getDate()).substr(-2);
-          this.changeStrageValue("DriveDate", this.driveDate);
-        } else {
-          this.driveDate = date;
-        }
+        this.driveDate = date;
+        console.log("DriveDate拾えたよ" + this.driveDate);
       },
       error => {
         console.error("ERROR KEY DOES NOT EXIST");
-      }
-      );
+      });
 
     // 出庫時間がストレージに保存されていない場合、初期値を設定する
-    this.storage.get("CarUnloadingTime")
+    this.timerProvider.getTime("CarUnloadingTime", "07:00")
       .then(
       time => {
-        if (time === null) {
-          console.log("time is null;");
-          this.CarUnloadingTime = '07:00';
-          this.changeStrageValue("CarUnloadingTime", this.CarUnloadingTime);
-        } else {
-          this.CarUnloadingTime = time;
-        }
+        this.CarUnloadingTime = time;
+        console.log("拾った時間CarUnloadingTime:" + time);
       },
       error => {
         console.error("ERROR KEY DOES NOT EXIST");
-      }
-      );
+      });
 
     // 帰庫時間がストレージに保存されていない場合、初期値を設定する
-    this.storage.get("CarReturnBoxTime")
+    this.timerProvider.getTime("CarReturnBoxTime", "03:00")
       .then(
       time => {
-        if (time === null) {
-          console.log("time is null;");
-          this.CarReturnBoxTime = '03:00';
-          this.changeStrageValue("CarReturnBoxTime", this.CarReturnBoxTime);
-        } else {
-          this.CarReturnBoxTime = time;
-        }
+        this.CarReturnBoxTime = time;
+        console.log("拾った時間CarReturnBoxTime:" + time);
       },
       error => {
         console.error("ERROR KEY DOES NOT EXIST");
-      }
-      );
-
+      });
+this.loadElapsedBreakTime(this.breakTime);
     // isDrivingの設定
-    this.loadTimer("drivingTime", "drivingStartTime");
-    this.loadTimer("breakTime", "breakStartTime");
+    this.timerProvider.loadTimer("drivingTime", "drivingStartTime")
+      .then(
+      time => {
+        this.drivingTime = time;
+        if (this.drivingTime && this.drivingTime != "00:00:00") {
+          //   // 運転中なので、タイマーを動かす
+          this.startDrivingTime(false);
+          this.isDriving = true;
+        }
+      },
+      error => {
+
+      });
+
+    this.timerProvider.loadTimer("breakTime", "breakStartTime")
+      .then(
+      time => {
+        this.breakTime = time;
+        if (this.breakTime && this.breakTime != "00:00:00") {
+          //   // 休憩中なので、タイマーを動かす
+          this.startBreakTime(false);
+          this.isBreak = true;
+        }
+      },
+      error => {
+
+      });
+
 
     // 仕掛中データの取得
 
@@ -166,9 +166,9 @@ export class LoggerPage {
       .then(
       pending => {
         if (pending === null) {
-          this.pending = myPending.initPending();
+          this.pending = this.pendingProvider.initPending();
         } else {
-          myPending.loadPending(pending);
+          this.pendingProvider.loadPending(pending);
           this.pending = pending;
         }
         this.updatePending();
@@ -183,12 +183,19 @@ export class LoggerPage {
 
   // 時計
   timerId = setInterval(() => {
-    this.clock = myTimer.showClock();
+    this.clock = this.timerProvider.showClock();
   }, 1000);
 
   // 運転時間
   drivingTimer = () => {
-    this.loadTimer("drivingTime", "drivingStartTime");
+    this.timerProvider.loadTimer("drivingTime", "drivingStartTime")
+      .then(
+      time => {
+        this.drivingTime = time;
+      },
+      error => {
+
+      });;
   };
   startDrivingTime(init: boolean = true) {
     if (init || (this.driving === void 0)) {
@@ -211,7 +218,14 @@ export class LoggerPage {
   }
   // 休憩時間
   breakTimer = () => {
-    this.loadTimer("breakTime", "breakStartTime");
+    this.timerProvider.loadTimer("breakTime", "breakStartTime")
+      .then(
+      time => {
+        this.breakTime = time;
+      },
+      error => {
+
+      });;
     // 総休憩時間をセットする
     this.loadElapsedBreakTime(this.breakTime);
     if (this.breakTime) {
@@ -240,13 +254,6 @@ export class LoggerPage {
       this.startDrivingTime();
     }
   }
-  changeStrageValue(key, val) {
-    this.storage.set(key, val)
-      .then(
-      () => console.log("Set " + val + " to " + key + "."),
-      error => console.log("Error")
-      )
-  }
   resetStorage() {
     this.storage.keys()
       .then(
@@ -258,44 +265,6 @@ export class LoggerPage {
           )
       },
       error => console.error("Error keys")
-      );
-  }
-
-  private loadTimer(type, storageValue) {
-    this.storage.get(storageValue)
-      .then(
-      time => {
-        if (time == null) {
-          this.timeString = "00:00:00";
-        } else {
-          this.old = Number(time);
-          this.secs = Number(Date.now().toString()) - this.old;
-          this.hours = 0;
-          this.mins = 0;
-          this.secs = Math.floor(this.secs / 1000);
-          this.hours = Math.floor(this.secs / (60 * 60));
-          this.secs = this.secs - this.hours * 60 * 60;
-          this.mins = Math.floor(this.secs / 60);
-          this.secs = this.secs - this.mins * 60;
-          this.timeString = ("0" + this.hours).substr(-2) + ":" + ("0" + this.mins).substr(-2) + ":" + ("0" + this.secs).substr(-2);
-          if (type == "drivingTime") {
-            this.drivingTime = this.timeString;
-            if (this.drivingTime && this.drivingTime != "00:00:00" && !this.isDriving) {
-              //   // 運転中なので、タイマーを動かす
-              this.startDrivingTime(false);
-            }
-          } else if (type == "breakTime") {
-            this.breakTime = this.timeString;
-            if (this.breakTime && this.breakTime != "00:00:00") {
-              //   // 運転中なので、タイマーを動かす
-              this.startBreakTime(false);
-            }
-          }
-        }
-      },
-      error => {
-        console.error("ERROR KEY DOES NOT EXIST");
-      }
       );
   }
 
@@ -357,25 +326,25 @@ export class LoggerPage {
   }
   updatePending(key = null) {
     if (key != null) {
-      this.pending = myPending.updatePending(this.pending, key);
+      this.pending = this.pendingProvider.updatePending(this.pending, key);
       this.storage.set("pending", this.pending);
     } else if (Object.keys(this.pending).length === 0) {
-      this.pending = myPending.initPending();
+      this.pending = this.pendingProvider.initPending();
     }
-    var isGetOutRequired:boolean=false;
-    var virLen:number = this.pending["ViaData"].length;
-    if (virLen>0 && this.pending["GetOutDate"].length>0){
-      var ViaDateTime = this.pending["ViaData"][virLen-1]["date"] + this.pending["ViaData"][virLen-1]["time"];
+    var isGetOutRequired: boolean = false;
+    var virLen: number = this.pending["ViaData"].length;
+    if (virLen > 0 && this.pending["GetOutDate"].length > 0) {
+      var ViaDateTime = this.pending["ViaData"][virLen - 1]["date"] + this.pending["ViaData"][virLen - 1]["time"];
       var GetOutDateTime = this.pending["GetOutDate"] + this.pending["GetOutTime"];
-      if (ViaDateTime>GetOutDateTime){
-        isGetOutRequired=true;
+      if (ViaDateTime > GetOutDateTime) {
+        isGetOutRequired = true;
       }
     }
     if (this.pending["GetInDate"].length == 0) {
       this.isGetIn = true;
       this.isVia = this.isGetOut = this.isCancel = this.isRegist = false;
-    } else if (isGetOutRequired){
-      this.pending["GetOutDate"]=this.pending["GetOutTime"]="";
+    } else if (isGetOutRequired) {
+      this.pending["GetOutDate"] = this.pending["GetOutTime"] = "";
       this.isVia = this.isGetOut = this.isCancel = true;
       this.isGetIn = this.isRegist = false;
     } else if (this.pending["GetOutDate"].length > 0) {
@@ -405,7 +374,7 @@ export class LoggerPage {
             this.storage.remove("pending")
               .then(
               () => {
-                this.pending = myPending.initPending();
+                this.pending = this.pendingProvider.initPending();
                 this.updatePending();
                 this.ready++;
               },
@@ -438,7 +407,7 @@ export class LoggerPage {
             this.storage.remove("pending")
               .then(
               () => {
-                this.pending = myPending.initPending();
+                this.pending = this.pendingProvider.initPending();
                 this.updatePending();
                 this.ready++;
               },

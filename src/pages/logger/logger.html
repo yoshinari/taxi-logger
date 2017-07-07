@@ -31,12 +31,12 @@
             </ion-col>
             <ion-col col-4>
                 <span *ngIf="isDriving || isBreak">走行 {{drivingTime}}</span>
-                <ion-col *ngIf="!isDriving && !isBreak"><button ion-button small outline block [disabled]="ready != requires" (click)="startDrivingTime()">乗務開始</button></ion-col>
-                <ion-col *ngIf="isDriving && !isBreak"><button ion-button small outline block [disabled]="ready != requires||!isGetIn" (click)="jobCloseoutConfirm()">乗務終了</button></ion-col>
+                <ion-col *ngIf="!isDriving && !isBreak"><button ion-button color="danger" [disabled]="ready != requires" (click)="startDrivingTime()">乗務開始</button></ion-col>
+                <ion-col *ngIf="isDriving && !isBreak"><button ion-button color="danger" [disabled]="ready != requires||!isGetIn" (click)="jobCloseoutConfirm()">乗務終了</button></ion-col>
                 <span *ngIf="isBreak"><br>休憩 {{breakTime}}<br></span>
                 <span *ngIf="isDriving || isBreak">総休憩時間 : {{elapsedBreakTime}}</span>
-                <ion-col *ngIf="!isBreak && isDriving"><button ion-button small outline block [disabled]="ready != requires||!isGetIn" (click)="startBreakTime()">休憩開始</button></ion-col>
-                <ion-col *ngIf="isBreak"><button ion-button small outline block [disabled]="ready != requires||!isGetIn" (click)="stopBreakTime()">休憩終了</button></ion-col>
+                <ion-col *ngIf="!isBreak && isDriving"><button ion-button [disabled]="ready != requires||!isGetIn" (click)="startBreakTime()">休憩開始</button></ion-col>
+                <ion-col *ngIf="isBreak"><button ion-button [disabled]="ready != requires||!isGetIn" (click)="stopBreakTime()">休憩終了</button></ion-col>
             </ion-col>
         </ion-row>
     </ion-grid>

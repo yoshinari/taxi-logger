@@ -30,7 +30,7 @@ Taxi-Loggerを作りながら[Ionic3](http://ionicframework.com/docs/) 等を勉
 #### 主に使っているpackage
 - [Storage](https://ionicframework.com/docs/storage/) : localStorageから切り替えた。
 #### その他
-- インジェクション等を勉強して、ソースコードをすっきりさせたい。
+- 
 ## デモ
 [Ionic View](https://view.ionic.io)をインストールすると、このアプリを使えます。ただし、タイミングによってはGit Hubのものとバージョンが異なり、正しく動かない場合も有ります。
 app_idは 005a2895 です。
