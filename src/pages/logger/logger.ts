@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angu
 import { Storage } from '@ionic/storage';
 import { TimerProvider } from '../../providers/timer/timer';
 import { PendingProvider } from '../../providers/pending/pending';
+import { DbProvider } from '../../providers/db/db';
 
 /**
  * Generated class for the LoggerPage page.
@@ -24,6 +25,7 @@ export class LoggerPage {
   CarReturnBoxTime: string; // 帰庫 Car return box
 
   clock: { [key: string]: string } = {};
+  logData: { [key: string]: string } = {};
 
   drivingTime: string;
   driving: number;
@@ -59,7 +61,11 @@ export class LoggerPage {
   isCancel: boolean = false;
   isRegist: boolean = false;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, private storage: Storage, private timerProvider: TimerProvider, private pendingProvider: PendingProvider) {
+  history = new Set();
+  hasHistory: boolean = false;
+  viaHistory = new Set();
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, private storage: Storage, private timerProvider: TimerProvider, private pendingProvider: PendingProvider, public db: DbProvider) {
   }
   underConstuctionAlert() {
     let alert = this.alertCtrl.create({
@@ -101,7 +107,7 @@ export class LoggerPage {
       .then(
       date => {
         this.driveDate = date;
-        console.log("DriveDate拾えたよ" + this.driveDate);
+        this.getLog();
       },
       error => {
         console.error("ERROR KEY DOES NOT EXIST");
@@ -112,7 +118,6 @@ export class LoggerPage {
       .then(
       time => {
         this.CarUnloadingTime = time;
-        console.log("拾った時間CarUnloadingTime:" + time);
       },
       error => {
         console.error("ERROR KEY DOES NOT EXIST");
@@ -123,12 +128,11 @@ export class LoggerPage {
       .then(
       time => {
         this.CarReturnBoxTime = time;
-        console.log("拾った時間CarReturnBoxTime:" + time);
       },
       error => {
         console.error("ERROR KEY DOES NOT EXIST");
       });
-this.loadElapsedBreakTime(this.breakTime);
+    this.loadElapsedBreakTime(this.breakTime);
     // isDrivingの設定
     this.timerProvider.loadTimer("drivingTime", "drivingStartTime")
       .then(
@@ -160,8 +164,6 @@ this.loadElapsedBreakTime(this.breakTime);
 
 
     // 仕掛中データの取得
-
-    console.log("仕掛中データの取得");
     this.storage.get("pending")
       .then(
       pending => {
@@ -178,7 +180,6 @@ this.loadElapsedBreakTime(this.breakTime);
         console.error("ERROR KEY DOES NOT EXIST");
       }
       );
-
   }
 
   // 時計
@@ -355,38 +356,40 @@ this.loadElapsedBreakTime(this.breakTime);
       this.isGetIn = this.isRegist = false;
     }
   }
-  registPendingToDB() {
-    let alert = this.alertCtrl.create({
-      title: 'ごめんなさい',
-      message: '作成中のため、仕掛りデータを削除します。<br>データベースには登録しません。<br>よろしいですか？',
-      buttons: [
-        {
-          text: 'キャンセル',
-          role: 'cancel',
-          handler: () => {
-            // console.log('Cancel clicked');
-          }
-        },
-        {
-          text: '削除する',
-          handler: () => {
-            this.ready--;
-            this.storage.remove("pending")
-              .then(
-              () => {
-                this.pending = this.pendingProvider.initPending();
-                this.updatePending();
-                this.ready++;
-              },
-              error => {
-                console.error("Can not remove pending data!!");
-              }
-              )
-          }
+
+  async changeStrageValue(key, val) {
+    await this.storage.set(key, val)
+      .then(
+      () => {
+        console.log("Set " + val + " to " + key + ".");
+        if (key == 'DriveDate') {
+          this.getLog();
         }
-      ]
-    });
-    alert.present();
+      },
+      error => console.log("Error")
+      );
+  }
+  registPendingToDB() {
+    this.db.insertLogger(this.driveDate, this.pending)
+      .then(data => {
+        // remove pending data from storage
+        this.ready--;
+        this.storage.remove("pending")
+          .then(
+          () => {
+            this.pending = this.pendingProvider.initPending();
+            this.updatePending();
+            this.ready++;
+            this.getLog();
+          },
+          error => {
+            console.error("Can not remove pending data!!");
+          }
+          );
+      })
+      .catch(ex => {
+        console.log(ex);
+      });
   }
   removePendingData() {
     let alert = this.alertCtrl.create({
@@ -420,5 +423,29 @@ this.loadElapsedBreakTime(this.breakTime);
       ]
     });
     alert.present();
+  }
+  getLog() {
+    this.db.getLog(this.driveDate)
+      .then(data => {
+        this.history = new Set();
+        this.viaHistory = new Set();
+        if (data === undefined) {
+          this.hasHistory = false;
+        } else {
+          for (var i = 0; i < data.length; i++) {
+            this.history.add(data[i]);
+            if (data[i]["ViaData"]){
+              var obj = JSON.parse(data[i]["ViaData"]);
+              if (obj.length > 0){
+                for (var j = 0; j < obj.length; j++){
+                  obj[j]["history"] = data[i]["Number"];
+                  this.viaHistory.add(obj[j]);
+                }
+              }
+            }
+          }
+          this.hasHistory = true;
+        }
+      });
   }
 }

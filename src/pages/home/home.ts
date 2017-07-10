@@ -1,14 +1,22 @@
-import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { Component, OnInit  } from '@angular/core';
+import { NavController, Platform } from 'ionic-angular';
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
-export class HomePage {
+export class HomePage implements OnInit {
 
-  constructor(public navCtrl: NavController) {
+  constructor(public navCtrl: NavController, private platform: Platform) {
 
+  }
+
+  ionViewDidLoad() {
+    console.log("this.navigatorPlatform:");
+    console.log(this.platform.navigatorPlatform()); // MacIntel / Win32 / Win16 ならば、dbの手法を変える
+  }
+
+  ngOnInit() {
   }
 
 }

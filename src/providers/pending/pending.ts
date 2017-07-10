@@ -27,11 +27,15 @@ export class PendingProvider {
     this.pending["GetInTime"] = "";
     this.pending["GetInLat"] = "";
     this.pending["GetInLng"] = "";
+    this.pending["GetInCountryCode"] = "";
+    this.pending["GetInPostalCode"] = "";
     this.pending["GetInAddress"] = "";
     this.pending["GetOutDate"] = "";
     this.pending["GetOutTime"] = "";
     this.pending["GetOutLat"] = "";
     this.pending["GetOutLng"] = "";
+    this.pending["GetOutCountryCode"] = "";
+    this.pending["GetOutPostalCode"] = "";
     this.pending["GetOutAddress"] = "";
     this.pending["ViaData"] = [];
     this.pending["GetInMemo"] = "";
@@ -56,6 +60,8 @@ export class PendingProvider {
         pending["GetInTime"] = this.time;
         pending["GetInLat"] = "";
         pending["GetInLng"] = "";
+        pending["GetInCountryCode"] = "";
+        pending["GetInPostalCode"] = "";
         pending["GetInAddress"] = "";
         pending["GetInMemo"] = "";
         break;
@@ -64,11 +70,13 @@ export class PendingProvider {
         pending["GetOutTime"] = this.time;
         pending["GetOutLat"] = "";
         pending["GetOutLng"] = "";
+        pending["GetOutCountryCode"] = "";
+        pending["GetOutPostalCode"] = "";
         pending["GetOutAddress"] = "";
         pending["GetOutMemo"] = "";
         break;
       case 'Via':
-        pending["ViaData"].push({ date: this.date, time: this.time, lat: "", lng: "", memo: "" });
+        pending["ViaData"].push({ date: this.date, time: this.time, lat: "", lng: "", country: "", postal: "",address: "",memo: "" });
     }
     console.log(pending);
     return pending;

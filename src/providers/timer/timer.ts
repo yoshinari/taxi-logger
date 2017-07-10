@@ -53,7 +53,6 @@ export class TimerProvider {
           console.log("DriveDate=====>" + returnDate);
         } else {
           returnDate = date;
-          console.log("DriveDate=====>" + returnDate);
         }
       },
       error => {
@@ -99,7 +98,6 @@ export class TimerProvider {
           this.mins = Math.floor(this.secs / 60);
           this.secs = this.secs - this.mins * 60;
           this.timeString = ("0" + this.hours).substr(-2) + ":" + ("0" + this.mins).substr(-2) + ":" + ("0" + this.secs).substr(-2);
-
         }
       },
       error => {

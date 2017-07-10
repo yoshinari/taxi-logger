@@ -73,39 +73,43 @@
         <!-- 登録中データの表示 -->
         <ion-row *ngIf="isDriving && !isBreak">
             <ion-col col-4 *ngIf="pending['GetInTime']">
-                {{pending["GetInTime"]}}<br> <span *ngIf="pending['GetInTime']">東)新宿区新宿2丁目</span>
+                {{pending["GetInTime"]}}<br> <span *ngIf="pending['GetInTime']">東)◎◎区◎◎町</span>
             </ion-col>
             <ion-col col-4 *ngIf="pending['ViaData']">
                 <span *ngFor="let via of pending['ViaData']">
-                    {{via.time}}<br> 東)中野区弥生町2丁目<br>
+                    {{via.time}}<br> 東)□□区□□町<br>
                 </span>
             </ion-col>
             <ion-col col-4 *ngIf="pending['GetOutTime']">
-                {{pending["GetOutTime"]}}<br> <span *ngIf="pending['GetOutTime']">東)杉並区成田東2丁目</span>
+                {{pending["GetOutTime"]}}<br> <span *ngIf="pending['GetOutTime']">東)△△区△△町</span>
             </ion-col>
         </ion-row>
     </ion-grid>
-    <p class="warning">
-        これ以降、肝心のログ機能は未実装です。
-    </p>
-    <!-- LOG -->
-    <!-- https://v2.angular.io/docs/ts/latest/guide/displaying-data.html#!#ngFor -->
-    <ion-grid>
-        <ion-row *ngFor="let n of [12,11,10,9,8,7,6,5,4,3,2,1]">
+    <!-- 履歴 -->
+    <div *ngIf="!hasHistory" text-center class="warning">
+        {{driveDate}}の乗務記録はありません。
+    </div>
+    <ion-grid *ngIf="hasHistory">
+        <ion-row *ngFor="let n of history">
             <ion-col col-1>
-                <button ion-button block class="logSelect" [disabled]="isDriving && !isBreak" (click)="underConstuctionAlert()">{{n}}</button>
+                <button ion-button block class="logSelect" [disabled]="isDriving && !isBreak" (click)="underConstuctionAlert()">{{n["Number"]}}</button>
             </ion-col>
             <ion-col col-11 class="logCol">
                 <ion-grid>
                     <ion-row>
                         <ion-col col-4>
-                            HH:MM:SS<br> 東)新宿区新宿2丁目
+                            {{n["GetInTime"]}}<br> 東)◎◎区◎◎町
                         </ion-col>
                         <ion-col col-4>
-                            HH:MM:SS<br> 東)中野区弥生町2丁目
+                            {{n["ViaData"][0]["date"]}}
+                            <span *ngFor="let x of viaHistory">
+                                <span *ngIf="n['Number'] == x['history']">
+                                {{x["time"]}}<br>経由地経由地経由地経由地経由地
+                                </span>
+                            </span>
                         </ion-col>
                         <ion-col col-4>
-                            HH:MM:SS<br> 東)杉並区成田東2丁目
+                            {{n["GetOutTime"]}}<br> 東)△△区△△町
                         </ion-col>
                     </ion-row>
                 </ion-grid>

@@ -14,8 +14,10 @@ import { AboutPage } from '../pages/about/about';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { IonicStorageModule } from '@ionic/storage';
+
 import { TimerProvider } from '../providers/timer/timer';
 import { PendingProvider } from '../providers/pending/pending';
+import { DbProvider } from '../providers/db/db';
 
 @NgModule({
   declarations: [
@@ -52,7 +54,8 @@ import { PendingProvider } from '../providers/pending/pending';
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     TimerProvider,
-    PendingProvider
+    PendingProvider,
+    DbProvider,
   ]
 })
 export class AppModule {}
