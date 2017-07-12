@@ -46,7 +46,7 @@ export class PendingProvider {
   public isPending(key: string = null) {
     return true;
   }
-  public updatePending(pending, key) {
+  public updatePending(pending, key, lat, lng, countryCode, postalCode, address) {
     var date = new Date();
     this.date = date.getFullYear() + '-'
       + ("0" + (date.getMonth() + 1)).substr(-2) + '-'
@@ -58,25 +58,25 @@ export class PendingProvider {
       case 'GetIn':
         pending["GetInDate"] = this.date;
         pending["GetInTime"] = this.time;
-        pending["GetInLat"] = "";
-        pending["GetInLng"] = "";
-        pending["GetInCountryCode"] = "";
-        pending["GetInPostalCode"] = "";
-        pending["GetInAddress"] = "";
+        pending["GetInLat"] = lat;
+        pending["GetInLng"] = lng;
+        pending["GetInCountryCode"] = countryCode;
+        pending["GetInPostalCode"] = postalCode;
+        pending["GetInAddress"] = address;
         pending["GetInMemo"] = "";
         break;
       case 'GetOut':
         pending["GetOutDate"] = this.date;
         pending["GetOutTime"] = this.time;
-        pending["GetOutLat"] = "";
-        pending["GetOutLng"] = "";
-        pending["GetOutCountryCode"] = "";
-        pending["GetOutPostalCode"] = "";
-        pending["GetOutAddress"] = "";
+        pending["GetOutLat"] = lat;
+        pending["GetOutLng"] = lng;
+        pending["GetOutCountryCode"] = countryCode;
+        pending["GetOutPostalCode"] = postalCode;
+        pending["GetOutAddress"] = address;
         pending["GetOutMemo"] = "";
         break;
       case 'Via':
-        pending["ViaData"].push({ date: this.date, time: this.time, lat: "", lng: "", country: "", postal: "",address: "",memo: "" });
+        pending["ViaData"].push({ date: this.date, time: this.time, lat: lat, lng: lng, country: countryCode, postal: postalCode, address: address,memo: "" });
     }
     console.log(pending);
     return pending;

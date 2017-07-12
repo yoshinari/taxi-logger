@@ -4,6 +4,8 @@ import { Storage } from '@ionic/storage';
 import { TimerProvider } from '../../providers/timer/timer';
 import { PendingProvider } from '../../providers/pending/pending';
 import { DbProvider } from '../../providers/db/db';
+import { Geolocation } from '@ionic-native/geolocation';
+import { NativeGeocoder, NativeGeocoderReverseResult } from '@ionic-native/native-geocoder';
 
 /**
  * Generated class for the LoggerPage page.
@@ -26,6 +28,11 @@ export class LoggerPage {
 
   clock: { [key: string]: string } = {};
   logData: { [key: string]: string } = {};
+
+  workingTime: string;
+  working: number;
+
+  isWorking: boolean = false;
 
   drivingTime: string;
   driving: number;
@@ -65,7 +72,29 @@ export class LoggerPage {
   hasHistory: boolean = false;
   viaHistory = new Set();
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, private storage: Storage, private timerProvider: TimerProvider, private pendingProvider: PendingProvider, public db: DbProvider) {
+  // GeoLocation関連
+
+  lat: number;
+  lng: number;
+  tmpLat: number;
+  tmpLng: number;
+  accuracy: number;
+  speed: number;
+  address: string = "";
+  street: string = "";
+  houseNumber: string = "";
+  postalCode: string = "";
+  city: string = "";
+  district: string = "";
+  countryName: string = "";
+  countryCode: string = "";
+  wip1: number = 0;
+  wip2: number = 0;
+  request1: number = 0;
+  request2: number = 0;
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, private storage: Storage, private timerProvider: TimerProvider, private pendingProvider: PendingProvider, public db: DbProvider,
+    private geolocation: Geolocation, private nativeGeocoder: NativeGeocoder) {
   }
   underConstuctionAlert() {
     let alert = this.alertCtrl.create({
@@ -180,6 +209,148 @@ export class LoggerPage {
         console.error("ERROR KEY DOES NOT EXIST");
       }
       );
+
+    //
+    // GeoLocation関連 providerを作成したほうが良いかな？
+    //
+    this.wip1++;
+    this.request1++;
+    this.geolocation.getCurrentPosition().then((resp) => {
+      console.log("resp.coords:");
+      console.log(resp.coords);
+      if (resp.coords === undefined) {
+        console.warn("resp.coords undefined");
+        this.lat = this.lng = this.accuracy = this.speed = -1;
+      } else {
+        this.lat = this.tmpLat = resp.coords.latitude;
+        this.lng = this.tmpLng = resp.coords.longitude;
+        this.accuracy = resp.coords.accuracy;
+        this.speed = resp.coords.speed;
+        if (this.tmpLat > 0 && this.tmpLng > 0) {
+          this.wip2++;
+          this.request2++;
+          this.nativeGeocoder.reverseGeocode(this.tmpLat, this.tmpLng)
+            .then((result: NativeGeocoderReverseResult) => {
+              console.log(result);
+              if (result.street === undefined) {
+                this.street = "";
+              } else {
+                this.street = result.street;
+              }
+              if (result.houseNumber === undefined) {
+                this.houseNumber = ""
+              } else {
+                this.houseNumber = result.houseNumber;
+              }
+              if (result.city === undefined) {
+                this.city = "";
+              } else {
+                this.city = result.city;
+              }
+              if (result.district === undefined) {
+                this.district = "";
+              } else {
+                this.district = result.district;
+              }
+              if (result.countryName === undefined) {
+                this.countryName = "";
+              } else {
+                this.countryName = result.countryName;
+              }
+              if (result.countryCode === undefined) {
+                this.countryCode = "";
+              } else {
+                this.countryCode = result.countryCode;
+              }
+              this.address = this.city + this.district + this.street + this.houseNumber;
+              if (result.postalCode === undefined) {
+                this.postalCode = "";
+                this.address += "*";
+              } else {
+                this.postalCode = result.postalCode;
+              }
+              this.wip2--;
+            })
+            .catch((error: any) => console.error(error));
+        } else {
+          console.error("tmpLat or tmpLng error: tmpLat:" + this.tmpLat + " tmpLng:" + this.tmpLng)
+        }
+      }
+      this.wip1--;
+    }).catch((error) => {
+      console.error('Error getting location', error);
+    });
+
+    let watch = this.geolocation.watchPosition();
+    watch.subscribe((data) => {
+      this.wip1++;
+      // data can be a set of coordinates, or an error (if an error occurred).
+      // data.coords.latitude
+      // data.coords.longitude
+      // console.log('... lat:'+data.coords.latitude);
+      // console.log('... lng:'+data.coords.longitude);
+      console.log("data.coords:");
+      console.log(data.coords);
+      if (data.coords === undefined) {
+        console.warn("data.coords undefined");
+        this.lat = this.lng = this.accuracy = this.speed = -1;
+      } else {
+        this.lat = this.tmpLat = data.coords.latitude;
+        this.lng = this.tmpLng = data.coords.longitude;
+        this.accuracy = data.coords.accuracy;
+        this.speed = data.coords.speed;
+
+        if (this.tmpLat > 0 && this.tmpLng > 0) {
+          this.wip2++;
+          this.nativeGeocoder.reverseGeocode(this.tmpLat, this.tmpLng)
+            .then((result: NativeGeocoderReverseResult) => {
+              console.log(result);
+              if (result.street === undefined) {
+                this.street = "";
+              } else {
+                this.street = result.street;
+              }
+              if (result.houseNumber === undefined) {
+                this.houseNumber = "";
+              } else {
+                this.houseNumber = result.houseNumber;
+              }
+              if (result.city === undefined) {
+                this.city = "";
+              } else {
+                this.city = result.city;
+              }
+              if (result.district === undefined) {
+                this.district = "";
+              } else {
+                this.district = result.district;
+              }
+              if (result.countryName === undefined) {
+                this.countryName = "";
+              } else {
+                this.countryName = result.countryName;
+              }
+              if (result.countryCode === undefined) {
+                this.countryCode = "";
+              } else {
+                this.countryCode = result.countryCode;
+              }
+              this.address = this.city + this.district + this.street + this.houseNumber;
+              if (result.postalCode === undefined) {
+                this.address += "*";
+                this.postalCode = "";
+              } else {
+                this.postalCode = result.postalCode;
+              }
+              this.wip2--;
+            })
+            .catch((error: any) => console.error(error));
+        } else {
+          console.error("tmpLat or tmpLng error: tmpLat:" + this.tmpLat + " tmpLng:" + this.tmpLng)
+        }
+      }
+      this.wip1--;
+    });
   }
 
   // 時計
@@ -187,6 +358,17 @@ export class LoggerPage {
     this.clock = this.timerProvider.showClock();
   }, 1000);
 
+  // 経過時間
+  workingTimer = () => {
+    this.timerProvider.loadTimer("workingTime", "workingStartTime")
+      .then(
+      time => {
+        this.workingTime = time;
+      },
+      error => {
+
+      });;
+  };
   // 運転時間
   drivingTimer = () => {
     this.timerProvider.loadTimer("drivingTime", "drivingStartTime")
@@ -199,23 +381,44 @@ export class LoggerPage {
       });;
   };
   startDrivingTime(init: boolean = true) {
-    if (init || (this.driving === void 0)) {
+    console.log("init:" + init);
+    console.log("driving:" + this.driving);
+    console.log("working:" + this.working);
+    // false, undefined, undefined
+    if (init || (this.driving === void 0) || (this.driving === null)) {
+      console.log("setTimer(drivingStartTime)");
+      this.setTimer("drivingStartTime");
       if (init) {
-        this.setTimer("drivingStartTime");
+        console.log("setTimer(workingStartTime)");
+        this.setTimer("workingStartTime");
       }
       this.driving = setInterval(this.drivingTimer, 1000);
+      // if (!this.isWorking) {
+      if (this.working === void 0 || (this.working == null)) {
+        this.working = setInterval(this.workingTimer, 1000);
+        this.isWorking = true;
+      }
     }
     this.isDriving = true;
   }
   stopDrivingTime(isAllReset: boolean = true) {
     clearInterval(this.driving);
     this.isDriving = false;
+    this.driving = null;
     this.resetTimer("drivingStartTime");
-    this.drivingTime = "00:00:00"
+    this.drivingTime = "00:00:00";
     if (isAllReset) {
+      console.log("All Reset....");
+      clearInterval(this.working);
       this.resetTimer("elapsedBreak");
       this.elapsedBreakTime = "00:00:00";
+      this.resetTimer("working");
+      this.workingTime = "00:00:00";
+      this.working = null;
     }
+
+    console.log("driving:" + this.driving);
+    console.log("working:" + this.working);
   }
   // 休憩時間
   breakTimer = () => {
@@ -246,13 +449,15 @@ export class LoggerPage {
     this.isBreak = true;
   }
   stopBreakTime(isAllReset: boolean = true) {
+    console.log("stopBreakTime");
     clearInterval(this.break);
     this.isBreak = false;
     this.saveElapsedBreak(this.breakTime);
     this.resetTimer("breakStartTime");
     this.breakTime = "00:00:00";
     if (!this.isDriving) {
-      this.startDrivingTime();
+      console.log("call startDrivingTime");
+      this.startDrivingTime(false);
     }
   }
   resetStorage() {
@@ -292,7 +497,19 @@ export class LoggerPage {
       .then(
       time => {
         if (time == null) {
-          this.elapsedBreakTime = breakTime;
+          // this.elapsedBreakTime = breakTime;
+          this.hms = breakTime.split(':');
+          this.secs = Number(this.hms[0]) * 60 * 60 + Number(this.hms[1]) * 60 + Number(this.hms[2]);
+          if (this.working !== undefined) {
+            this.secs++; // タイミングの問題で1秒足したほうが画面の時間表示が自然
+          }
+          this.hours = 0;
+          this.mins = 0;
+          this.hours = Math.floor(this.secs / (60 * 60));
+          this.secs = this.secs - this.hours * 60 * 60;
+          this.mins = Math.floor(this.secs / 60);
+          this.secs = this.secs - this.mins * 60;
+          this.elapsedBreakTime = ("0" + this.hours).substr(-2) + ":" + ("0" + this.mins).substr(-2) + ":" + ("0" + this.secs).substr(-2);
         } else {
           this.hms = breakTime.split(':');
           this.secs = Number(this.hms[0]) * 60 * 60 + Number(this.hms[1]) * 60 + Number(this.hms[2]) + Number(time);
@@ -327,7 +544,7 @@ export class LoggerPage {
   }
   updatePending(key = null) {
     if (key != null) {
-      this.pending = this.pendingProvider.updatePending(this.pending, key);
+      this.pending = this.pendingProvider.updatePending(this.pending, key, this.lat, this.lng, this.countryCode, this.postalCode, this.address);
       this.storage.set("pending", this.pending);
     } else if (Object.keys(this.pending).length === 0) {
       this.pending = this.pendingProvider.initPending();
@@ -434,10 +651,10 @@ export class LoggerPage {
         } else {
           for (var i = 0; i < data.length; i++) {
             this.history.add(data[i]);
-            if (data[i]["ViaData"]){
+            if (data[i]["ViaData"]) {
               var obj = JSON.parse(data[i]["ViaData"]);
-              if (obj.length > 0){
-                for (var j = 0; j < obj.length; j++){
+              if (obj.length > 0) {
+                for (var j = 0; j < obj.length; j++) {
                   obj[j]["history"] = data[i]["Number"];
                   this.viaHistory.add(obj[j]);
                 }
@@ -445,6 +662,17 @@ export class LoggerPage {
             }
           }
           this.hasHistory = true;
+        }
+      });
+  }
+  getLogs() {
+    this.db.getLogs()
+      .then(data => {
+        if (data === undefined) {
+          console.log("No Data");
+        } else {
+          console.log("data:::");
+          console.log(data);
         }
       });
   }

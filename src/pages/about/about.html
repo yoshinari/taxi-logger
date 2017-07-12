@@ -8,7 +8,15 @@
 </ion-header>
 <ion-content padding>
     <h3>Taxi Loggerについて</h3>
-    <p class="warning">
-        未実装
-    </p>
+    <span *ngIf="appName">
+    <ul>
+        <li>アプリケーション名:{{appName}}</li>
+        <li>パッケージ名:{{packageName}}</li>
+        <li>バージョンコード:{{versionCode}}</li>
+        <li>バージョン:{{versionNumber}}</li>
+    </ul>
+    </span>
+    <div *ngIf="!appName" class="warning">
+        ご利用の環境({{device}})ではアプリケーションのバージョン等の情報を取得出来ません。
+    </div>
 </ion-content>

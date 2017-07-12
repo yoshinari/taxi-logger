@@ -53,9 +53,9 @@ export class DbProvider {
 
   // Initialize the DB with our required tables
   _tryInit() {
-    this.query('DROP TABLE Logger').catch(err => {
-      console.error('Storage: Unable to drop Logger table', err.tx, err.err);
-    });
+    // this.query('DROP TABLE IF EXISTS Logger').catch(err => {
+    //   console.error('Storage: Unable to drop Logger table', err.tx, err.err);
+    // });
     this.query(`CREATE TABLE IF NOT EXISTS Logger (
                          Date TEXT NOT NULL,
                          Number INTEGER NOT NULL,

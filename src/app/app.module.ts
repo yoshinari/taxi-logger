@@ -18,6 +18,9 @@ import { IonicStorageModule } from '@ionic/storage';
 import { TimerProvider } from '../providers/timer/timer';
 import { PendingProvider } from '../providers/pending/pending';
 import { DbProvider } from '../providers/db/db';
+import { AppVersion } from '@ionic-native/app-version';
+import { Geolocation } from '@ionic-native/geolocation';
+import { NativeGeocoder } from '@ionic-native/native-geocoder';
 
 @NgModule({
   declarations: [
@@ -56,6 +59,9 @@ import { DbProvider } from '../providers/db/db';
     TimerProvider,
     PendingProvider,
     DbProvider,
+    AppVersion,
+    Geolocation,
+    NativeGeocoder,
   ]
 })
 export class AppModule {}

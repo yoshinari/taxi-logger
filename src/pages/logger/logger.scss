@@ -1,10 +1,36 @@
 page-logger {
+    .grid {
+        padding: 0;
+    }
     ion-datetime {
-        font-size: 14px;
+        font-size: 18px;
+        margin-top: -18px;
         margin-left: -14px;
         text-align: center;
+        padding: 0;
     }
     .datetime-md {
         padding: 5px 0px 5px 13px;
+    }
+    .statusButton {
+        padding: 1px;
+    }
+    .wip {
+        background: palegreen;
+        padding: 0;
+    }
+    .timer {
+        text-align: right;
+        font-size: 18px;
+    }
+    .clock {
+        text-align: center;
+        font-size: 20px;
+        margin-top: -16px;
+        padding: 0;
+    }
+    .logCol {
+        margin-top: -6px;
+        margin-bottom: -15px;
     }
 }
