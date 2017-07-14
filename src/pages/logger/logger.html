@@ -54,7 +54,10 @@
     <ion-grid>
         <ion-row>
             <ion-col>
-                現在地: {{address}}<br>DEBUG:wip/req(1):{{wip1}}/{{request1}}, wip/req(2):{{wip2}}/{{request2}}
+                現在地: <span class="address">{{address}}</span><br>DEBUG:wip/req(1):{{wip1}}/{{request1}}, wip/req(2):{{wip2}}/{{request2}}
+                <div *ngIf="errorMSG!=''" class="warning">
+                    {{errorMSG}}
+                </div>
             </ion-col>
         </ion-row>
     </ion-grid>
@@ -103,7 +106,14 @@
                 <button ion-button block class="logSelect" [disabled]="isDriving && !isBreak" (click)="underConstuctionAlert()">{{n["Number"]}}</button>
             </ion-col>
             <ion-col col-11 class="logCol">
-                <ion-grid>
+                <div>{{n["GetInTime"]}} {{n["GetInAddress"]}}</div>
+                <span *ngFor="let x of viaHistory">
+                    <div *ngIf="n['Number'] == x['history']">
+                        {{x["time"]}} {{x["address"]}}
+                    </div>
+                </span>
+                <div>{{n["GetOutTime"]}} {{n["GetOutAddress"]}}</div>
+                <!-- <ion-grid>
                     <ion-row>
                         <ion-col col-4>
                             {{n["GetInTime"]}}<br> {{n["GetInAddress"]}}
@@ -120,7 +130,7 @@
                             {{n["GetOutTime"]}}<br> {{n["GetOutAddress"]}}
                         </ion-col>
                     </ion-row>
-                </ion-grid>
+                </ion-grid> -->
             </ion-col>
         </ion-row>
     </ion-grid>

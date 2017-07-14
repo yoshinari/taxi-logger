@@ -1,6 +1,7 @@
 page-logger {
     .grid {
-        padding: 0;
+        // padding: 0;
+        padding: 5px;
     }
     ion-datetime {
         font-size: 18px;
@@ -29,8 +30,12 @@ page-logger {
         margin-top: -16px;
         padding: 0;
     }
+    .address {
+        font-size: 18px;
+    }
     .logCol {
-        margin-top: -6px;
-        margin-bottom: -15px;
+        font-size: 16px;
+        padding-left: 15px;
+        padding-top: 10px;
     }
 }

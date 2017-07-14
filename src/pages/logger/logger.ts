@@ -71,6 +71,7 @@ export class LoggerPage {
   history = new Set();
   hasHistory: boolean = false;
   viaHistory = new Set();
+  errorMSG: string;
 
   // GeoLocation関連
 
@@ -262,23 +263,31 @@ export class LoggerPage {
               } else {
                 this.countryCode = result.countryCode;
               }
-              this.address = this.city + this.district + this.street + this.houseNumber;
               if (result.postalCode === undefined) {
                 this.postalCode = "";
                 this.address += "*";
               } else {
                 this.postalCode = result.postalCode;
+                this.address = this.city + this.district + this.street + this.houseNumber;
               }
               this.wip2--;
+              this.errorMSG = "";
             })
-            .catch((error: any) => console.error(error));
+            .catch((error: any) => {
+              this.wip2--;
+              console.error(error);
+              this.errorMSG = error.message;
+            });
         } else {
-          console.error("tmpLat or tmpLng error: tmpLat:" + this.tmpLat + " tmpLng:" + this.tmpLng)
+          console.error("tmpLat or tmpLng error: tmpLat:" + this.tmpLat + " tmpLng:" + this.tmpLng);
+          this.errorMSG = "tmpLat or tmpLng error: tmpLat:" + this.tmpLat + " tmpLng:" + this.tmpLng;
+          this.wip2--;
         }
       }
       this.wip1--;
     }).catch((error) => {
       console.error('Error getting location', error);
+      this.errorMSG = 'Error getting location. '+ error.message;
     });
 
     let watch = this.geolocation.watchPosition();
@@ -335,18 +344,25 @@ export class LoggerPage {
               } else {
                 this.countryCode = result.countryCode;
               }
-              this.address = this.city + this.district + this.street + this.houseNumber;
               if (result.postalCode === undefined) {
                 this.address += "*";
                 this.postalCode = "";
               } else {
                 this.postalCode = result.postalCode;
+                this.address = this.city + this.district + this.street + this.houseNumber;
               }
               this.wip2--;
+              this.errorMSG = "";
             })
-            .catch((error: any) => console.error(error));
+            .catch((error: any) => {
+              console.error(error);
+              this.errorMSG = error.message;
+              this.wip2--;
+            });
         } else {
-          console.error("tmpLat or tmpLng error: tmpLat:" + this.tmpLat + " tmpLng:" + this.tmpLng)
+          console.error("tmpLat or tmpLng error: tmpLat:" + this.tmpLat + " tmpLng:" + this.tmpLng);
+          this.errorMSG = "tmpLat or tmpLng error: tmpLat:" + this.tmpLat + " tmpLng:" + this.tmpLng;
+          this.wip2--;
         }
       }
       this.wip1--;
@@ -384,16 +400,16 @@ export class LoggerPage {
     console.log("init:" + init);
     console.log("driving:" + this.driving);
     console.log("working:" + this.working);
-    // false, undefined, undefined
     if (init || (this.driving === void 0) || (this.driving === null)) {
-      console.log("setTimer(drivingStartTime)");
-      this.setTimer("drivingStartTime");
+      if (this.drivingTime === void 0 || this.drivingTime == "00:00:00") {
+        console.log("setTimer(drivingStartTime)");
+        this.setTimer("drivingStartTime");
+      }
       if (init) {
         console.log("setTimer(workingStartTime)");
         this.setTimer("workingStartTime");
       }
       this.driving = setInterval(this.drivingTimer, 1000);
-      // if (!this.isWorking) {
       if (this.working === void 0 || (this.working == null)) {
         this.working = setInterval(this.workingTimer, 1000);
         this.isWorking = true;
@@ -402,6 +418,7 @@ export class LoggerPage {
     this.isDriving = true;
   }
   stopDrivingTime(isAllReset: boolean = true) {
+    console.log("Stop Driving Time");
     clearInterval(this.driving);
     this.isDriving = false;
     this.driving = null;
