@@ -1,0 +1,62 @@
+<ion-header>
+    <ion-navbar>
+        <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+        <ion-title>乗務履歴: {{date}} #{{number}}</ion-title>
+    </ion-navbar>
+</ion-header>
+<ion-content padding>
+    <h3>乗務履歴: {{date}} #{{number}}</h3>
+    <p class="warning">
+        実装中
+    </p>
+    <p>{{date}} #{{number}}の詳細
+    </p>
+    <ion-grid *ngIf="hasHistory">
+        <ion-row *ngFor="let n of history" align-items-start>
+            <ion-col>
+                <ion-row>
+                    <ion-col>
+                        乗車:
+                        <br> 時間:{{n["GetInTime"]}}
+                        <br> 住所:{{n["GetInAddress"]}}
+                        <br> メモ:{{n["GetInMemo"]}}
+                        <br>
+                    </ion-col>
+                </ion-row>
+                <ion-row *ngIf="hasViaHistory">
+                    <ion-col>
+                        <ion-row *ngFor="let x of viaHistory; let j = index;">
+                            <ion-col>
+                                経由({{j+1}}):
+                                <br>時間:{{x["time"]}}
+                                <br>住所:{{x["address"]}}
+                                <br>メモ:{{x["memo"]}}
+                            </ion-col>
+                        </ion-row>
+                        <ion-row>
+                            <ion-col>
+                                経由全体のメモ:{{n["ViaMemo"]}}
+                            </ion-col>
+                        </ion-row>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col>
+                        降車:
+                        <br> 時間:{{n["GetOutTime"]}}
+                        <br> 住所:{{n["GetOutAddress"]}}
+                        <br> メモ:{{n["GetOutMemo"]}}
+                        <br>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col>
+                        <button ion-button block color="secondary" (click)="updateData($event,date,number);">データを修正する</button>
+                    </ion-col>
+                </ion-row>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</ion-content>

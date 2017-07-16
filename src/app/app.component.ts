@@ -29,7 +29,7 @@ export class MyApp {
       { title: 'Home', component: HomePage },
       { title: 'Taxi Logger', component: LoggerPage },
       { title: '簡易料金計算', component: TinyCalcPage },
-      { title: 'データの活用', component: ListPage },
+      { title: '乗務履歴', component: ListPage },
       { title: '設定', component: SettingsPage },
       { title: 'Thanks', component: ThanksPage },
       { title: 'Taxi Loggerについて', component: AboutPage },

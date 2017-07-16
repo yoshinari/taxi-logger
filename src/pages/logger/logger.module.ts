@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
 import { LoggerPage } from './logger';
+import { DetailPage } from '../list/detail/detail';
 
 @NgModule({
   declarations: [
@@ -8,6 +9,7 @@ import { LoggerPage } from './logger';
   ],
   imports: [
     IonicPageModule.forChild(LoggerPage),
+    DetailPage,
   ],
   exports: [
     LoggerPage

@@ -22,7 +22,8 @@ const win: any = window;
 export class DbProvider {
   private _dbPromise: Promise<any>;
 
-  number: number=0;
+  number: number = 0;
+  queryString: string;
 
   constructor(public platform: Platform) {
     this._dbPromise = new Promise((resolve, reject) => {
@@ -87,7 +88,7 @@ export class DbProvider {
 
   insertLogger(date: string, pending: any): Promise<any> {
     console.log("insertLogger");
-    return this.query('SELECT Number FROM Logger where date="'+ date+'"').then(data => {
+    return this.query('SELECT Number FROM Logger where date="' + date + '"').then(data => {
       console.log("data:");
       console.log(data);
       if (data.res.rows.length > 0) {
@@ -100,23 +101,62 @@ export class DbProvider {
       } else {
         this.number = 1;
       }
-        var queryString = 'INSERT INTO Logger '
-          + '(Date,Number,GetInDate,GetInTime,GetInLat,GetInLng,GetInCountryCode,GetInPostalCode,GetInAddress,GetInMemo,'
-          + 'GetOutDate,GetOutTime,GetOutLat,GetOutLng,GetOutCountryCode,GetOutPostalCode,GetOutAddress,GetOutMemo,ViaData,ViaMemo)'
-          + ' VALUES('
-          + '"' + date + '", '
-          + this.number + ', '
-          + '"' + pending.GetInDate + '", "' + pending.GetInTime + '", "' + pending.GetInLat + '", "' + pending.GetInLng + '", "' + pending.GetInCountryCode + '", "' + pending.GetInPostalCode + '", "' + pending.GetInAddress + '", "' + pending.GetInMemo + '", '
-          + '"' + pending.GetOutDate + '", "' + pending.GetOutTime + '", "' + pending.GetOutLat + '", "' + pending.GetOutLng + '", "' + pending.GetOutCountryCode + '", "' + pending.GetOutPostalCode + '", "' + pending.GetOutAddress + '", "' + pending.GetOutMemo + '", '
-          + "'" + JSON.stringify(pending.ViaData) + "'" + ', "' + pending.ViaMemo + '"'
-          + ')';
-          console.log(queryString);
-        return this.query(queryString, []);
-    });  
+      var queryString = 'INSERT INTO Logger '
+        + '(Date,Number,GetInDate,GetInTime,GetInLat,GetInLng,GetInCountryCode,GetInPostalCode,GetInAddress,GetInMemo,'
+        + 'GetOutDate,GetOutTime,GetOutLat,GetOutLng,GetOutCountryCode,GetOutPostalCode,GetOutAddress,GetOutMemo,ViaData,ViaMemo)'
+        + ' VALUES('
+        + '"' + date + '", '
+        + this.number + ', '
+        + '"' + pending.GetInDate + '", "' + pending.GetInTime + '", "' + pending.GetInLat + '", "' + pending.GetInLng + '", "' + pending.GetInCountryCode + '", "' + pending.GetInPostalCode + '", "' + pending.GetInAddress + '", "' + pending.GetInMemo + '", '
+        + '"' + pending.GetOutDate + '", "' + pending.GetOutTime + '", "' + pending.GetOutLat + '", "' + pending.GetOutLng + '", "' + pending.GetOutCountryCode + '", "' + pending.GetOutPostalCode + '", "' + pending.GetOutAddress + '", "' + pending.GetOutMemo + '", '
+        + "'" + JSON.stringify(pending.ViaData) + "'" + ', "' + pending.ViaMemo + '"'
+        + ')';
+      console.log(queryString);
+      return this.query(queryString, []);
+    });
+  }
+  updateLog(date: string, number: number, update, viaString: string): Promise<any> {
+    this.queryString = "Update Logger Set ";
+    for (var key in update) {
+      if (update.hasOwnProperty(key)) {
+        console.log(key, update[key]);
+        this.queryString += key + '="' + update[key] + '",';
+      }
+    }
+    if (viaString != "") {
+      this.queryString += "ViaData = '" + viaString + "',";
+    }
+    this.queryString = this.queryString.substring(0, this.queryString.length - 1);
+    this.queryString += ' WHERE Date="' + date + '" and Number = ' + number;
+    console.log('queryString:' + this.queryString);
+    return this.query(this.queryString).then(data => {
+      console.log(data);
+    })
+      .catch(error => {
+        console.error(error);
+      });
   }
 
+  getDetailLog(date: string, number: number): Promise<any> {
+    return this.query('SELECT * FROM Logger where Date = "' + date + '" and Number = "' + number + '"').then(data => {
+      if (data.res.rows.length > 0) {
+        console.log('Rows found.');
+        if (this.platform.is('cordova') && win.sqlitePlugin) {
+          let result = [];
+          for (let i = 0; i < data.res.rows.length; i++) {
+            var row = data.res.rows.item(i);
+            result.push(row);
+          }
+          return result;
+        }
+        else {
+          return data.res.rows;
+        }
+      }
+    });
+  }
   getLog(date: string): Promise<any> {
-    return this.query('SELECT * FROM Logger where Date = "'+ date + '" order by Number desc').then(data => {
+    return this.query('SELECT * FROM Logger where Date = "' + date + '" order by Number desc').then(data => {
       if (data.res.rows.length > 0) {
         console.log('Rows found.');
         if (this.platform.is('cordova') && win.sqlitePlugin) {
@@ -136,7 +176,7 @@ export class DbProvider {
 
   getLogs(): Promise<any> {
     return this.query('SELECT DISTINCT Date from Logger order by Date desc').then(data => {
-      if (data.res.rows.length > 0){
+      if (data.res.rows.length > 0) {
         console.log('Rows found.');
         if (this.platform.is('cordova') && win.sqlitePlugin) {
           let result = [];
@@ -154,8 +194,8 @@ export class DbProvider {
   }
 
   deleteLog(date: string): Promise<any> {
-    return this.query('DELETE from Logger where Date = "'+ date +'"').then(data => {
-      if (data.res.rows.length > 0){
+    return this.query('DELETE from Logger where Date = "' + date + '"').then(data => {
+      if (data.res.rows.length > 0) {
         console.log('Rows found.');
         if (this.platform.is('cordova') && win.sqlitePlugin) {
           let result = [];

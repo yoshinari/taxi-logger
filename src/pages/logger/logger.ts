@@ -89,10 +89,6 @@ export class LoggerPage {
   district: string = "";
   countryName: string = "";
   countryCode: string = "";
-  wip1: number = 0;
-  wip2: number = 0;
-  request1: number = 0;
-  request2: number = 0;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, private storage: Storage, private timerProvider: TimerProvider, private pendingProvider: PendingProvider, public db: DbProvider,
     private geolocation: Geolocation, private nativeGeocoder: NativeGeocoder) {
@@ -214,22 +210,22 @@ export class LoggerPage {
     //
     // GeoLocation関連 providerを作成したほうが良いかな？
     //
-    this.wip1++;
-    this.request1++;
+    this.lat = this.lng = this.accuracy = this.speed = -1;
     this.geolocation.getCurrentPosition().then((resp) => {
       console.log("resp.coords:");
       console.log(resp.coords);
       if (resp.coords === undefined) {
         console.warn("resp.coords undefined");
-        this.lat = this.lng = this.accuracy = this.speed = -1;
       } else {
-        this.lat = this.tmpLat = resp.coords.latitude;
-        this.lng = this.tmpLng = resp.coords.longitude;
+        this.tmpLat = resp.coords.latitude;
+        this.tmpLng = resp.coords.longitude;
         this.accuracy = resp.coords.accuracy;
         this.speed = resp.coords.speed;
-        if (this.tmpLat > 0 && this.tmpLng > 0) {
-          this.wip2++;
-          this.request2++;
+        if (this.tmpLat > 0 && this.tmpLng > 0
+          && (Math.round(this.lat * 100) != Math.round(this.tmpLat * 100) || Math.round(this.lng * 100) != Math.round(this.tmpLng * 100))
+        ) {
+          this.lat = this.tmpLat;
+          this.lng = this.tmpLng;
           this.nativeGeocoder.reverseGeocode(this.tmpLat, this.tmpLng)
             .then((result: NativeGeocoderReverseResult) => {
               console.log(result);
@@ -270,29 +266,24 @@ export class LoggerPage {
                 this.postalCode = result.postalCode;
                 this.address = this.city + this.district + this.street + this.houseNumber;
               }
-              this.wip2--;
               this.errorMSG = "";
             })
             .catch((error: any) => {
-              this.wip2--;
               console.error(error);
               this.errorMSG = error.message;
             });
-        } else {
+        } else if (this.tmpLat == -1 || this.tmpLng == -1) {
           console.error("tmpLat or tmpLng error: tmpLat:" + this.tmpLat + " tmpLng:" + this.tmpLng);
           this.errorMSG = "tmpLat or tmpLng error: tmpLat:" + this.tmpLat + " tmpLng:" + this.tmpLng;
-          this.wip2--;
         }
       }
-      this.wip1--;
     }).catch((error) => {
       console.error('Error getting location', error);
-      this.errorMSG = 'Error getting location. '+ error.message;
+      this.errorMSG = 'Error getting location. ' + error.message;
     });
 
     let watch = this.geolocation.watchPosition();
     watch.subscribe((data) => {
-      this.wip1++;
       // data can be a set of coordinates, or an error (if an error occurred).
       // data.coords.latitude
       // data.coords.longitude
@@ -304,13 +295,15 @@ export class LoggerPage {
         console.warn("data.coords undefined");
         this.lat = this.lng = this.accuracy = this.speed = -1;
       } else {
-        this.lat = this.tmpLat = data.coords.latitude;
-        this.lng = this.tmpLng = data.coords.longitude;
+        this.tmpLat = data.coords.latitude;
+        this.tmpLng = data.coords.longitude;
         this.accuracy = data.coords.accuracy;
         this.speed = data.coords.speed;
-
-        if (this.tmpLat > 0 && this.tmpLng > 0) {
-          this.wip2++;
+        if (this.tmpLat > 0 && this.tmpLng > 0
+          && (Math.round(this.lat * 100) != Math.round(this.tmpLat * 100) || Math.round(this.lng * 100) != Math.round(this.tmpLng * 100))
+        ) {
+          this.lat = this.tmpLat;
+          this.lng = this.tmpLng;
           this.nativeGeocoder.reverseGeocode(this.tmpLat, this.tmpLng)
             .then((result: NativeGeocoderReverseResult) => {
               console.log(result);
@@ -351,22 +344,28 @@ export class LoggerPage {
                 this.postalCode = result.postalCode;
                 this.address = this.city + this.district + this.street + this.houseNumber;
               }
-              this.wip2--;
               this.errorMSG = "";
             })
             .catch((error: any) => {
               console.error(error);
               this.errorMSG = error.message;
-              this.wip2--;
             });
-        } else {
+        } else if (this.tmpLat == -1 || this.tmpLng == -1) {
           console.error("tmpLat or tmpLng error: tmpLat:" + this.tmpLat + " tmpLng:" + this.tmpLng);
           this.errorMSG = "tmpLat or tmpLng error: tmpLat:" + this.tmpLat + " tmpLng:" + this.tmpLng;
-          this.wip2--;
         }
       }
-      this.wip1--;
     });
+  }
+
+  ionViewWillLeave() {
+    console.log("Looks like I'm about to WillLeave");
+  }
+  ionViewDidLeave() {
+    console.log("Looks like I'm about to DidLeave");
+  }
+  ionViewWillUnload() {
+    console.log("Looks like I'm about to WillUnload");
   }
 
   // 時計
@@ -692,5 +691,12 @@ export class LoggerPage {
           console.log(data);
         }
       });
+  }
+  showDetail(event, date, number) {
+    console.log("event:");
+    console.log(event);
+    console.log("date:" + date);
+    console.log("number:" + number);
+    this.navCtrl.push('DetailPage', { date: date, number: number });
   }
 }

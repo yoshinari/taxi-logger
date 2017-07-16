@@ -1,37 +1,70 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, IonicPage } from 'ionic-angular';
+import { DbProvider } from '../../providers/db/db';
 
+@IonicPage()
 @Component({
   selector: 'page-list',
   templateUrl: 'list.html'
 })
 export class ListPage {
-  selectedItem: any;
-  icons: string[];
-  items: Array<{title: string, note: string, icon: string}>;
+  rootPage: any;
+  items: Array<{ title: string, page: any }>;
+  Logs = new Set();
+  hasLog: boolean;
+  date: string;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
-    // If we navigated to this page, we will have an item available as a nav param
-    this.selectedItem = navParams.get('item');
+  constructor(public navCtrl: NavController, private db: DbProvider) {
+    this.rootPage = ListPage;
 
-    // Let's populate this page with some filler content for funzies
-    this.icons = ['flask', 'wifi', 'beer', 'football', 'basketball', 'paper-plane',
-    'american-football', 'boat', 'bluetooth', 'build'];
-
-    this.items = [];
-    for (let i = 1; i < 11; i++) {
-      this.items.push({
-        title: 'Item ' + i,
-        note: 'This is item #' + i,
-        icon: this.icons[Math.floor(Math.random() * this.icons.length)]
+    this.items = [
+      {
+        title: 'History',
+        page: 'HistoryPage'
+      },
+    ]
+  }
+  ionViewDidLoad() {
+    console.log("list.ts: ionViewDidLoad()");
+  }
+  ionViewWillEnter() {
+    console.log("list.ts: ionViewWillEnter()");
+    this.db.getLogs()
+      .then(data => {
+        if (data === undefined) {
+          console.log("No Data");
+          this.hasLog = false;
+        } else {
+          this.Logs = new Set();
+          console.log("data:::");
+          console.log(data);
+          for (var i = 0; i < data.length; i++) {
+            this.Logs.add(data[i]);
+          }
+          this.hasLog = true;
+        }
       });
-    }
+  }
+  ionViewDidEnter() {
+    console.log("list.ts: ionViewDidEnter()");
+  }
+  ionViewWillLeave() {
+    console.log("list.ts: ionViewWillLeave");
+  }
+  ionViewDidLeave() {
+    console.log("list.ts: ionViewDidLeave()");
+  }
+  ionViewWillUnload() {
+    console.log("list.ts: ionViewWillUnload()");
+  }
+  ionViewCanEnter() {
+    console.log("list.ts: ionViewCanEnter()");
+  }
+  ionViewCanLeave() {
+    console.log("list.ts: ionViewCanLeave()");
   }
 
-  itemTapped(event, item) {
-    // That's right, we're pushing to ourselves!
-    this.navCtrl.push(ListPage, {
-      item: item
-    });
+  itemTapped(event, item, date) {
+    this.navCtrl.push(item.page, { date: date });
   }
 }

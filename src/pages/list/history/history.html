@@ -1,0 +1,45 @@
+<ion-header>
+    <ion-navbar>
+        <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+        <ion-title>乗務履歴: {{date}}</ion-title>
+    </ion-navbar>
+</ion-header>
+<ion-content padding>
+    <h3>乗務履歴: {{date}}</h3>
+    <p class="warning">
+        実装中
+    </p>
+    <p>{{date}}の乗務履歴
+        <!-- <button ion-button block class="logSelect" (click)="popView()">戻る</button> -->
+    </p>
+    <!-- LOG -->
+    <div *ngIf="!hasHistory" text-center class="warning">
+        {{date}}の乗務履歴はありません。
+    </div>
+    <ion-grid *ngIf="hasHistory">
+        <ion-row *ngFor="let n of history" align-items-start>
+            <ion-col col-1>
+                <button ion-button block class="logSelect" (click)="showDetail($event, date, n.Number)">{{n["Number"]}}</button>
+
+                <!-- <button ion-button block class="logSelect" (click)="popView()">戻る</button> -->
+            </ion-col>
+            <ion-col col-11 class="logCol">
+                <div>{{n["GetInTime"]}} {{n["GetInAddress"]}}</div>
+                <span *ngFor="let x of viaHistory">
+                    <div *ngIf="n['Number'] == x['history']">
+                        {{x["time"]}} {{x["address"]}}
+                    </div>
+                </span>
+                <div>{{n["GetOutTime"]}} {{n["GetOutAddress"]}}</div>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                <button ion-button block color="danger" (click)="deleteHistoryData()">この履歴を削除する</button>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+    <!-- /LOG -->
+</ion-content>

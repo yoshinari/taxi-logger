@@ -3,12 +3,20 @@
         <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-        <ion-title>データの活用</ion-title>
+        <ion-title>乗務履歴</ion-title>
     </ion-navbar>
 </ion-header>
 <ion-content padding>
-    <h3>データの活用</h3>
-    <p class="warning">
-        未実装
-    </p>
+    <h3>乗務履歴</h3>
+    <div *ngIf="!hasLog" text-center class="warning">
+        乗務履歴はありません。
+    </div>
+    <ion-grid *ngIf="hasLog">
+        <p>乗務日を選択してください。</p>
+        <ion-row *ngFor="let n of Logs" align-items-start>
+            <ion-col>
+                <button ion-item *ngFor="let item of items" (click)="itemTapped($event, item, n.Date)">{{n.Date}}</button>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
 </ion-content>
