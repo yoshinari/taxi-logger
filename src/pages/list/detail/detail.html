@@ -8,9 +8,6 @@
 </ion-header>
 <ion-content padding>
     <h3>乗務履歴: {{date}} #{{number}}</h3>
-    <p class="warning">
-        実装中
-    </p>
     <p>{{date}} #{{number}}の詳細
     </p>
     <ion-grid *ngIf="hasHistory">
@@ -49,6 +46,11 @@
                         <br> 住所:{{n["GetOutAddress"]}}
                         <br> メモ:{{n["GetOutMemo"]}}
                         <br>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col>
+                        <button ion-button block (click)="showViaGoogleMap($event,date,number)">Google Mapで表示する</button>
                     </ion-col>
                 </ion-row>
                 <ion-row>

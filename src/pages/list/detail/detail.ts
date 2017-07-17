@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { AlertController, NavController, IonicPage, NavParams } from 'ionic-angular';
+import { AlertController, NavController, IonicPage, NavParams, Platform } from 'ionic-angular';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { DbProvider } from '../../../providers/db/db';
 import { HistoryPage } from '../history/history';
 
@@ -19,11 +20,16 @@ export class DetailPage {
   hasViaHistory: boolean = false;
   errorMSG: string;
 
+  mapUrl: string;
+  browser: any;
+
   constructor(
     public navParams: NavParams,
     public navCtrl: NavController,
     public alertCtrl: AlertController,
     private db: DbProvider,
+    private iab: InAppBrowser,
+    public platform: Platform
   ) {
     this.date = navParams.get('date');
     this.number = navParams.get('number');
@@ -70,13 +76,13 @@ export class DetailPage {
           text: '削除する',
           handler: () => {
             this.db.deleteLog(this.date)
-            .then(xxx => {
-              console.log("DELETED!!");
-              this.navCtrl.pop();
-            })
-            .catch(error => {
-              console.error(error);
-            });
+              .then(xxx => {
+                console.log("DELETED!!");
+                this.navCtrl.pop();
+              })
+              .catch(error => {
+                console.error(error);
+              });
           }
         }
       ]
@@ -87,6 +93,54 @@ export class DetailPage {
     this.navCtrl.remove(1);
   }
   updateData(event, date, number) {
-    this.navCtrl.push('UpdatePage', { date:date, number:number });
+    this.navCtrl.push('UpdatePage', { date: date, number: number });
+  }
+  showViaGoogleMap(event, date, number) {
+    console.log("Show Via GoogleMap");
+    this.db.getDetailLog(this.date, this.number)
+      .then(data => {
+        this.history = new Set();
+        this.viaHistory = new Set();
+        if (data === undefined) {
+          this.hasHistory = false;
+        } else {
+          for (var i = 0; i < data.length; i++) {
+            console.log(data[i]);
+            if (data[i]["GetInLat"] < 0 || data[i]["GetInLng"] < 0 || data[i]["GetOutLat"] < 0 || data[i]["GetOutLng"] < 0) {
+              console.log("位置情報が保存されていません。");
+              let alert = this.alertCtrl.create({
+                title: '残念',
+                subTitle: '位置情報が保存されていないため、GoogleMapでの経路表示が出来ません。',
+                buttons: ['OK']
+              });
+              alert.present();
+            } else {
+              this.mapUrl = 'http://www.google.co.jp/maps/dir';
+              this.mapUrl += '/' + data[i]["GetInLat"] + ',' + data[i]["GetInLng"];
+              if (data[i]["ViaData"]) {
+                var obj = JSON.parse(data[i]["ViaData"]);
+                if (obj.length > 0) {
+                  for (var j = 0; j < obj.length; j++) {
+                    obj[j]["history"] = data[i]["Number"];
+                    if (obj[j]["lat"] > 0 && obj[j]["lng"] > 0) {
+                      this.mapUrl += '/' + obj[j]["lat"] + ',' + obj[j]["lng"];
+                    }
+                  }
+                }
+              }
+              this.mapUrl += '/' + data[i]["GetOutLat"] + ',' + data[i]["GetOutLng"];
+              this.mapUrl += '/@/data=!4m2!4m1!3e0';
+              console.log("mapUrl: " + this.mapUrl);
+              this.platform.ready().then(() => {
+                this.browser = this.iab.create(this.mapUrl);
+                this.browser.show();
+              });
+            }
+          }
+        }
+      });
+    //ページの状態を戻すためのトリック
+    this.navCtrl.push('DetailPage', { date: date, number: number });
+    this.navCtrl.pop();
   }
 }

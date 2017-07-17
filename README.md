@@ -24,11 +24,15 @@ Taxi-Loggerを作りながら[Ionic3](http://ionicframework.com/docs/) 等を勉
     - 今までの乗務履歴を参照できます。
     - 乗車、降車場所を変更したり、メモを追加出来ます。
     - 不要な乗務履歴を削除できます。
+    - Google Mapで経路を表示できます。
+- イベントスケジュール:
+    - 取り敢えずはハードコーディング
 ## まだ出来ないこと
 - 設定
 - その他、多くの機能
 
 #### 主に使っているpackage
+- [In App Browser](http://ionicframework.com/docs/native/in-app-browser/) : イベントスケジュール表示等に利用。
 - [Storage](https://ionicframework.com/docs/storage/) : localStorageから切り替えた。
 #### その他
 - 

@@ -10,6 +10,7 @@ import { TinyCalcPage } from '../pages/tiny-calc/tiny-calc';
 import { SettingsPage } from '../pages/settings/settings';
 import { ThanksPage } from '../pages/thanks/thanks';
 import { AboutPage } from '../pages/about/about';
+import { EventsPage } from '../pages/events/events';
 
 @Component({
   templateUrl: 'app.html'
@@ -31,6 +32,7 @@ export class MyApp {
       { title: '簡易料金計算', component: TinyCalcPage },
       { title: '乗務履歴', component: ListPage },
       { title: '設定', component: SettingsPage },
+      { title: 'イベントスケジュール', component: EventsPage },
       { title: 'Thanks', component: ThanksPage },
       { title: 'Taxi Loggerについて', component: AboutPage },
     ];

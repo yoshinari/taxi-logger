@@ -10,6 +10,7 @@ import { TinyCalcPage } from '../pages/tiny-calc/tiny-calc';
 import { SettingsPage } from '../pages/settings/settings';
 import { ThanksPage } from '../pages/thanks/thanks';
 import { AboutPage } from '../pages/about/about';
+import { EventsPage } from '../pages/events/events';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -21,6 +22,7 @@ import { DbProvider } from '../providers/db/db';
 import { AppVersion } from '@ionic-native/app-version';
 import { Geolocation } from '@ionic-native/geolocation';
 import { NativeGeocoder } from '@ionic-native/native-geocoder';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
 
 @NgModule({
   declarations: [
@@ -31,7 +33,8 @@ import { NativeGeocoder } from '@ionic-native/native-geocoder';
     TinyCalcPage,
     SettingsPage,
     ThanksPage,
-    AboutPage
+    AboutPage,
+    EventsPage,
   ],
   imports: [
     BrowserModule,
@@ -50,7 +53,8 @@ import { NativeGeocoder } from '@ionic-native/native-geocoder';
     TinyCalcPage,
     SettingsPage,
     ThanksPage,
-    AboutPage
+    AboutPage,
+    EventsPage,
   ],
   providers: [
     StatusBar,
@@ -62,6 +66,7 @@ import { NativeGeocoder } from '@ionic-native/native-geocoder';
     AppVersion,
     Geolocation,
     NativeGeocoder,
+    InAppBrowser,
   ]
 })
 export class AppModule {}

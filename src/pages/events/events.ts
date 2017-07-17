@@ -11,16 +11,16 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
 @IonicPage()
 @Injectable()
 @Component({
-  selector: 'page-thanks',
-  templateUrl: 'thanks.html',
+  selector: 'page-events',
+  templateUrl: 'events.html',
 })
-export class ThanksPage {
+export class EventsPage {
   browser: any;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private iab: InAppBrowser, public platform: Platform) {
   }
   ionViewDidLoad() {
-    console.log('ionViewDidLoad ThanksPage');
+    console.log('ionViewDidLoad EventsPage');
   }
   openUrl(url){
     this.platform.ready().then(() => {

@@ -60,6 +60,11 @@
                 </div>
             </ion-col>
         </ion-row>
+        <ion-row>
+            <ion-col>
+                <button ion-button block [style.color]="isTrunk ? 'black' : 'black'" [style.backgroundColor]="isTrunk ? 'yellow' : 'gray'" (click)="reminderReverse()">トランク</button>
+            </ion-col>
+        </ion-row>
     </ion-grid>
     <ion-grid *ngIf="isDriving && !isBreak">
         <ion-row>

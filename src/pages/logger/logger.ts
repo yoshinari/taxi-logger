@@ -90,6 +90,7 @@ export class LoggerPage {
   countryName: string = "";
   countryCode: string = "";
 
+  isTrunk: boolean = false;
   constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, private storage: Storage, private timerProvider: TimerProvider, private pendingProvider: PendingProvider, public db: DbProvider,
     private geolocation: Geolocation, private nativeGeocoder: NativeGeocoder) {
   }
@@ -698,5 +699,8 @@ export class LoggerPage {
     console.log("date:" + date);
     console.log("number:" + number);
     this.navCtrl.push('DetailPage', { date: date, number: number });
+  }
+  reminderReverse() {
+    this.isTrunk = !this.isTrunk;
   }
 }
