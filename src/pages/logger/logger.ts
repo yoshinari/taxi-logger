@@ -20,6 +20,11 @@ import { NativeGeocoder, NativeGeocoderReverseResult } from '@ionic-native/nativ
 })
 export class LoggerPage {
 
+  latLngDiffRatio:number = 5000; // 移動を判断するためのパラメータ　以前は500。数字が大きいほどセンシティブ
+  requests:number = 0;
+  results:number = 0;
+  errors:number = 0;
+
   driveDate: any; // Date and String
   month: any; // Number and String
   day: any; // Number and String
@@ -223,12 +228,14 @@ export class LoggerPage {
         this.accuracy = resp.coords.accuracy;
         this.speed = resp.coords.speed;
         if (this.tmpLat > 0 && this.tmpLng > 0
-          && (Math.round(this.lat * 100) != Math.round(this.tmpLat * 100) || Math.round(this.lng * 100) != Math.round(this.tmpLng * 100))
+          && (Math.round(this.lat * this.latLngDiffRatio) != Math.round(this.tmpLat * this.latLngDiffRatio) || Math.round(this.lng * this.latLngDiffRatio) != Math.round(this.tmpLng * this.latLngDiffRatio))
         ) {
           this.lat = this.tmpLat;
           this.lng = this.tmpLng;
+          this.requests++;
           this.nativeGeocoder.reverseGeocode(this.tmpLat, this.tmpLng)
             .then((result: NativeGeocoderReverseResult) => {
+              this.results++;
               console.log(result);
               if (result.street === undefined) {
                 this.street = "";
@@ -270,6 +277,7 @@ export class LoggerPage {
               this.errorMSG = "";
             })
             .catch((error: any) => {
+              this.errors++;
               console.error(error);
               this.errorMSG = error.message;
             });
@@ -277,6 +285,7 @@ export class LoggerPage {
           console.error("tmpLat or tmpLng error: tmpLat:" + this.tmpLat + " tmpLng:" + this.tmpLng);
           this.errorMSG = "tmpLat or tmpLng error: tmpLat:" + this.tmpLat + " tmpLng:" + this.tmpLng;
         }
+        this.errorMSG = "REQ:" + this.requests+ " RES:" + this.results + " ERR:" + this.errors;
       }
     }).catch((error) => {
       console.error('Error getting location', error);
@@ -301,12 +310,14 @@ export class LoggerPage {
         this.accuracy = data.coords.accuracy;
         this.speed = data.coords.speed;
         if (this.tmpLat > 0 && this.tmpLng > 0
-          && (Math.round(this.lat * 100) != Math.round(this.tmpLat * 100) || Math.round(this.lng * 100) != Math.round(this.tmpLng * 100))
+          && (Math.round(this.lat * this.latLngDiffRatio) != Math.round(this.tmpLat * this.latLngDiffRatio) || Math.round(this.lng * this.latLngDiffRatio) != Math.round(this.tmpLng * this.latLngDiffRatio))
         ) {
           this.lat = this.tmpLat;
           this.lng = this.tmpLng;
+          this.requests++;
           this.nativeGeocoder.reverseGeocode(this.tmpLat, this.tmpLng)
             .then((result: NativeGeocoderReverseResult) => {
+              this.results++;
               console.log(result);
               if (result.street === undefined) {
                 this.street = "";
@@ -340,6 +351,7 @@ export class LoggerPage {
               }
               if (result.postalCode === undefined) {
                 this.address += "*";
+                this.errorMSG = "city:"+result.city+" district:" + this.district + " street:"+this.street+ " houseNumber:"+ this.houseNumber;
                 this.postalCode = "";
               } else {
                 this.postalCode = result.postalCode;
@@ -348,6 +360,7 @@ export class LoggerPage {
               this.errorMSG = "";
             })
             .catch((error: any) => {
+               this.errors++;
               console.error(error);
               this.errorMSG = error.message;
             });
@@ -355,6 +368,7 @@ export class LoggerPage {
           console.error("tmpLat or tmpLng error: tmpLat:" + this.tmpLat + " tmpLng:" + this.tmpLng);
           this.errorMSG = "tmpLat or tmpLng error: tmpLat:" + this.tmpLat + " tmpLng:" + this.tmpLng;
         }
+            this.errorMSG = "REQ:" + this.requests+ " RES:" + this.results + " ERR:" + this.errors;
       }
     });
   }

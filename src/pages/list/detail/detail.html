@@ -17,7 +17,7 @@
                     <ion-col>
                         乗車:
                         <br> 時間:{{n["GetInTime"]}}
-                        <br> 住所:{{n["GetInAddress"]}}
+                        <br> 場所:{{n["GetInAddress"]}}
                         <br> メモ:{{n["GetInMemo"]}}
                         <br>
                     </ion-col>
@@ -28,7 +28,7 @@
                             <ion-col>
                                 経由({{j+1}}):
                                 <br>時間:{{x["time"]}}
-                                <br>住所:{{x["address"]}}
+                                <br>場所:{{x["address"]}}
                                 <br>メモ:{{x["memo"]}}
                             </ion-col>
                         </ion-row>
@@ -43,14 +43,19 @@
                     <ion-col>
                         降車:
                         <br> 時間:{{n["GetOutTime"]}}
-                        <br> 住所:{{n["GetOutAddress"]}}
+                        <br> 場所:{{n["GetOutAddress"]}}
                         <br> メモ:{{n["GetOutMemo"]}}
                         <br>
                     </ion-col>
                 </ion-row>
                 <ion-row>
                     <ion-col>
-                        <button ion-button block (click)="showViaGoogleMap($event,date,number)">Google Mapで表示する</button>
+                        <button ion-button block (click)="showViaGoogleMap($event,date,number)">経路をGoogle Mapで表示する</button>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col class="warning">
+                        「場所」の後ろに*印がある記録は住所を取得してから時間がかかっているため、実際の場所と異なる可能性が高いです。「データを修正する」を選択すると、Google Mapで実際の位置を表示出来ますので、必要であればその情報を参考にして「場所」を書き換えてください。
                     </ion-col>
                 </ion-row>
                 <ion-row>

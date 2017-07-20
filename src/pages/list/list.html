@@ -8,9 +8,6 @@
 </ion-header>
 <ion-content padding>
     <h3>乗務履歴</h3>
-    <div *ngIf="!hasLog" text-center class="warning">
-        乗務履歴はありません。
-    </div>
     <ion-grid *ngIf="hasLog">
         <p>乗務日を選択してください。</p>
         <ion-row *ngFor="let n of Logs" align-items-start>
@@ -19,4 +16,7 @@
             </ion-col>
         </ion-row>
     </ion-grid>
+    <div *ngIf="!hasLog" text-center class="warning">
+        乗務履歴はありません。
+    </div>
 </ion-content>

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AlertController, NavController, IonicPage, NavParams } from 'ionic-angular';
+import { ToastController } from 'ionic-angular';
 import { DbProvider } from '../../../providers/db/db';
 import { ListPage } from '../../list/list';
 @IonicPage()
@@ -21,6 +22,7 @@ export class HistoryPage {
     public navParams: NavParams,
     public navCtrl: NavController,
     public alertCtrl: AlertController,
+    public toastCtrl: ToastController,
     private db: DbProvider,
   ) {
     this.date = navParams.get('date');
@@ -37,7 +39,7 @@ export class HistoryPage {
 
 
   }
-    ionViewDidEnter() {
+  ionViewDidEnter() {
     console.log('ionViewDidEnter HistoryPage');
     this.db.getLog(this.date)
       .then(data => {
@@ -89,13 +91,19 @@ export class HistoryPage {
           text: '削除する',
           handler: () => {
             this.db.deleteLog(this.date)
-            .then(xxx => {
-              console.log("DELETED!!");
-              this.navCtrl.pop();
-            })
-            .catch(error => {
-              console.error(error);
-            });
+              .then(xxx => {
+                console.log("DELETED!!");
+                this.navCtrl.pop();
+                const toast = this.toastCtrl.create({
+                  message: this.date + 'の乗務履歴を削除しました',
+                  showCloseButton: true,
+                  closeButtonText: 'Ok'
+                });
+                toast.present();
+              })
+              .catch(error => {
+                console.error(error);
+              });
           }
         }
       ]
@@ -116,9 +124,9 @@ export class HistoryPage {
   showDetail(event, date, number) {
     console.log("event:");
     console.log(event);
-    console.log("date:"+date);
-    console.log("number:"+number);
-    this.navCtrl.push('DetailPage', { date:date, number:number });
+    console.log("date:" + date);
+    console.log("number:" + number);
+    this.navCtrl.push('DetailPage', { date: date, number: number });
   }
 }
 

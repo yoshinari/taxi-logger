@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController, Platform } from 'ionic-angular';
 import { DetailPage } from '../detail/detail';
 import { DbProvider } from '../../../providers/db/db';
-import { NativeGeocoder, NativeGeocoderReverseResult } from '@ionic-native/native-geocoder';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
+import { ToastController } from 'ionic-angular';
+
 
 /**
  * Generated class for the UpdatePage page.
@@ -31,21 +33,25 @@ export class UpdatePage {
   original = {};
   update = {};
 
-  street:string;
-  houseNumber:string;
-  city:string;
-  district:string;
-  countryName:string;
-  countryCode:string;
-  address:string;
-  postalCode:string;
+  street: string;
+  houseNumber: string;
+  city: string;
+  district: string;
+  countryName: string;
+  countryCode: string;
+  address: string;
+  postalCode: string;
+
+  browser: any;
 
   constructor(
     public navParams: NavParams,
     public navCtrl: NavController,
     public alertCtrl: AlertController,
     private db: DbProvider,
-    private nativeGeocoder: NativeGeocoder,
+    private iab: InAppBrowser,
+    public toastCtrl: ToastController,
+    public platform: Platform
   ) {
     this.date = navParams.get('date');
     this.number = navParams.get('number');
@@ -112,62 +118,32 @@ export class UpdatePage {
           console.log("update done.");
           console.log(data);
           this.navCtrl.pop();
+          let toast = this.toastCtrl.create({
+            message: '履歴を更新しました',
+            duration: 2000
+          });
+          toast.present();
         }).catch(error => {
           console.error(error);
         })
     }
   }
-  getAdder(lat, lng, pos) {
-    console.log('GetAddr : lat: '+lat+ ' lng:' + lng + 'pos:' + pos);
-    // this.update['GetInAddress']="hoge";
-    // posがViaDataの時の処理がすごく大変そう
-    this.nativeGeocoder.reverseGeocode(lat, lng)
-            .then((result: NativeGeocoderReverseResult) => {
-              console.log(result);
-              if (result.street === undefined) {
-                this.street = "";
-              } else {
-                this.street = result.street;
-              }
-              if (result.houseNumber === undefined) {
-                this.houseNumber = "";
-              } else {
-                this.houseNumber = result.houseNumber;
-              }
-              if (result.city === undefined) {
-                this.city = "";
-              } else {
-                this.city = result.city;
-              }
-              if (result.district === undefined) {
-                this.district = "";
-              } else {
-                this.district = result.district;
-              }
-              if (result.countryName === undefined) {
-                this.countryName = "";
-              } else {
-                this.countryName = result.countryName;
-              }
-              if (result.countryCode === undefined) {
-                this.countryCode = "";
-              } else {
-                this.countryCode = result.countryCode;
-              }
-              if (result.postalCode === undefined) {
-                this.address += "*";
-                this.postalCode = "";
-              } else {
-                this.postalCode = result.postalCode;
-                this.address = this.city + this.district + this.street + this.houseNumber;
-              }
-              this.errorMSG = "";
-              console.log("Address:::::"+this.address);
-            })
-            .catch((error: any) => {
-              console.error(error);
-              this.errorMSG = error.message;
-            });
+  openGoogleMap(lat, lng) {
+    console.log('GetAddr : lat: ' + lat + ' lng:' + lng);
+    if (lat < 0 || lng < 0) {
+      console.log('lat or lng has bad data. lat:' + lat + ', lng:' + lng);
+      let alert = this.alertCtrl.create({
+        title: 'Google Mapを表示できません。',
+        subTitle: '緯度、軽度の情報が記録されていません(lat:' + lat + ', lng:' + lng + ')',
+        buttons: ['OK']
+      });
+      alert.present();
+      return false;
+    }
+    this.platform.ready().then(() => {
+      this.browser = this.iab.create("http://maps.google.com/maps?q=" + lat + "," + lng);
+      this.browser.show();
+    });
     return false; // formのsubmitをしないためにはreturn falseであること
   }
 }

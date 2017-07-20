@@ -17,7 +17,11 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
 export class ThanksPage {
   browser: any;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private iab: InAppBrowser, public platform: Platform) {
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams, 
+    private iab: InAppBrowser, 
+    public platform: Platform) {
   }
   ionViewDidLoad() {
     console.log('ionViewDidLoad ThanksPage');

@@ -19,11 +19,11 @@
                                     <ion-label>時間 {{n["GetInTime"]}}</ion-label>
                                 </ion-item>
                                 <ion-item>
-                                    <ion-label>住所</ion-label>
+                                    <ion-label>場所</ion-label>
                                     <ion-input type="text" [(ngModel)]="n['GetInAddress']" name="GetInAddress">{{n["GetInAddress"]}}</ion-input>
                                 </ion-item>
                                 <ion-item *ngIf="n['GetInLat']>0 && n['GetInLng']>0">
-                                    <ion-label><button ion-button color="secondary" (click)="getAdder(n['GetInLat'],n['GetInLng'],'GetIn')">住所再取得(未実装)</button></ion-label>
+                                    <ion-label><button ion-button color="secondary" (click)="openGoogleMap(n['GetInLat'],n['GetInLng'])">Google Mapで表示する</button></ion-label>
                                 </ion-item>
                                 <ion-item>
                                     <ion-label>メモ</ion-label>
@@ -44,8 +44,11 @@
                                             <ion-label>時間 {{x["time"]}}</ion-label>
                                         </ion-item>
                                         <ion-item>
-                                            <ion-label>住所</ion-label>
+                                            <ion-label>場所</ion-label>
                                             <ion-input type="text" [(ngModel)]="x['address']" name="address{{j}}">{{x["address"]}}</ion-input>
+                                        </ion-item>
+                                        <ion-item *ngIf="x['lat']>0 && x['lng']>0">
+                                            <ion-label><button ion-button color="secondary" (click)="openGoogleMap(x['lat'],x['lng'])">Google Mapで表示する</button></ion-label>
                                         </ion-item>
                                         <ion-item>
                                             <ion-label>メモ</ion-label>
@@ -76,11 +79,11 @@
                                     <ion-label>時間 {{n["GetOutTime"]}}</ion-label>
                                 </ion-item>
                                 <ion-item>
-                                    <ion-label>住所</ion-label>
+                                    <ion-label>場所</ion-label>
                                     <ion-input type="text" [(ngModel)]="n['GetOutAddress']" name="GetOutAddress">{{n["GetOutAddress"]}}</ion-input>
                                 </ion-item>
                                 <ion-item *ngIf="n['GetOutLat']>0 && n['GetOutLng']>0">
-                                    <ion-label><button ion-button color="secondary" (click)="getAdder(n['GetOutLat'],n['GetOutLng'],'GetOut')">住所再取得(未実装)</button></ion-label>
+                                    <ion-label><button ion-button color="secondary" (click)="openGoogleMap(n['GetOutLat'],n['GetOutLng'])">Google Mapで表示する</button></ion-label>
                                 </ion-item>
                                 <ion-item>
                                     <ion-label>メモ</ion-label>
@@ -91,7 +94,7 @@
                     </ion-row>
                 </ion-col>
             </ion-row>
-            <button ion-button block color="danger" type="submit">修正内容で保存する</button>
+            <button ion-button block color="danger" type="submit">修正内容を保存する</button>
         </form>
     </ion-grid>
     <div padding>

@@ -12,9 +12,6 @@
         <!-- <button ion-button block class="logSelect" (click)="popView()">戻る</button> -->
     </p>
     <!-- LOG -->
-    <div *ngIf="!hasHistory" text-center class="warning">
-        {{date}}の乗務履歴はありません。
-    </div>
     <ion-grid *ngIf="hasHistory">
         <ion-row *ngFor="let n of history" align-items-start>
             <ion-col col-1>
@@ -33,10 +30,18 @@
             </ion-col>
         </ion-row>
         <ion-row>
+            <ion-col class="warning">
+                住所の後ろに*印がある記録は住所を取得してから時間がかかっているため、実際の場所と異なる可能性が高いです。乗務履歴の番号ボタンをタップして「データを修正する」を選択すると、Google Mapで実際の位置を表示出来ますので、必要であればその情報を参考にして「場所」を書き換えてください。
+            </ion-col>
+        </ion-row>
+        <ion-row>
             <ion-col>
                 <button ion-button block color="danger" (click)="deleteHistoryData()">この履歴を削除する</button>
             </ion-col>
         </ion-row>
     </ion-grid>
     <!-- /LOG -->
+    <div *ngIf="!hasHistory" text-center class="warning">
+        {{date}}の乗務履歴はありません。
+    </div>
 </ion-content>
