@@ -23,7 +23,8 @@
                                     <ion-input type="text" [(ngModel)]="n['GetInAddress']" name="GetInAddress">{{n["GetInAddress"]}}</ion-input>
                                 </ion-item>
                                 <ion-item *ngIf="n['GetInLat']>0 && n['GetInLng']>0">
-                                    <ion-label><button ion-button color="secondary" (click)="openGoogleMap(n['GetInLat'],n['GetInLng'])">Google Mapで表示する</button></ion-label>
+                                    <ion-label><button ion-button color="default" (click)="alertReverseGeocode(n['GetInLat'],n['GetInLng'])">位置情報</button></ion-label>
+                                    <ion-label><button ion-button color="secondary" (click)="openGoogleMap(n['GetInLat'],n['GetInLng'])">Google Map</button></ion-label>
                                 </ion-item>
                                 <ion-item>
                                     <ion-label>メモ</ion-label>
@@ -48,7 +49,8 @@
                                             <ion-input type="text" [(ngModel)]="x['address']" name="address{{j}}">{{x["address"]}}</ion-input>
                                         </ion-item>
                                         <ion-item *ngIf="x['lat']>0 && x['lng']>0">
-                                            <ion-label><button ion-button color="secondary" (click)="openGoogleMap(x['lat'],x['lng'])">Google Mapで表示する</button></ion-label>
+                                            <ion-label><button ion-button color="default" (click)="alertReverseGeocode(x['lat'],x['lng'])">位置情報</button></ion-label>
+                                            <ion-label><button ion-button color="secondary" (click)="openGoogleMap(x['lat'],x['lng'])">Google Map</button></ion-label>
                                         </ion-item>
                                         <ion-item>
                                             <ion-label>メモ</ion-label>
@@ -83,7 +85,8 @@
                                     <ion-input type="text" [(ngModel)]="n['GetOutAddress']" name="GetOutAddress">{{n["GetOutAddress"]}}</ion-input>
                                 </ion-item>
                                 <ion-item *ngIf="n['GetOutLat']>0 && n['GetOutLng']>0">
-                                    <ion-label><button ion-button color="secondary" (click)="openGoogleMap(n['GetOutLat'],n['GetOutLng'])">Google Mapで表示する</button></ion-label>
+                                    <ion-label><button ion-button color="default" (click)="alertReverseGeocode(n['GetOutLat'],n['GetOutLng'])">位置情報</button></ion-label>
+                                    <ion-label><button ion-button color="secondary" (click)="openGoogleMap(n['GetOutLat'],n['GetOutLng'])">Google Map</button></ion-label>
                                 </ion-item>
                                 <ion-item>
                                     <ion-label>メモ</ion-label>

@@ -4,6 +4,7 @@ import { DetailPage } from '../detail/detail';
 import { DbProvider } from '../../../providers/db/db';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { ToastController } from 'ionic-angular';
+import { NativeGeocoder, NativeGeocoderReverseResult } from '@ionic-native/native-geocoder';
 
 
 /**
@@ -51,7 +52,8 @@ export class UpdatePage {
     private db: DbProvider,
     private iab: InAppBrowser,
     public toastCtrl: ToastController,
-    public platform: Platform
+    public platform: Platform,
+    private nativeGeocoder: NativeGeocoder
   ) {
     this.date = navParams.get('date');
     this.number = navParams.get('number');
@@ -127,6 +129,46 @@ export class UpdatePage {
           console.error(error);
         })
     }
+  }
+  alertReverseGeocode(lat, lng) {
+    if (lat < 0 || lng < 0) {
+      console.log('lat or lng has bad data. lat:' + lat + ', lng:' + lng);
+      let alert = this.alertCtrl.create({
+        title: '位置情報を表示できません。',
+        subTitle: '緯度、軽度の情報が記録されていません(lat:' + lat + ', lng:' + lng + ')',
+        buttons: ['OK']
+      });
+      alert.present();
+      return false;
+    }
+
+    this.nativeGeocoder.reverseGeocode(lat, lng)
+      .then((result: NativeGeocoderReverseResult) => {
+        console.log(result);
+        var geoData = "city:" + result.city
+          + "<br>countryCode:" + result.countryCode
+          + "<br>countryName:" + result.countryName
+          + "<br>district:" + result.district
+          + "<br>houseNumber:" + result.houseNumber
+          + "<br>postalCode:" + result.postalCode
+          + "<br>street:" + result.street;
+        let alert = this.alertCtrl.create({
+          title: '位置情報',
+          subTitle: geoData,
+          buttons: ['OK']
+        });
+        alert.present();
+      })
+      .catch((error: any) => {
+        console.error(error);
+        let alert = this.alertCtrl.create({
+          title: '位置情報エラー',
+          subTitle: error.message,
+          buttons: ['OK']
+        });
+        alert.present();
+      });
+    return false; // formのsubmitをしないためにはreturn falseであること
   }
   openGoogleMap(lat, lng) {
     console.log('GetAddr : lat: ' + lat + ' lng:' + lng);

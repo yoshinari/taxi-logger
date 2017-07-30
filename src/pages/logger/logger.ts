@@ -94,18 +94,11 @@ export class LoggerPage {
   district: string = "";
   countryName: string = "";
   countryCode: string = "";
+  geoData: string = "";
 
   isTrunk: boolean = false;
   constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, private storage: Storage, private timerProvider: TimerProvider, private pendingProvider: PendingProvider, public db: DbProvider,
     private geolocation: Geolocation, private nativeGeocoder: NativeGeocoder) {
-  }
-  underConstuctionAlert() {
-    let alert = this.alertCtrl.create({
-      title: '未実装!',
-      subTitle: 'この機能はまだ実装されていません',
-      buttons: ['OK']
-    });
-    alert.present();
   }
   jobCloseoutConfirm() {
     let alert = this.alertCtrl.create({
@@ -237,6 +230,13 @@ export class LoggerPage {
             .then((result: NativeGeocoderReverseResult) => {
               this.results++;
               console.log(result);
+              this.geoData = "city:"+result.city
+              +", countryCode:"+result.countryCode
+              +", countryName:"+result.countryName
+              +", district:"+result.district
+              +", houseNumber:"+result.houseNumber
+              +", postalCode:"+result.postalCode
+              +", street:"+result.street;
               if (result.street === undefined) {
                 this.street = "";
               } else {
@@ -319,6 +319,13 @@ export class LoggerPage {
             .then((result: NativeGeocoderReverseResult) => {
               this.results++;
               console.log(result);
+              this.geoData = "city:"+result.city
+              +", countryCode:"+result.countryCode
+              +", countryName:"+result.countryName
+              +", district:"+result.district
+              +", houseNumber:"+result.houseNumber
+              +", postalCode:"+result.postalCode
+              +", street:"+result.street;
               if (result.street === undefined) {
                 this.street = "";
               } else {
@@ -486,10 +493,10 @@ export class LoggerPage {
     this.saveElapsedBreak(this.breakTime);
     this.resetTimer("breakStartTime");
     this.breakTime = "00:00:00";
-    if (!this.isDriving) {
+    // if (!this.isDriving) {
       console.log("call startDrivingTime");
       this.startDrivingTime(false);
-    }
+    // }
   }
   resetStorage() {
     this.storage.keys()

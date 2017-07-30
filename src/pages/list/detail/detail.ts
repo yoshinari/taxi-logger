@@ -132,8 +132,20 @@ export class DetailPage {
               this.mapUrl += '/@/data=!4m2!4m1!3e0';
               console.log("mapUrl: " + this.mapUrl);
               this.platform.ready().then(() => {
-                this.browser = this.iab.create(this.mapUrl);
-                this.browser.show();
+                this.browser = this.iab.create(this.mapUrl,'_self',{location:'no',hardwareback:'no'});
+                // https://forum.ionicframework.com/t/inappbrowser-ionic2-how-to-change-design-of-browser/70552
+                this.browser.on("loadstop")
+                  .subscribe(
+                  () => {
+                    this.browser.insertCSS({
+                      code:
+                      ".ml-directions-center-panel,.ml-directions-searchbox-tabs {display: none;}"
+                    });
+                    this.browser.show();
+                  },
+                  err => {
+                    console.log("InAppBrowser Loadstop Event Error: " + err);
+                  });
               });
             }
           }
