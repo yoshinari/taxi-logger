@@ -221,87 +221,87 @@ export class LoggerPage {
     // GeoLocation関連 providerを作成したほうが良いかな？
     //
     this.lat = this.lng = this.accuracy = this.speed = -1;
-    this.geolocation.getCurrentPosition().then((resp) => {
-      console.log("resp.coords:");
-      console.log(resp.coords);
-      if (resp.coords === undefined) {
-        console.warn("resp.coords undefined");
-      } else {
-        this.tmpLat = resp.coords.latitude;
-        this.tmpLng = resp.coords.longitude;
-        this.accuracy = resp.coords.accuracy;
-        this.speed = resp.coords.speed;
-        if (this.tmpLat > 0 && this.tmpLng > 0
-          && (Math.round(this.lat * this.latLngDiffRatio) != Math.round(this.tmpLat * this.latLngDiffRatio) || Math.round(this.lng * this.latLngDiffRatio) != Math.round(this.tmpLng * this.latLngDiffRatio))
-        ) {
-          this.lat = this.tmpLat;
-          this.lng = this.tmpLng;
-          this.requests++;
-          this.nativeGeocoder.reverseGeocode(this.tmpLat, this.tmpLng)
-            .then((result: NativeGeocoderReverseResult) => {
-              this.results++;
-              console.log(result);
-              this.geoData = "city:" + result.city
-                + ", countryCode:" + result.countryCode
-                + ", countryName:" + result.countryName
-                + ", district:" + result.district
-                + ", houseNumber:" + result.houseNumber
-                + ", postalCode:" + result.postalCode
-                + ", street:" + result.street;
-              if (result.street === undefined) {
-                this.street = "";
-              } else {
-                this.street = result.street;
-              }
-              if (result.houseNumber === undefined) {
-                this.houseNumber = ""
-              } else {
-                this.houseNumber = result.houseNumber;
-              }
-              if (result.city === undefined) {
-                this.city = "";
-              } else {
-                this.city = result.city;
-              }
-              if (result.district === undefined) {
-                this.district = "";
-              } else {
-                this.district = result.district;
-              }
-              if (result.countryName === undefined) {
-                this.countryName = "";
-              } else {
-                this.countryName = result.countryName;
-              }
-              if (result.countryCode === undefined) {
-                this.countryCode = "";
-              } else {
-                this.countryCode = result.countryCode;
-              }
-              if (result.postalCode === undefined) {
-                this.postalCode = "";
-                this.address += "*";
-              } else {
-                this.postalCode = result.postalCode;
-                this.address = this.city + this.district + this.street + this.houseNumber;
-              }
-              this.errorMSG = "";
-            })
-            .catch((error: any) => {
-              this.errors++;
-              console.error(error);
-              this.errorMSG = error.message;
-            });
-        } else if (this.tmpLat == -1 || this.tmpLng == -1) {
-          console.error("tmpLat or tmpLng error: tmpLat:" + this.tmpLat + " tmpLng:" + this.tmpLng);
-          this.errorMSG = "tmpLat or tmpLng error: tmpLat:" + this.tmpLat + " tmpLng:" + this.tmpLng;
-        }
-        this.errorMSG = "REQ:" + this.requests + " RES:" + this.results + " ERR:" + this.errors;
-      }
-    }).catch((error) => {
-      console.error('Error getting location', error);
-      this.errorMSG = 'Error getting location. ' + error.message;
-    });
+    // this.geolocation.getCurrentPosition().then((resp) => {
+    //   console.log("resp.coords:");
+    //   console.log(resp.coords);
+    //   if (resp.coords === undefined) {
+    //     console.warn("resp.coords undefined");
+    //   } else {
+    //     this.tmpLat = resp.coords.latitude;
+    //     this.tmpLng = resp.coords.longitude;
+    //     this.accuracy = resp.coords.accuracy;
+    //     this.speed = resp.coords.speed;
+    //     if (this.tmpLat > 0 && this.tmpLng > 0
+    //       && (Math.round(this.lat * this.latLngDiffRatio) != Math.round(this.tmpLat * this.latLngDiffRatio) || Math.round(this.lng * this.latLngDiffRatio) != Math.round(this.tmpLng * this.latLngDiffRatio))
+    //     ) {
+    //       this.lat = this.tmpLat;
+    //       this.lng = this.tmpLng;
+    //       this.requests++;
+    //       this.nativeGeocoder.reverseGeocode(this.tmpLat, this.tmpLng)
+    //         .then((result: NativeGeocoderReverseResult) => {
+    //           this.results++;
+    //           console.log(result);
+    //           this.geoData = "city:" + result.city
+    //             + ", countryCode:" + result.countryCode
+    //             + ", countryName:" + result.countryName
+    //             + ", district:" + result.district
+    //             + ", houseNumber:" + result.houseNumber
+    //             + ", postalCode:" + result.postalCode
+    //             + ", street:" + result.street;
+    //           if (result.street === undefined) {
+    //             this.street = "";
+    //           } else {
+    //             this.street = result.street;
+    //           }
+    //           if (result.houseNumber === undefined) {
+    //             this.houseNumber = ""
+    //           } else {
+    //             this.houseNumber = result.houseNumber;
+    //           }
+    //           if (result.city === undefined) {
+    //             this.city = "";
+    //           } else {
+    //             this.city = result.city;
+    //           }
+    //           if (result.district === undefined) {
+    //             this.district = "";
+    //           } else {
+    //             this.district = result.district;
+    //           }
+    //           if (result.countryName === undefined) {
+    //             this.countryName = "";
+    //           } else {
+    //             this.countryName = result.countryName;
+    //           }
+    //           if (result.countryCode === undefined) {
+    //             this.countryCode = "";
+    //           } else {
+    //             this.countryCode = result.countryCode;
+    //           }
+    //           if (result.postalCode === undefined) {
+    //             this.postalCode = "";
+    //             this.address += "*";
+    //           } else {
+    //             this.postalCode = result.postalCode;
+    //             this.address = this.city + this.district + this.street + this.houseNumber;
+    //           }
+    //           this.errorMSG = "";
+    //         })
+    //         .catch((error: any) => {
+    //           this.errors++;
+    //           console.error(error);
+    //           this.errorMSG = error.message;
+    //         });
+    //     } else if (this.tmpLat == -1 || this.tmpLng == -1) {
+    //       console.error("tmpLat or tmpLng error: tmpLat:" + this.tmpLat + " tmpLng:" + this.tmpLng);
+    //       this.errorMSG = "tmpLat or tmpLng error: tmpLat:" + this.tmpLat + " tmpLng:" + this.tmpLng;
+    //     }
+    //     this.errorMSG = "REQ:" + this.requests + " RES:" + this.results + " ERR:" + this.errors;
+    //   }
+    // }).catch((error) => {
+    //   console.error('Error getting location', error);
+    //   this.errorMSG = 'Error getting location. ' + error.message;
+    // });
 
     let watch = this.geolocation.watchPosition();
     watch.subscribe((data) => {
@@ -314,7 +314,7 @@ export class LoggerPage {
       console.log(data.coords);
       if (data.coords === undefined) {
         console.warn("data.coords undefined");
-        this.lat = this.lng = this.accuracy = this.speed = -1;
+        this.tmpLat = this.tmpLng = this.accuracy = this.speed = -1;
       } else {
         this.tmpLat = data.coords.latitude;
         this.tmpLng = data.coords.longitude;
@@ -373,7 +373,22 @@ export class LoggerPage {
                 this.postalCode = "";
               } else {
                 this.postalCode = result.postalCode;
-                this.address = this.city + this.district + this.street + this.houseNumber;
+                if (
+                  this.street.endsWith("丁目")
+                ) {
+                  this.address = this.city + this.district + this.street + this.houseNumber;
+                } else if (
+                  this.street.endsWith("通り")
+                  || this.street.endsWith("号線")
+                ) {
+                  this.address = this.city + this.district + "(" + this.street + ")";
+                } else if (this.street == "Unnamed Road") {
+                  this.address = this.city + this.district;
+                } else if (this.street == "") {
+                  this.address = this.city + this.district + this.houseNumber;
+                } else {
+                  this.address = this.city + this.district + "(" + this.street + ")" + this.houseNumber;
+                }
               }
               this.errorMSG = "";
             })

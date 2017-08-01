@@ -41,7 +41,7 @@ export class HistoryPage {
   }
   ionViewDidEnter() {
     console.log('ionViewDidEnter HistoryPage');
-    this.db.getLog(this.date)
+    this.db.getLog(this.date, "asc")
       .then(data => {
         this.history = new Set();
         this.viaHistory = new Set();

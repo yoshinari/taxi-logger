@@ -155,8 +155,8 @@ export class DbProvider {
       }
     });
   }
-  getLog(date: string): Promise<any> {
-    return this.query('SELECT * FROM Logger where Date = "' + date + '" order by Number desc').then(data => {
+  getLog(date: string, order: string = "desc"): Promise<any> {
+    return this.query('SELECT * FROM Logger where Date = "' + date + '" order by Number ' + order).then(data => {
       if (data.res.rows.length > 0) {
         console.log('Rows found.');
         if (this.platform.is('cordova') && win.sqlitePlugin) {

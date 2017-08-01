@@ -1,0 +1,16 @@
+<ion-header>
+    <ion-navbar>
+        <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+        <ion-title>フィードバック</ion-title>
+    </ion-navbar>
+</ion-header>
+<ion-content padding>
+    <h3>フィードバック</h3>
+    <p>フィードバックボタンを押すと、システム情報を記入したメールの雛形が作られます。ご意見、ご感想をご記入の上、送信していただけると励みになります。</p>
+    <button ion-button icon-left (click)="feedback()">
+        <ion-icon name="mail"></ion-icon>
+        フィードバック
+    </button>
+</ion-content>

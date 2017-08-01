@@ -55,13 +55,9 @@
         <ion-row>
             <ion-col>
                 現在地: <span class="address">{{address}}</span>
-                <!-- div *ngIf="errorMSG!=''" class="warning" -->
-                <div *ngIf="errorMSG!=''" class="warning">
-                    {{errorMSG}}<br>{{geoData}}
-                </div>
             </ion-col>
         </ion-row>
-        <ion-row *ngIf="isRemindUsingTrunkRoom">
+        <ion-row class="reminder" *ngIf="isRemindUsingTrunkRoom">
             <ion-col>
                 <button ion-button block [style.color]="isUsingTrunkRoom ? 'black' : 'black'" [style.backgroundColor]="isUsingTrunkRoom ? 'lightgreen' : 'gray'" (click)="reminderTrunkReverse()">トランク</button>
             </ion-col>
@@ -109,7 +105,7 @@
     <ion-grid *ngIf="hasHistory">
         <ion-row *ngFor="let n of history" align-items-start>
             <ion-col col-1>
-                <button ion-button block class="logSelect" [disabled]="isDriving && !isBreak" (click)="showDetail($event, driveDate, n.Number)">{{n["Number"]}}</button>
+                <button ion-button block color="secondary" class="logSelect" [disabled]="isDriving && !isBreak" (click)="showDetail($event, driveDate, n.Number)">{{n["Number"]}}</button>
             </ion-col>
             <ion-col col-11 class="logCol">
                 <div>{{n["GetInTime"]}} {{n["GetInAddress"]}}</div>

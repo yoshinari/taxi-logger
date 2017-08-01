@@ -11,6 +11,7 @@ import { SettingsPage } from '../pages/settings/settings';
 import { ThanksPage } from '../pages/thanks/thanks';
 import { AboutPage } from '../pages/about/about';
 import { EventsPage } from '../pages/events/events';
+import { FeedbackPage } from '../pages/feedback/feedback';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -23,6 +24,8 @@ import { AppVersion } from '@ionic-native/app-version';
 import { Geolocation } from '@ionic-native/geolocation';
 import { NativeGeocoder } from '@ionic-native/native-geocoder';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
+import { EmailComposer } from '@ionic-native/email-composer';
+import { Device } from '@ionic-native/device';
 
 @NgModule({
   declarations: [
@@ -35,6 +38,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
     ThanksPage,
     AboutPage,
     EventsPage,
+    FeedbackPage,
   ],
   imports: [
     BrowserModule,
@@ -55,6 +59,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
     ThanksPage,
     AboutPage,
     EventsPage,
+    FeedbackPage,
   ],
   providers: [
     StatusBar,
@@ -67,6 +72,8 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
     Geolocation,
     NativeGeocoder,
     InAppBrowser,
+    EmailComposer,
+    Device,
   ]
 })
 export class AppModule {}
