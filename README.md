@@ -32,7 +32,7 @@ Taxi-Loggerを作りながら[Ionic3](http://ionicframework.com/docs/) 等を勉
 - その他、多くの機能
 
 #### 主に使っているpackage
-- [In App Browser](http://ionicframework.com/docs/native/in-app-browser/) : イベントスケジュール表示等に利用。
+- [In App Browser](http://ionicframework.com/docs/native/in-app-browser/) : Google Mapやイベントスケジュール表示等に利用。
 - [Storage](https://ionicframework.com/docs/storage/) : localStorageから切り替えた。
 #### その他
 - 

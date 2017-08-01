@@ -20,10 +20,10 @@ import { NativeGeocoder, NativeGeocoderReverseResult } from '@ionic-native/nativ
 })
 export class LoggerPage {
 
-  latLngDiffRatio:number = 5000; // 移動を判断するためのパラメータ　以前は500。数字が大きいほどセンシティブ
-  requests:number = 0;
-  results:number = 0;
-  errors:number = 0;
+  latLngDiffRatio: number = 5000; // 移動を判断するためのパラメータ　以前は500。数字が大きいほどセンシティブ
+  requests: number = 0;
+  results: number = 0;
+  errors: number = 0;
 
   driveDate: any; // Date and String
   month: any; // Number and String
@@ -35,12 +35,12 @@ export class LoggerPage {
   logData: { [key: string]: string } = {};
 
   workingTime: string;
-  working: number;
+  working: number = null;
 
   isWorking: boolean = false;
 
   drivingTime: string;
-  driving: number;
+  driving: number = null;
 
   isDriving: boolean = false;
 
@@ -96,9 +96,20 @@ export class LoggerPage {
   countryCode: string = "";
   geoData: string = "";
 
-  isTrunk: boolean = false;
+  isRemindUsingTrunkRoom: boolean = false;
+  isUsingTrunkRoom: boolean = false;
   constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, private storage: Storage, private timerProvider: TimerProvider, private pendingProvider: PendingProvider, public db: DbProvider,
     private geolocation: Geolocation, private nativeGeocoder: NativeGeocoder) {
+    this.storage.get("isRemindUsingTrunkRoom")
+      .then(
+      stat => {
+        this.isRemindUsingTrunkRoom = stat;
+      });
+    this.storage.get("isUsingTrunkRoom")
+      .then(
+      stat => {
+        this.isUsingTrunkRoom = stat;
+      });
   }
   jobCloseoutConfirm() {
     let alert = this.alertCtrl.create({
@@ -230,13 +241,13 @@ export class LoggerPage {
             .then((result: NativeGeocoderReverseResult) => {
               this.results++;
               console.log(result);
-              this.geoData = "city:"+result.city
-              +", countryCode:"+result.countryCode
-              +", countryName:"+result.countryName
-              +", district:"+result.district
-              +", houseNumber:"+result.houseNumber
-              +", postalCode:"+result.postalCode
-              +", street:"+result.street;
+              this.geoData = "city:" + result.city
+                + ", countryCode:" + result.countryCode
+                + ", countryName:" + result.countryName
+                + ", district:" + result.district
+                + ", houseNumber:" + result.houseNumber
+                + ", postalCode:" + result.postalCode
+                + ", street:" + result.street;
               if (result.street === undefined) {
                 this.street = "";
               } else {
@@ -285,7 +296,7 @@ export class LoggerPage {
           console.error("tmpLat or tmpLng error: tmpLat:" + this.tmpLat + " tmpLng:" + this.tmpLng);
           this.errorMSG = "tmpLat or tmpLng error: tmpLat:" + this.tmpLat + " tmpLng:" + this.tmpLng;
         }
-        this.errorMSG = "REQ:" + this.requests+ " RES:" + this.results + " ERR:" + this.errors;
+        this.errorMSG = "REQ:" + this.requests + " RES:" + this.results + " ERR:" + this.errors;
       }
     }).catch((error) => {
       console.error('Error getting location', error);
@@ -319,13 +330,13 @@ export class LoggerPage {
             .then((result: NativeGeocoderReverseResult) => {
               this.results++;
               console.log(result);
-              this.geoData = "city:"+result.city
-              +", countryCode:"+result.countryCode
-              +", countryName:"+result.countryName
-              +", district:"+result.district
-              +", houseNumber:"+result.houseNumber
-              +", postalCode:"+result.postalCode
-              +", street:"+result.street;
+              this.geoData = "city:" + result.city
+                + ", countryCode:" + result.countryCode
+                + ", countryName:" + result.countryName
+                + ", district:" + result.district
+                + ", houseNumber:" + result.houseNumber
+                + ", postalCode:" + result.postalCode
+                + ", street:" + result.street;
               if (result.street === undefined) {
                 this.street = "";
               } else {
@@ -358,7 +369,7 @@ export class LoggerPage {
               }
               if (result.postalCode === undefined) {
                 this.address += "*";
-                this.errorMSG = "city:"+result.city+" district:" + this.district + " street:"+this.street+ " houseNumber:"+ this.houseNumber;
+                this.errorMSG = "city:" + result.city + " district:" + this.district + " street:" + this.street + " houseNumber:" + this.houseNumber;
                 this.postalCode = "";
               } else {
                 this.postalCode = result.postalCode;
@@ -367,7 +378,7 @@ export class LoggerPage {
               this.errorMSG = "";
             })
             .catch((error: any) => {
-               this.errors++;
+              this.errors++;
               console.error(error);
               this.errorMSG = error.message;
             });
@@ -375,7 +386,7 @@ export class LoggerPage {
           console.error("tmpLat or tmpLng error: tmpLat:" + this.tmpLat + " tmpLng:" + this.tmpLng);
           this.errorMSG = "tmpLat or tmpLng error: tmpLat:" + this.tmpLat + " tmpLng:" + this.tmpLng;
         }
-            this.errorMSG = "REQ:" + this.requests+ " RES:" + this.results + " ERR:" + this.errors;
+        this.errorMSG = "REQ:" + this.requests + " RES:" + this.results + " ERR:" + this.errors;
       }
     });
   }
@@ -439,24 +450,21 @@ export class LoggerPage {
     this.isDriving = true;
   }
   stopDrivingTime(isAllReset: boolean = true) {
-    console.log("Stop Driving Time");
-    clearInterval(this.driving);
-    this.isDriving = false;
-    this.driving = null;
-    this.resetTimer("drivingStartTime");
-    this.drivingTime = "00:00:00";
-    if (isAllReset) {
-      console.log("All Reset....");
-      clearInterval(this.working);
-      this.resetTimer("elapsedBreak");
-      this.elapsedBreakTime = "00:00:00";
-      this.resetTimer("working");
-      this.workingTime = "00:00:00";
-      this.working = null;
+    if (this.drivingTime != "00:00:00") {
+      clearInterval(this.driving);
+      this.isDriving = false;
+      this.driving = null;
+      this.resetTimer("drivingStartTime");
+      this.drivingTime = "00:00:00";
+      if (isAllReset) {
+        clearInterval(this.working);
+        this.resetTimer("elapsedBreak");
+        this.elapsedBreakTime = "00:00:00";
+        this.resetTimer("working");
+        this.workingTime = "00:00:00";
+        this.working = null;
+      }
     }
-
-    console.log("driving:" + this.driving);
-    console.log("working:" + this.working);
   }
   // 休憩時間
   breakTimer = () => {
@@ -471,8 +479,7 @@ export class LoggerPage {
     // 総休憩時間をセットする
     this.loadElapsedBreakTime(this.breakTime);
     if (this.breakTime) {
-      var hms = this.breakTime.split(':');
-      if (Number(hms[1]) >= 15 && this.isDriving) { // 15分以上連続して休憩したら、連続走行時間をリセットする。
+      if (this.breakTime >= "00:15:00") {  // 15分以上連続して休憩したら、連続走行時間をリセットする。
         this.stopDrivingTime(false);
       }
     }
@@ -493,10 +500,10 @@ export class LoggerPage {
     this.saveElapsedBreak(this.breakTime);
     this.resetTimer("breakStartTime");
     this.breakTime = "00:00:00";
-    // if (!this.isDriving) {
+    if (!this.isDriving || this.isDriving === null) {
       console.log("call startDrivingTime");
       this.startDrivingTime(false);
-    // }
+    }
   }
   resetStorage() {
     this.storage.keys()
@@ -721,7 +728,8 @@ export class LoggerPage {
     console.log("number:" + number);
     this.navCtrl.push('DetailPage', { date: date, number: number });
   }
-  reminderReverse() {
-    this.isTrunk = !this.isTrunk;
+  reminderTrunkReverse() {
+    this.isUsingTrunkRoom = !this.isUsingTrunkRoom;
+    this.storage.set("isUsingTrunkRoom", this.isUsingTrunkRoom);
   }
 }

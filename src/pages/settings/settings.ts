@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Storage } from '@ionic/storage';
 
 /**
  * Generated class for the SettingsPage page.
@@ -13,12 +14,26 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   templateUrl: 'settings.html',
 })
 export class SettingsPage {
-
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  isRemindUsingTrunkRoom: boolean = false;
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    private storage: Storage
+  ) {
+    this.storage.get("isRemindUsingTrunkRoom")
+      .then(
+      stat => {
+        this.isRemindUsingTrunkRoom = stat;
+      });
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad SettingsPage');
+  }
+  updateUsingTrunkRoom() {
+    console.log('updateUsingTrunkRoom:');
+    console.log('isRemindUsingTrunkRoom:' + this.isRemindUsingTrunkRoom);
+    this.storage.set("isRemindUsingTrunkRoom", this.isRemindUsingTrunkRoom);
   }
 
 }

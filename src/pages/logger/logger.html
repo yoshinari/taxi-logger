@@ -61,9 +61,9 @@
                 </div>
             </ion-col>
         </ion-row>
-        <ion-row>
+        <ion-row *ngIf="isRemindUsingTrunkRoom">
             <ion-col>
-                <button ion-button block [style.color]="isTrunk ? 'black' : 'black'" [style.backgroundColor]="isTrunk ? 'yellow' : 'gray'" (click)="reminderReverse()">トランク</button>
+                <button ion-button block [style.color]="isUsingTrunkRoom ? 'black' : 'black'" [style.backgroundColor]="isUsingTrunkRoom ? 'lightgreen' : 'gray'" (click)="reminderTrunkReverse()">トランク</button>
             </ion-col>
         </ion-row>
     </ion-grid>

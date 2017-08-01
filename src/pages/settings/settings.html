@@ -10,7 +10,18 @@
 <ion-content padding>
     <h3>設定</h3>
 
-    <p class="warning">
-        未実装
-    </p>
+    チェックした項目をTaxi Logger画面に表示します。
+    <ion-item>
+        <ion-label>GPSの高度の表示</ion-label>
+        <ion-checkbox disabled="true"></ion-checkbox>
+    </ion-item>
+    <ion-item>
+        <ion-label>トランク使用中のリマインダ</ion-label>
+        <ion-checkbox [(ngModel)]="isRemindUsingTrunkRoom" (ionChange)="updateUsingTrunkRoom()"></ion-checkbox>
+    </ion-item>
+
+    <ion-item>
+        <ion-label>BGMの再生/停止</ion-label>
+        <ion-checkbox disabled="true"></ion-checkbox>
+    </ion-item>
 </ion-content>
