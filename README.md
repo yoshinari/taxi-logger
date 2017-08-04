@@ -25,8 +25,11 @@ Taxi-Loggerを作りながら[Ionic3](http://ionicframework.com/docs/) 等を勉
     - 乗車、降車場所を変更したり、メモを追加出来ます。
     - 不要な乗務履歴を削除できます。
     - Google Mapで経路を表示できます。
+    - Twitter純正アプリがインストールされていれば、経路を元にTweetできます。
 - イベントスケジュール:
     - 取り敢えずはハードコーディング
+- 設定
+    - トランク利用のリマインダーボタンを表示できます。他のボタンとロジカルに連携します。
 ## まだ出来ないこと
 - 設定
 - その他、多くの機能
@@ -34,6 +37,7 @@ Taxi-Loggerを作りながら[Ionic3](http://ionicframework.com/docs/) 等を勉
 #### 主に使っているpackage
 - [In App Browser](http://ionicframework.com/docs/native/in-app-browser/) : Google Mapやイベントスケジュール表示等に利用。
 - [Storage](https://ionicframework.com/docs/storage/) : localStorageから切り替えた。
+https://stackoverflow.com/questions/40918372/android-accept-the-license-agreements-of-sdk-google-repository-android-support
 #### その他
 - 
 ## デモ

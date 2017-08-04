@@ -26,6 +26,7 @@ import { NativeGeocoder } from '@ionic-native/native-geocoder';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { EmailComposer } from '@ionic-native/email-composer';
 import { Device } from '@ionic-native/device';
+import { SocialSharing } from '@ionic-native/social-sharing';
 
 @NgModule({
   declarations: [
@@ -74,6 +75,7 @@ import { Device } from '@ionic-native/device';
     InAppBrowser,
     EmailComposer,
     Device,
+    SocialSharing,
   ]
 })
 export class AppModule {}

@@ -9,19 +9,31 @@
 
 <ion-content padding>
     <h3>設定</h3>
-
+    <h4>Taxi Logger画面設定</h4>
     チェックした項目をTaxi Logger画面に表示します。
     <ion-item>
-        <ion-label>GPSの高度の表示</ion-label>
-        <ion-checkbox disabled="true"></ion-checkbox>
-    </ion-item>
-    <ion-item>
-        <ion-label>トランク使用中のリマインダ</ion-label>
-        <ion-checkbox [(ngModel)]="isRemindUsingTrunkRoom" (ionChange)="updateUsingTrunkRoom()"></ion-checkbox>
+        <ion-label>GPSの高度の表示
+            <p class="warning">端末が対応していないと0mになります。</p>
+        </ion-label>
+        <ion-checkbox [(ngModel)]="isShowAltitude" (ionChange)="updateShowAltitude()"></ion-checkbox>
     </ion-item>
 
     <ion-item>
-        <ion-label>BGMの再生/停止</ion-label>
+        <ion-label>トランク使用中のリマインダ</ion-label>
+        <ion-checkbox [(ngModel)]="isRemindUsingTrunkRoom" [disabled]="isRemindUsingTrunkRoom && isUsingTrunkRoom" (ionChange)="updateUsingTrunkRoom()"></ion-checkbox>
+    </ion-item>
+    <ion-item>
+        <ion-label>BGMの再生/停止
+            <p class="warning">可能であれば実装します</p>
+        </ion-label>
         <ion-checkbox disabled="true"></ion-checkbox>
+    </ion-item>
+    <h4>連続走行時間</h4>
+    休憩を押すと直ぐに連続走行時間をリセットするか、15分以上の休憩でリセットするかを選択します。
+    <ion-item>
+        <ion-label>15分以上の休憩でリセットする
+            <p class="warning">未実装</p>
+        </ion-label>
+        <ion-checkbox checked disabled="true"></ion-checkbox>
     </ion-item>
 </ion-content>

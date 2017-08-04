@@ -63,6 +63,12 @@
                         <button ion-button block color="secondary" (click)="updateData($event,date,number);">データを修正する</button>
                     </ion-col>
                 </ion-row>
+                <ion-row>
+                    <ion-col>
+                        <button ion-button block color="default" (click)="tweetData($event,date,number);"><ion-icon name="twitter"></ion-icon>Tweetする</button>
+                        <p class="waring">住所や地図を含め、お客様の個人情報にならないように注意してください。</p>
+                    </ion-col>
+                </ion-row>
             </ion-col>
         </ion-row>
     </ion-grid>

@@ -15,6 +15,8 @@ import { Storage } from '@ionic/storage';
 })
 export class SettingsPage {
   isRemindUsingTrunkRoom: boolean = false;
+  isUsingTrunkRoom: boolean = false;
+  isShowAltitude: boolean = false;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -25,6 +27,18 @@ export class SettingsPage {
       stat => {
         this.isRemindUsingTrunkRoom = stat;
       });
+      // isUsingTrunkRoom
+      this.storage.get("isUsingTrunkRoom")
+      .then(
+      stat => {
+        this.isUsingTrunkRoom = stat;
+      });
+      // isShoAltitude
+      this.storage.get("isShowAltitude")
+      .then(
+      stat => {
+        this.isShowAltitude = stat;
+      });
   }
 
   ionViewDidLoad() {
@@ -34,6 +48,9 @@ export class SettingsPage {
     console.log('updateUsingTrunkRoom:');
     console.log('isRemindUsingTrunkRoom:' + this.isRemindUsingTrunkRoom);
     this.storage.set("isRemindUsingTrunkRoom", this.isRemindUsingTrunkRoom);
+  }
+  updateShowAltitude(){
+    this.storage.set("isShowAltitude", this.isShowAltitude);
   }
 
 }

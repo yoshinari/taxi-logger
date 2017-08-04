@@ -45,21 +45,24 @@
             </ion-col>
             <ion-col col-4>
                 <span *ngIf="!isDriving && !isBreak"><button block ion-button color="danger" [disabled]="ready != requires" (click)="startDrivingTime()">乗務開始</button></span>
-                <span *ngIf="isDriving && !isBreak"><button block ion-button color="danger" [disabled]="ready != requires||!isGetIn" (click)="jobCloseoutConfirm()">乗務終了</button></span>
-                <span *ngIf="!isBreak && isDriving"><button block ion-button [disabled]="ready != requires||!isGetIn" (click)="startBreakTime()">休憩開始</button></span>
+                <span *ngIf="isDriving"><button block ion-button color="danger" [disabled]="isRemindUsingTrunkRoom && isUsingTrunkRoom || isBreak || ready != requires||!isGetIn" (click)="jobCloseoutConfirm()">乗務終了</button></span>
+                <span *ngIf="!isBreak"><button block ion-button [disabled]="isRemindUsingTrunkRoom && isUsingTrunkRoom || !isDriving || ready != requires||!isGetIn" (click)="startBreakTime()">休憩開始</button></span>
                 <span *ngIf="isBreak"><button block ion-button [disabled]="ready != requires||!isGetIn" (click)="stopBreakTime()">休憩終了</button></span>
             </ion-col>
         </ion-row>
     </ion-grid>
     <ion-grid>
         <ion-row>
-            <ion-col>
-                現在地: <span class="address">{{address}}</span>
+            <ion-col class="address">
+                {{address}}
             </ion-col>
         </ion-row>
-        <ion-row class="reminder" *ngIf="isRemindUsingTrunkRoom">
-            <ion-col>
-                <button ion-button block [style.color]="isUsingTrunkRoom ? 'black' : 'black'" [style.backgroundColor]="isUsingTrunkRoom ? 'lightgreen' : 'gray'" (click)="reminderTrunkReverse()">トランク</button>
+        <ion-row class="reminder" *ngIf="isShowAltitude || isRemindUsingTrunkRoom">
+            <ion-col *ngIf="isShowAltitude" class="altitude">
+                高度:{{altitude}}m
+            </ion-col>
+            <ion-col *ngIf="isRemindUsingTrunkRoom">
+                <button ion-button block [disabled]="isBreak" [style.color]="isUsingTrunkRoom ? 'black' : 'black'" [style.backgroundColor]="isUsingTrunkRoom ? 'lightgreen' : 'gray'" (click)="reminderTrunkReverse()">トランク</button>
             </ion-col>
         </ion-row>
     </ion-grid>
@@ -69,12 +72,12 @@
                 <button ion-button block color="dark" [disabled]="ready != requires||!isCancel" (click)="removePendingData()">取消</button>
             </ion-col>
             <ion-col col-9 class="statusButton">
-                <button ion-button block color="danger" [disabled]="ready != requires||!isRegist" (click)="registPendingToDB()">登録</button>
+                <button ion-button block color="danger" [disabled]="isRemindUsingTrunkRoom && isUsingTrunkRoom || ready != requires||!isRegist" (click)="registPendingToDB()">登録</button>
             </ion-col>
         </ion-row>
         <ion-row>
             <ion-col col-4 class="statusButton">
-                <button ion-button block [disabled]="ready != requires||!isGetIn" (click)="updatePending('GetIn')">乗車</button>
+                <button ion-button block [disabled]="isBreak || ready != requires||!isGetIn" (click)="updatePending('GetIn')">乗車</button>
             </ion-col>
             <ion-col col-4 class="statusButton">
                 <button ion-button block [disabled]="ready != requires||!isVia" (click)="updatePending('Via')">経由</button>
