@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController, Platform } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { TimerProvider } from '../../providers/timer/timer';
 import { PendingProvider } from '../../providers/pending/pending';
 import { DbProvider } from '../../providers/db/db';
 import { Geolocation } from '@ionic-native/geolocation';
 import { NativeGeocoder, NativeGeocoderReverseResult } from '@ionic-native/native-geocoder';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
 
 /**
  * Generated class for the LoggerPage page.
@@ -20,10 +21,13 @@ import { NativeGeocoder, NativeGeocoderReverseResult } from '@ionic-native/nativ
 })
 export class LoggerPage {
 
+  expiredDate: string = "2017-08-31"; // このアプリの利用期限の設定 : この期限を過ぎると新しいレコードを登録できない。
   latLngDiffRatio: number = 5000; // 移動を判断するためのパラメータ　以前は500。数字が大きいほどセンシティブ
   requests: number = 0;
   results: number = 0;
   errors: number = 0;
+
+  isExpired: boolean = false;
 
   driveDate: any; // Date and String
   month: any; // Number and String
@@ -88,6 +92,7 @@ export class LoggerPage {
   accuracy: number;
   speed: number;
   address: string = "";
+  shortAddress: string = "";
   street: string = "";
   houseNumber: string = "";
   postalCode: string = "";
@@ -101,8 +106,33 @@ export class LoggerPage {
   isUsingTrunkRoom: boolean = false;
   isShowAltitude: boolean = false;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, private storage: Storage, private timerProvider: TimerProvider, private pendingProvider: PendingProvider, public db: DbProvider,
-    private geolocation: Geolocation, private nativeGeocoder: NativeGeocoder) {
+  browser: any;
+
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    private alertCtrl: AlertController,
+    private storage: Storage,
+    private timerProvider: TimerProvider,
+    private pendingProvider: PendingProvider,
+    public db: DbProvider,
+    private geolocation: Geolocation,
+    private nativeGeocoder: NativeGeocoder,
+    private iab: InAppBrowser,
+    private platform: Platform,
+  ) {
+    // 使用期限の設定
+    // expiredDate: string = "2017-08-05"; // このアプリの利用期限の設定 : この期限を過ぎると新しいレコードを登録できない。
+    //   isExpired: boolean = false;
+    let date = new Date();
+    let today = date.getFullYear() + "-" + ("0" + (date.getMonth() + 1)).substr(-2) + "-" + ("0" + date.getDate()).substr(-2);
+    console.log("today:" + today);
+    if (today > this.expiredDate) {
+      this.isExpired = true;
+      console.log("expired");
+    }
+
+
     this.storage.get("isRemindUsingTrunkRoom")
       .then(
       stat => {
@@ -313,6 +343,7 @@ export class LoggerPage {
                 } else {
                   this.address = this.city + this.district + "(" + this.street + ")" + this.houseNumber;
                 }
+                this.shortAddress = this.city + this.district;
               }
               this.errorMSG = "";
             })
@@ -528,7 +559,7 @@ export class LoggerPage {
   }
   updatePending(key = null) {
     if (key != null) {
-      this.pending = this.pendingProvider.updatePending(this.pending, key, this.lat, this.lng, this.countryCode, this.postalCode, this.address);
+      this.pending = this.pendingProvider.updatePending(this.pending, key, this.lat, this.lng, this.countryCode, this.postalCode, this.address, this.shortAddress);
       this.storage.set("pending", this.pending);
     } else if (Object.keys(this.pending).length === 0) {
       this.pending = this.pendingProvider.initPending();
@@ -670,5 +701,12 @@ export class LoggerPage {
   reminderTrunkReverse() {
     this.isUsingTrunkRoom = !this.isUsingTrunkRoom;
     this.storage.set("isUsingTrunkRoom", this.isUsingTrunkRoom);
+  }
+
+  openUrl(url) {
+    this.platform.ready().then(() => {
+      this.browser = this.iab.create(url);
+      this.browser.show();
+    });
   }
 }

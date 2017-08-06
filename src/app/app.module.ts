@@ -27,6 +27,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { EmailComposer } from '@ionic-native/email-composer';
 import { Device } from '@ionic-native/device';
 import { SocialSharing } from '@ionic-native/social-sharing';
+import { AppAvailability } from '@ionic-native/app-availability';
 
 @NgModule({
   declarations: [
@@ -76,6 +77,7 @@ import { SocialSharing } from '@ionic-native/social-sharing';
     EmailComposer,
     Device,
     SocialSharing,
+    AppAvailability,
   ]
 })
 export class AppModule {}

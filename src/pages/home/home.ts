@@ -1,4 +1,4 @@
-import { Component, OnInit  } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IonicPage, NavController, Platform } from 'ionic-angular';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 
@@ -8,11 +8,11 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
   templateUrl: 'home.html'
 })
 export class HomePage implements OnInit {
-  browser:any;
+  browser: any;
   constructor(
     public navCtrl: NavController,
-    private iab: InAppBrowser, 
-    private platform: Platform
+    private iab: InAppBrowser,
+    private platform: Platform,
   ) {
 
   }
@@ -25,7 +25,7 @@ export class HomePage implements OnInit {
   ngOnInit() {
   }
 
-  openUrl(url){
+  openUrl(url) {
     this.platform.ready().then(() => {
       this.browser = this.iab.create(url);
       this.browser.show();

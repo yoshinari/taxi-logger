@@ -30,6 +30,7 @@ export class PendingProvider {
     this.pending["GetInCountryCode"] = "";
     this.pending["GetInPostalCode"] = "";
     this.pending["GetInAddress"] = "";
+    this.pending["GetInShortAddress"] = "";
     this.pending["GetOutDate"] = "";
     this.pending["GetOutTime"] = "";
     this.pending["GetOutLat"] = "";
@@ -37,6 +38,7 @@ export class PendingProvider {
     this.pending["GetOutCountryCode"] = "";
     this.pending["GetOutPostalCode"] = "";
     this.pending["GetOutAddress"] = "";
+    this.pending["GetOutShortAddress"] = "";
     this.pending["ViaData"] = [];
     this.pending["GetInMemo"] = "";
     this.pending["GetOutMemo"] = "";
@@ -46,7 +48,7 @@ export class PendingProvider {
   public isPending(key: string = null) {
     return true;
   }
-  public updatePending(pending, key, lat, lng, countryCode, postalCode, address) {
+  public updatePending(pending, key, lat, lng, countryCode, postalCode, address, shortAddress) {
     var date = new Date();
     this.date = date.getFullYear() + '-'
       + ("0" + (date.getMonth() + 1)).substr(-2) + '-'
@@ -63,6 +65,7 @@ export class PendingProvider {
         pending["GetInCountryCode"] = countryCode;
         pending["GetInPostalCode"] = postalCode;
         pending["GetInAddress"] = address;
+        pending["GetInShortAddress"] = shortAddress;
         pending["GetInMemo"] = "";
         break;
       case 'GetOut':
@@ -73,10 +76,11 @@ export class PendingProvider {
         pending["GetOutCountryCode"] = countryCode;
         pending["GetOutPostalCode"] = postalCode;
         pending["GetOutAddress"] = address;
+        pending["GetOutShortAddress"] = shortAddress;
         pending["GetOutMemo"] = "";
         break;
       case 'Via':
-        pending["ViaData"].push({ date: this.date, time: this.time, lat: lat, lng: lng, country: countryCode, postal: postalCode, address: address,memo: "" });
+        pending["ViaData"].push({ date: this.date, time: this.time, lat: lat, lng: lng, country: countryCode, postal: postalCode, address: address, shortAddress: shortAddress, memo: "" });
     }
     console.log(pending);
     return pending;

@@ -25,7 +25,7 @@ Taxi-Loggerを作りながら[Ionic3](http://ionicframework.com/docs/) 等を勉
     - 乗車、降車場所を変更したり、メモを追加出来ます。
     - 不要な乗務履歴を削除できます。
     - Google Mapで経路を表示できます。
-    - Twitter純正アプリがインストールされていれば、経路を元にTweetできます。
+    - Twitter純正アプリ/TweetCaster/Lineアプリ/Facebook Messengerアプリがインストールされていれば、経路を元にしたメッセージを送れます。
 - イベントスケジュール:
     - 取り敢えずはハードコーディング
 - 設定
@@ -41,6 +41,5 @@ https://stackoverflow.com/questions/40918372/android-accept-the-license-agreemen
 #### その他
 - 
 ## デモ
-[Ionic View](https://view.ionic.io)をインストールすると、このアプリを使えます。ただし、タイミングによってはGit Hubのものとバージョンが異なり、正しく動かない場合も有ります。また、実機ではないためか、場所の取得は出来ません。残念。
-app_idは 005a2895 です。
+Android版のみになりますが、[taxi-loggerアプリのサイト](https://itaxi.tokyo/app/taxi-logger/)にて公開予定です。
 

@@ -67,6 +67,7 @@ export class DbProvider {
                          GetInCountryCode TEXT,
                          GetInPostalCode TEXT,
                          GetInAddress TEXT,
+                         GetInShortAddress TEXT,
                          GetInMemo TEXT,
                          GetOutDate TEXT NOT NULL,
                          GetOutTime TEXT NOT NULL,
@@ -75,6 +76,7 @@ export class DbProvider {
                          GetOutCountryCode TEXT,
                          GetOutPostalCode TEXT,
                          GetOutAddress TEXT,
+                         GetOutShortAddress TEXT,
                          GetOutMemo TEXT,
                          ViaData TEXT,
                          ViaMemo TEXT,
@@ -102,13 +104,13 @@ export class DbProvider {
         this.number = 1;
       }
       var queryString = 'INSERT INTO Logger '
-        + '(Date,Number,GetInDate,GetInTime,GetInLat,GetInLng,GetInCountryCode,GetInPostalCode,GetInAddress,GetInMemo,'
-        + 'GetOutDate,GetOutTime,GetOutLat,GetOutLng,GetOutCountryCode,GetOutPostalCode,GetOutAddress,GetOutMemo,ViaData,ViaMemo)'
+        + '(Date,Number,GetInDate,GetInTime,GetInLat,GetInLng,GetInCountryCode,GetInPostalCode,GetInAddress,GetInShortAddress,GetInMemo,'
+        + 'GetOutDate,GetOutTime,GetOutLat,GetOutLng,GetOutCountryCode,GetOutPostalCode,GetOutAddress,GetOutShortAddress,GetOutMemo,ViaData,ViaMemo)'
         + ' VALUES('
         + '"' + date + '", '
         + this.number + ', '
-        + '"' + pending.GetInDate + '", "' + pending.GetInTime + '", "' + pending.GetInLat + '", "' + pending.GetInLng + '", "' + pending.GetInCountryCode + '", "' + pending.GetInPostalCode + '", "' + pending.GetInAddress + '", "' + pending.GetInMemo + '", '
-        + '"' + pending.GetOutDate + '", "' + pending.GetOutTime + '", "' + pending.GetOutLat + '", "' + pending.GetOutLng + '", "' + pending.GetOutCountryCode + '", "' + pending.GetOutPostalCode + '", "' + pending.GetOutAddress + '", "' + pending.GetOutMemo + '", '
+        + '"' + pending.GetInDate + '", "' + pending.GetInTime + '", "' + pending.GetInLat + '", "' + pending.GetInLng + '", "' + pending.GetInCountryCode + '", "' + pending.GetInPostalCode + '", "' + pending.GetInAddress + '", "' + pending.GetInShortAddress + '", "' + pending.GetInMemo + '", '
+        + '"' + pending.GetOutDate + '", "' + pending.GetOutTime + '", "' + pending.GetOutLat + '", "' + pending.GetOutLng + '", "' + pending.GetOutCountryCode + '", "' + pending.GetOutPostalCode + '", "' + pending.GetOutAddress + '", "' + pending.GetOutShortAddress + '", "' + pending.GetOutMemo + '", '
         + "'" + JSON.stringify(pending.ViaData) + "'" + ', "' + pending.ViaMemo + '"'
         + ')';
       console.log(queryString);

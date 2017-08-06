@@ -50,7 +50,7 @@
                 </ion-row>
                 <ion-row>
                     <ion-col>
-                        <button ion-button block (click)="showViaGoogleMap($event,date,number)">経路をGoogle Mapで表示する</button>
+                        <button ion-button block (click)="showViaGoogleMap($event,date,number)"><ion-icon name="map"></ion-icon>　経路をGoogle Mapで表示する</button>
                     </ion-col>
                 </ion-row>
                 <ion-row>
@@ -60,13 +60,30 @@
                 </ion-row>
                 <ion-row>
                     <ion-col>
-                        <button ion-button block color="secondary" (click)="updateData($event,date,number);">データを修正する</button>
+                        <button ion-button block color="danger" (click)="updateData($event,date,number);"><ion-icon name="paper"></ion-icon>　データを修正する</button>
                     </ion-col>
                 </ion-row>
                 <ion-row>
                     <ion-col>
-                        <button ion-button block color="default" (click)="tweetData($event,date,number);"><ion-icon name="twitter"></ion-icon>Tweetする</button>
-                        <p class="waring">住所や地図を含め、お客様の個人情報にならないように注意してください。</p>
+                        <ion-row>
+                            <ion-col *ngIf="isTwitter">
+                                <button ion-button block color="default" (click)="shareData($event,date,number,'Twitter', 'com.twitter.android');"><ion-icon name="share"></ion-icon>　Twitter</button>
+                            </ion-col>
+                            <ion-col *ngIf="isTweetCaster">
+                                <button ion-button block color="default" (click)="shareData($event,date,number,'TweetCaster', 'com.handmark.tweetcaster');"><ion-icon name="share"></ion-icon>　TweetCaster</button>
+                            </ion-col>
+                            <ion-col *ngIf="isLine">
+                                <button ion-button block color="default" (click)="shareData($event,date,number,'Line', 'jp.naver.line.android');"><ion-icon name="share"></ion-icon>　Line</button>
+                            </ion-col>
+                            <!-- <ion-col *ngIf="isFacebook">
+                                <button ion-button block color="default" (click)="shareData($event,date,number,'Facebook', 'com.facebook.katana');"><ion-icon name="share"></ion-icon>　Facebook</button>
+                            </ion-col> -->
+                            <ion-col *ngIf="isFacebookMessenger">
+                                <button ion-button block color="default" (click)="shareData($event,date,number,'Facebook', 'com.facebook.orca');"><ion-icon name="share"></ion-icon>　Facebook Messenger</button>
+                            </ion-col>
+                        </ion-row>
+                        <p>事前にGoogle Mapの表示内容を画像として保存しておくと、メッセージアプリによっては画像を添付できます。</p>
+                        <p class="warning">住所や地図を含め、お客様の個人情報を公開しないよう注意してください。</p>
                     </ion-col>
                 </ion-row>
             </ion-col>

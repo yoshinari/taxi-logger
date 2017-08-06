@@ -3,123 +3,133 @@
         <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-        <ion-title>Taxi Logger</ion-title>
+        <ion-title>Taxi Logger<br><button ion-button clear (click)="openUrl('https://itaxi.tokyo/app/taxi-logger/')">{{expiredDate}}まで記録可能</button>
+        </ion-title>
     </ion-navbar>
 </ion-header>
 <ion-content padding>
-    <p *ngIf="ready != requires" text-center class="warning">
-        準備中です。暫くお待ちください。({{ready}}/{{requires}})
-    </p>
-    <ion-grid>
-        <ion-row>
-            <ion-col class="clock">
-                {{clock["gengou"]}}{{clock["clock"]}}
-            </ion-col>
-        </ion-row>
-        <ion-row>
-            <ion-col col-6>
-                乗務日<br>
-                <ion-item>
-                    <ion-datetime displayFormat="YYYY-MM-DD" [(ngModel)]="driveDate" (ngModelChange)="changeStrageValue('DriveDate', $event)"></ion-datetime>
-                </ion-item>
-            </ion-col>
-            <ion-col col-3>
-                出庫時刻<br>
-                <ion-item>
-                    <ion-datetime displayFormat="HH:mm" [(ngModel)]="CarUnloadingTime" (ngModelChange)="changeStrageValue('CarUnloadingTime', $event)" class="myStyle"></ion-datetime>
-                </ion-item>
-            </ion-col>
-            <ion-col col-3>
-                帰庫予定<br>
-                <ion-item>
-                    <ion-datetime displayFormat="HH:mm" [(ngModel)]="CarReturnBoxTime" (ngModelChange)="changeStrageValue('CarReturnBoxTime', $event)" class="myStyle"></ion-datetime>
-                </ion-item>
-            </ion-col>
-        </ion-row>
-        <ion-row>
-            <ion-col col-8 class="timer">
-                <div *ngIf="isDriving || isBreak">経過時間 : {{workingTime}}</div>
-                <div *ngIf="isDriving || isBreak">連続走行 : {{drivingTime}}</div>
-                <div *ngIf="isBreak">休憩時間 : {{breakTime}}<br></div>
-                <div *ngIf="isDriving || isBreak">総休憩 : {{elapsedBreakTime}}</div>
-            </ion-col>
-            <ion-col col-4>
-                <span *ngIf="!isDriving && !isBreak"><button block ion-button color="danger" [disabled]="ready != requires" (click)="startDrivingTime()">乗務開始</button></span>
-                <span *ngIf="isDriving"><button block ion-button color="danger" [disabled]="isRemindUsingTrunkRoom && isUsingTrunkRoom || isBreak || ready != requires||!isGetIn" (click)="jobCloseoutConfirm()">乗務終了</button></span>
-                <span *ngIf="!isBreak"><button block ion-button [disabled]="isRemindUsingTrunkRoom && isUsingTrunkRoom || !isDriving || ready != requires||!isGetIn" (click)="startBreakTime()">休憩開始</button></span>
-                <span *ngIf="isBreak"><button block ion-button [disabled]="ready != requires||!isGetIn" (click)="stopBreakTime()">休憩終了</button></span>
-            </ion-col>
-        </ion-row>
-    </ion-grid>
-    <ion-grid>
-        <ion-row>
-            <ion-col class="address">
-                {{address}}
-            </ion-col>
-        </ion-row>
-        <ion-row class="reminder" *ngIf="isShowAltitude || isRemindUsingTrunkRoom">
-            <ion-col *ngIf="isShowAltitude" class="altitude">
-                高度:{{altitude}}m
-            </ion-col>
-            <ion-col *ngIf="isRemindUsingTrunkRoom">
-                <button ion-button block [disabled]="isBreak" [style.color]="isUsingTrunkRoom ? 'black' : 'black'" [style.backgroundColor]="isUsingTrunkRoom ? 'lightgreen' : 'gray'" (click)="reminderTrunkReverse()">トランク</button>
-            </ion-col>
-        </ion-row>
-    </ion-grid>
-    <ion-grid *ngIf="isDriving && !isBreak">
-        <ion-row>
-            <ion-col col-3 class="statusButton">
-                <button ion-button block color="dark" [disabled]="ready != requires||!isCancel" (click)="removePendingData()">取消</button>
-            </ion-col>
-            <ion-col col-9 class="statusButton">
-                <button ion-button block color="danger" [disabled]="isRemindUsingTrunkRoom && isUsingTrunkRoom || ready != requires||!isRegist" (click)="registPendingToDB()">登録</button>
-            </ion-col>
-        </ion-row>
-        <ion-row>
-            <ion-col col-4 class="statusButton">
-                <button ion-button block [disabled]="isBreak || ready != requires||!isGetIn" (click)="updatePending('GetIn')">乗車</button>
-            </ion-col>
-            <ion-col col-4 class="statusButton">
-                <button ion-button block [disabled]="ready != requires||!isVia" (click)="updatePending('Via')">経由</button>
-            </ion-col>
-            <ion-col col-4 class="statusButton">
-                <button ion-button block [disabled]="ready != requires||!isGetOut" (click)="updatePending('GetOut')">降車</button>
-            </ion-col>
-        </ion-row>
-        <!-- 登録中データの表示 -->
-        <ion-row *ngIf="isDriving && !isBreak">
-            <ion-col col-4 *ngIf="pending['GetInTime']" class="wip">
-                {{pending["GetInTime"]}}<br> <span *ngIf="pending['GetInTime']">{{pending["GetInAddress"]}}</span>
-            </ion-col>
-            <ion-col col-4 *ngIf="pending['GetOutTime'] || (pending['ViaData'] && pending['ViaData'][0])" class="wip">
-                <div *ngFor="let via of pending['ViaData']">
-                    {{via.time}}<br> {{via.address}}
-                </div>
-            </ion-col>
-            <ion-col col-4 *ngIf="pending['GetOutTime']" class="wip">
-                {{pending["GetOutTime"]}}<br> <span *ngIf="pending['GetOutTime']">{{pending["GetOutAddress"]}}</span>
-            </ion-col>
-        </ion-row>
-    </ion-grid>
-    <!-- LOG -->
-    <div *ngIf="!hasHistory" text-center class="warning">
-        {{driveDate}}の乗務記録はありません。
-    </div>
-    <ion-grid *ngIf="hasHistory">
-        <ion-row *ngFor="let n of history" align-items-start>
-            <ion-col col-1>
-                <button ion-button block color="secondary" class="logSelect" [disabled]="isDriving && !isBreak" (click)="showDetail($event, driveDate, n.Number)">{{n["Number"]}}</button>
-            </ion-col>
-            <ion-col col-11 class="logCol">
-                <div>{{n["GetInTime"]}} {{n["GetInAddress"]}}</div>
-                <span *ngFor="let x of viaHistory">
-                    <div *ngIf="n['Number'] == x['history']">
+    <div *ngIf="!isExpired">
+        <p *ngIf="ready != requires" text-center class="warning">
+            準備中です。暫くお待ちください。({{ready}}/{{requires}})
+        </p>
+        <ion-grid>
+            <ion-row>
+                <ion-col class="clock">
+                    {{clock["gengou"]}}{{clock["clock"]}}
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col col-6>
+                    乗務日<br>
+                    <ion-item>
+                        <ion-datetime displayFormat="YYYY-MM-DD" [(ngModel)]="driveDate" (ngModelChange)="changeStrageValue('DriveDate', $event)"></ion-datetime>
+                    </ion-item>
+                </ion-col>
+                <ion-col col-3>
+                    出庫時刻<br>
+                    <ion-item>
+                        <ion-datetime displayFormat="HH:mm" [(ngModel)]="CarUnloadingTime" (ngModelChange)="changeStrageValue('CarUnloadingTime', $event)" class="myStyle"></ion-datetime>
+                    </ion-item>
+                </ion-col>
+                <ion-col col-3>
+                    帰庫予定<br>
+                    <ion-item>
+                        <ion-datetime displayFormat="HH:mm" [(ngModel)]="CarReturnBoxTime" (ngModelChange)="changeStrageValue('CarReturnBoxTime', $event)" class="myStyle"></ion-datetime>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col col-8 class="timer">
+                    <div *ngIf="isDriving || isBreak">経過時間 : {{workingTime}}</div>
+                    <div *ngIf="isDriving || isBreak">連続走行 : {{drivingTime}}</div>
+                    <div *ngIf="isBreak">休憩時間 : {{breakTime}}<br></div>
+                    <div *ngIf="isDriving || isBreak">総休憩 : {{elapsedBreakTime}}</div>
+                </ion-col>
+                <ion-col col-4>
+                    <span *ngIf="!isDriving && !isBreak"><button block ion-button color="danger" [disabled]="ready != requires" (click)="startDrivingTime()">乗務開始</button></span>
+                    <span *ngIf="isDriving"><button block ion-button color="danger" [disabled]="isRemindUsingTrunkRoom && isUsingTrunkRoom || isBreak || ready != requires||!isGetIn" (click)="jobCloseoutConfirm()">乗務終了</button></span>
+                    <span *ngIf="!isBreak"><button block ion-button [disabled]="isRemindUsingTrunkRoom && isUsingTrunkRoom || !isDriving || ready != requires||!isGetIn" (click)="startBreakTime()">休憩開始</button></span>
+                    <span *ngIf="isBreak"><button block ion-button [disabled]="ready != requires||!isGetIn" (click)="stopBreakTime()">休憩終了</button></span>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+        <ion-grid>
+            <ion-row>
+                <ion-col class="address">
+                    {{address}}
+                    <div *ngIf="address==''" class="warning">住所を取得中です。長時間経過しても取得できない場合はアプリケーションを再起動してください。</div>
+                </ion-col>
+            </ion-row>
+            <ion-row class="reminder" *ngIf="isShowAltitude || isRemindUsingTrunkRoom">
+                <ion-col *ngIf="isShowAltitude" class="altitude">
+                    高度:{{altitude}}m
+                </ion-col>
+                <ion-col *ngIf="isRemindUsingTrunkRoom">
+                    <button ion-button block [disabled]="isBreak || !isDriving" [style.color]="isUsingTrunkRoom ? 'black ' : 'black '" [style.backgroundColor]="isUsingTrunkRoom ? 'lightgreen ' : 'gray '" (click)="reminderTrunkReverse()">トランク</button>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+        <ion-grid *ngIf="isDriving && !isBreak">
+            <ion-row>
+                <ion-col col-3 class="statusButton">
+                    <button ion-button block color="dark" [disabled]="ready != requires||!isCancel" (click)="removePendingData()">取消</button>
+                </ion-col>
+                <ion-col col-9 class="statusButton">
+                    <button ion-button block color="danger" [disabled]="isRemindUsingTrunkRoom && isUsingTrunkRoom || ready != requires||!isRegist" (click)="registPendingToDB()">登録</button>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col col-4 class="statusButton">
+                    <button ion-button block [disabled]="isBreak || ready != requires||!isGetIn" (click)="updatePending('GetIn ')">乗車</button>
+                </ion-col>
+                <ion-col col-4 class="statusButton">
+                    <button ion-button block [disabled]="ready != requires||!isVia" (click)="updatePending('Via ')">経由</button>
+                </ion-col>
+                <ion-col col-4 class="statusButton">
+                    <button ion-button block [disabled]="ready != requires||!isGetOut" (click)="updatePending('GetOut ')">降車</button>
+                </ion-col>
+            </ion-row>
+            <!-- 登録中データの表示 -->
+            <ion-row *ngIf="isDriving && !isBreak">
+                <ion-col col-4 *ngIf="pending['GetInTime ']" class="wip">
+                    {{pending["GetInTime"]}}<br> <span *ngIf="pending['GetInTime ']">{{pending["GetInAddress"]}}</span>
+                </ion-col>
+                <ion-col col-4 *ngIf="pending['GetOutTime '] || (pending['ViaData '] && pending['ViaData '][0])" class="wip">
+                    <div *ngFor="let via of pending['ViaData ']">
+                        {{via.time}}<br> {{via.address}}
+                    </div>
+                </ion-col>
+                <ion-col col-4 *ngIf="pending['GetOutTime ']" class="wip">
+                    {{pending["GetOutTime"]}}<br> <span *ngIf="pending['GetOutTime ']">{{pending["GetOutAddress"]}}</span>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+        <!-- LOG -->
+        <div *ngIf="!hasHistory" text-center class="warning">
+            {{driveDate}}の乗務記録はありません。
+        </div>
+        <ion-grid *ngIf="hasHistory">
+            <ion-row *ngFor="let n of history" align-items-start>
+                <ion-col col-1>
+                    <button ion-button block color="secondary" class="logSelect" [disabled]="isDriving && !isBreak" (click)="showDetail($event, driveDate, n.Number)">{{n["Number"]}}</button>
+                </ion-col>
+                <ion-col col-11 class="logCol">
+                    <div>{{n["GetInTime"]}} {{n["GetInAddress"]}}</div>
+                    <span *ngFor="let x of viaHistory">
+                    <div *ngIf="n['Number '] == x['history ']">
                         {{x["time"]}} {{x["address"]}}
                     </div>
                 </span>
-                <div>{{n["GetOutTime"]}} {{n["GetOutAddress"]}}</div>
-            </ion-col>
-        </ion-row>
-    </ion-grid>
-    <!-- /LOG -->
+                    <div>{{n["GetOutTime"]}} {{n["GetOutAddress"]}}</div>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+        <!-- /LOG -->
+    </div>
+    <div *ngIf="isExpired">
+        <p>
+            このおためし版の利用期限が過ぎました。({{expiredDate}}まで利用可能でした。) 新規データを記録するには、以下のリンク先からtaxi-loggerアプリの新しいバージョンをダウンロードして、インストールしてください。
+        </p>
+        <button ion-button clear (click)="openUrl('https://itaxi.tokyo/app/taxi-logger/ ')">taxi-loggerのサイト</button>
+    </div>
 </ion-content>

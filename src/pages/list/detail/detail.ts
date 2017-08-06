@@ -4,6 +4,7 @@ import { SocialSharing } from '@ionic-native/social-sharing';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { DbProvider } from '../../../providers/db/db';
 import { HistoryPage } from '../history/history';
+import { AppAvailability } from '@ionic-native/app-availability';
 
 @IonicPage()
 @Component({
@@ -25,6 +26,11 @@ export class DetailPage {
   browser: any;
 
   tweetMSG: string = "";
+  isTwitter: boolean = false;
+  isTweetCaster: boolean = false;
+  isFacebook: boolean = false;
+  isFacebookMessenger: boolean = false;
+  isLine: boolean = false;
 
   constructor(
     public navParams: NavParams,
@@ -34,11 +40,39 @@ export class DetailPage {
     private iab: InAppBrowser,
     public platform: Platform,
     private socialSharing: SocialSharing,
+    private appAvailability: AppAvailability,
   ) {
     this.date = navParams.get('date');
     this.number = navParams.get('number');
     this.rootPage = HistoryPage;
+
+    this.appAvailability.check('com.twitter.android')
+      .then(
+      () => {
+        this.isTwitter = true;
+      });
+    this.appAvailability.check('com.handmark.tweetcaster')
+      .then(
+      () => {
+        this.isTweetCaster = true;
+      });
+    this.appAvailability.check('com.facebook.katana')
+      .then(
+      () => {
+        this.isFacebook = true;
+      });
+    this.appAvailability.check('com.facebook.orca')
+      .then(
+      () => {
+        this.isFacebookMessenger = true;
+      });
+      this.appAvailability.check('jp.naver.line.android')
+      .then(
+      () => {
+        this.isLine = true;
+      });
   }
+
   ionViewDidEnter() {
     this.db.getDetailLog(this.date, this.number)
       .then(data => {
@@ -99,8 +133,28 @@ export class DetailPage {
   updateData(event, date, number) {
     this.navCtrl.push('UpdatePage', { date: date, number: number });
   }
-  tweetData(event, date, number) {
-
+  shareData(event, date, number, appTitle, appName) {
+    // com.handmark.tweetcaster
+    // "com.facebook.katana":Facebook
+    // "com.facebook.orca" : Facebook Messenger
+    // appNameが無効であれば、アラートを表示して終了する。
+    // jp.naver.line.android
+    this.socialSharing.canShareVia(appName)
+      .then(data => {
+        console.log('appName: data');
+        console.log(data);
+      })
+      .catch(error => {
+        console.log('appName:' + appName + '(appTitle:' + appTitle + ')がインストールされていません');
+        console.log(error);
+        let alert = this.alertCtrl.create({
+          title: '残念',
+          subTitle: appTitle + 'がインストールされていません。',
+          buttons: ['OK']
+        });
+        alert.present();
+        return false;
+      });
     this.db.getDetailLog(this.date, this.number)
       .then(data => {
         this.history = new Set();
@@ -118,35 +172,42 @@ export class DetailPage {
                 buttons: ['OK']
               });
               alert.present();
+              return false;
             } else {
-              this.mapUrl = 'http://www.google.co.jp/maps/dir';
-              this.mapUrl += '/' + data[i]["GetInLat"] + ',' + data[i]["GetInLng"];
-              if (data[i]["ViaData"]) {
-                var obj = JSON.parse(data[i]["ViaData"]);
-                if (obj.length > 0) {
-                  for (var j = 0; j < obj.length; j++) {
-                    obj[j]["history"] = data[i]["Number"];
-                    if (obj[j]["lat"] > 0 && obj[j]["lng"] > 0) {
-                      this.mapUrl += '/' + obj[j]["lat"] + ',' + obj[j]["lng"];
-                    }
-                  }
-                }
-              }
+              var appUrl = "https://itaxi.tokyo/app/taxi-logger/";
               var ymd = data[i]["GetInDate"].split('-');
               var hms = data[i]["GetInTime"].split(':');
-              this.tweetMSG = ymd[1] + "月" + ymd[2] + "日 " + hms[0] + "時" + hms[1] + "分に【" + data[i]["GetInAddress"] + "】で乗車され、【" + data[i]["GetOutAddress"] + "】までお送りしました。";
-              this.mapUrl += '/' + data[i]["GetOutLat"] + ',' + data[i]["GetOutLng"];
-              this.mapUrl += '/@/data=!4m2!4m1!3e0';
-              console.log("mapUrl: " + this.mapUrl);
-              this.socialSharing.shareViaTwitter(this.tweetMSG + " #taxi_logger", "", this.mapUrl)
-                .then(data => {
-                  console.log("data:");
-                  console.log(data);
-                })
-                .catch(error => {
-                  console.log("error:");
-                  console.log(error);
-                });
+              this.tweetMSG = ymd[1] + "月" + ymd[2] + "日 " + hms[0] + "時" + hms[1] + "分に【" + data[i]["GetInShortAddress"] + "】で乗車され、【" + data[i]["GetOutShortAddress"] + "】までお送りしました。";
+              this.tweetMSG += "#taxi-logger #タクログ";
+              if (appName == 'com.twitter.android') {
+                this.socialSharing.shareViaTwitter(this.tweetMSG, "", appUrl)
+                  .then(data => {
+                    console.log("data:");
+                    console.log(data);
+                  })
+                  .catch(error => {
+                    console.log(error);
+                  });
+              } else if (appName == "com.facebook.katana") {
+                this.socialSharing.shareViaFacebook(this.tweetMSG,"",appUrl)
+                  .then(data => {
+                    console.log("data:");
+                    console.log(data);
+                  })
+                  .catch(error => {
+                    console.log(error);
+                  });
+              } else {
+                // this.socialSharing.shareViaInstagram(this.tweetMSG, "")  // for debug
+                this.socialSharing.shareVia(appName, this.tweetMSG, "", "", appUrl)
+                  .then(data => {
+                    console.log("data:");
+                    console.log(data);
+                  })
+                  .catch(error => {
+                    console.log(error);
+                  })
+              }
             }
           }
         }
