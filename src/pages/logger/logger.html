@@ -3,7 +3,7 @@
         <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-        <ion-title>Taxi Logger<br><button ion-button clear (click)="openUrl('https://itaxi.tokyo/app/taxi-logger/')">{{expiredDate}}まで記録可能</button>
+        <ion-title>Taxi Logger<br><a href="https://itaxi.tokyo/app/taxi-logger/">{{expiredDate}}まで記録可能</a>
         </ion-title>
     </ion-navbar>
 </ion-header>
@@ -130,6 +130,6 @@
         <p>
             このおためし版の利用期限が過ぎました。({{expiredDate}}まで利用可能でした。) 新規データを記録するには、以下のリンク先からtaxi-loggerアプリの新しいバージョンをダウンロードして、インストールしてください。
         </p>
-        <button ion-button clear (click)="openUrl('https://itaxi.tokyo/app/taxi-logger/ ')">taxi-loggerのサイト</button>
+        <a href="https://itaxi.tokyo/app/taxi-logger/">taxi-loggerのサイト</a>
     </div>
 </ion-content>

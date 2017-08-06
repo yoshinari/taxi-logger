@@ -31,15 +31,14 @@ Taxi-Loggerを作りながら[Ionic3](http://ionicframework.com/docs/) 等を勉
 - 設定
     - トランク利用のリマインダーボタンを表示できます。他のボタンとロジカルに連携します。
 ## まだ出来ないこと
-- 設定
-- その他、多くの機能
+- データのImport / Export
+- その他、色々と画策中
 
 #### 主に使っているpackage
 - [In App Browser](http://ionicframework.com/docs/native/in-app-browser/) : Google Mapやイベントスケジュール表示等に利用。
 - [Storage](https://ionicframework.com/docs/storage/) : localStorageから切り替えた。
-https://stackoverflow.com/questions/40918372/android-accept-the-license-agreements-of-sdk-google-repository-android-support
-#### その他
-- 
-## デモ
-Android版のみになりますが、[taxi-loggerアプリのサイト](https://itaxi.tokyo/app/taxi-logger/)にて公開予定です。
 
+#### その他
+- [備忘録](https://stackoverflow.com/questions/40918372/android-accept-the-license-agreements-of-sdk-google-repository-android-support)
+## デモ
+Android版のみになりますが、[taxi-loggerアプリのサイト](https://itaxi.tokyo/app/taxi-logger/)にて公開しています。
