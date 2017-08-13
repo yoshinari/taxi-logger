@@ -97,6 +97,7 @@ export class HistoryPage {
                 const toast = this.toastCtrl.create({
                   message: this.date + 'の乗務履歴を削除しました',
                   showCloseButton: true,
+                  position: 'middle',
                   closeButtonText: 'Ok'
                 });
                 toast.present();

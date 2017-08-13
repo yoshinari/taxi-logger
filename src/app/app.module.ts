@@ -28,6 +28,7 @@ import { EmailComposer } from '@ionic-native/email-composer';
 import { Device } from '@ionic-native/device';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { AppAvailability } from '@ionic-native/app-availability';
+import { ReversePipe } from '../pipes/reverse/reverse';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { AppAvailability } from '@ionic-native/app-availability';
     AboutPage,
     EventsPage,
     FeedbackPage,
+    ReversePipe,
   ],
   imports: [
     BrowserModule,
@@ -78,6 +80,7 @@ import { AppAvailability } from '@ionic-native/app-availability';
     Device,
     SocialSharing,
     AppAvailability,
+    ReversePipe,
   ]
 })
 export class AppModule {}

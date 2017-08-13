@@ -7,6 +7,7 @@ import { DbProvider } from '../../providers/db/db';
 import { Geolocation } from '@ionic-native/geolocation';
 import { NativeGeocoder, NativeGeocoderReverseResult } from '@ionic-native/native-geocoder';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
+import { ReversePipe } from '../../pipes/reverse/reverse';
 
 /**
  * Generated class for the LoggerPage page.
@@ -21,7 +22,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
 })
 export class LoggerPage {
 
-  expiredDate: string = "2017-08-31"; // このアプリの利用期限の設定 : この期限を過ぎると新しいレコードを登録できない。
+  expiredDate: string = "2017-09-15"; // このアプリの利用期限の設定 : この期限を過ぎると新しいレコードを登録できない。
   latLngDiffRatio: number = 5000; // 移動を判断するためのパラメータ　以前は500。数字が大きいほどセンシティブ
   requests: number = 0;
   results: number = 0;
@@ -120,6 +121,7 @@ export class LoggerPage {
     private nativeGeocoder: NativeGeocoder,
     private iab: InAppBrowser,
     private platform: Platform,
+    private reverse: ReversePipe,
   ) {
     // 使用期限の設定
     // expiredDate: string = "2017-08-05"; // このアプリの利用期限の設定 : この期限を過ぎると新しいレコードを登録できない。

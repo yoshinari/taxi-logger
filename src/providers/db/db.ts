@@ -142,7 +142,8 @@ export class DbProvider {
   getDetailLog(date: string, number: number): Promise<any> {
     return this.query('SELECT * FROM Logger where Date = "' + date + '" and Number = "' + number + '"').then(data => {
       if (data.res.rows.length > 0) {
-        console.log('Rows found.');
+        console.log('getDetailLog: Rows found.');
+        console.log(data.res);
         if (this.platform.is('cordova') && win.sqlitePlugin) {
           let result = [];
           for (let i = 0; i < data.res.rows.length; i++) {
@@ -160,7 +161,8 @@ export class DbProvider {
   getLog(date: string, order: string = "desc"): Promise<any> {
     return this.query('SELECT * FROM Logger where Date = "' + date + '" order by Number ' + order).then(data => {
       if (data.res.rows.length > 0) {
-        console.log('Rows found.');
+        console.log('getLog; Rows found.');
+        console.log(data.res);
         if (this.platform.is('cordova') && win.sqlitePlugin) {
           let result = [];
           for (let i = 0; i < data.res.rows.length; i++) {
