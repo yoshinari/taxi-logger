@@ -178,7 +178,7 @@ export class DetailPage {
               var ymd = data[i]["GetInDate"].split('-');
               var hms = data[i]["GetInTime"].split(':');
               this.tweetMSG = ymd[1] + "月" + ymd[2] + "日 " + hms[0] + "時" + hms[1] + "分に【" + data[i]["GetInShortAddress"] + "】で乗車され、【" + data[i]["GetOutShortAddress"] + "】までお送りしました。";
-              this.tweetMSG += "#taxi-logger #タクログ";
+              this.tweetMSG += "#taxi_logger #タクログ";
               if (appName == 'com.twitter.android') {
                 this.socialSharing.shareViaTwitter(this.tweetMSG, "", appUrl)
                   .then(data => {

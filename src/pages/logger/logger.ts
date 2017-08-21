@@ -7,7 +7,6 @@ import { DbProvider } from '../../providers/db/db';
 import { Geolocation } from '@ionic-native/geolocation';
 import { NativeGeocoder, NativeGeocoderReverseResult } from '@ionic-native/native-geocoder';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
-import { ReversePipe } from '../../pipes/reverse/reverse';
 
 /**
  * Generated class for the LoggerPage page.
@@ -121,7 +120,6 @@ export class LoggerPage {
     private nativeGeocoder: NativeGeocoder,
     private iab: InAppBrowser,
     private platform: Platform,
-    private reverse: ReversePipe,
   ) {
     // 使用期限の設定
     // expiredDate: string = "2017-08-05"; // このアプリの利用期限の設定 : この期限を過ぎると新しいレコードを登録できない。
