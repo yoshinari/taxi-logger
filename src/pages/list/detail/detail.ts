@@ -273,7 +273,9 @@ export class DetailPage {
         }
       });
     //ページの状態を戻すためのトリック
-    this.navCtrl.push('DetailPage', { date: date, number: number });
-    this.navCtrl.pop();
+    this.navCtrl.push('DetailPage', { date: date, number: number })
+    .then(_ => {
+      this.navCtrl.pop();
+    });
   }
 }

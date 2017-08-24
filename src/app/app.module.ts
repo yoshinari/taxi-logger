@@ -29,6 +29,8 @@ import { Device } from '@ionic-native/device';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { AppAvailability } from '@ionic-native/app-availability';
 import { ReversePipe } from '../pipes/reverse/reverse';
+import { File } from '@ionic-native/file';
+import { FileChooser } from '@ionic-native/file-chooser';
 
 @NgModule({
   declarations: [
@@ -81,6 +83,8 @@ import { ReversePipe } from '../pipes/reverse/reverse';
     SocialSharing,
     AppAvailability,
     ReversePipe,
+    File,
+    FileChooser,
   ]
 })
 export class AppModule {}

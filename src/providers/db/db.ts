@@ -216,6 +216,31 @@ export class DbProvider {
     });
   }
 
+  importLogger(history): Promise<any> {
+    console.log("importLogger");
+    var queryString = 'INSERT INTO Logger '
+      + '(Date,Number,GetInDate,GetInTime,GetInLat,GetInLng,GetInCountryCode,GetInPostalCode,GetInAddress,GetInShortAddress,GetInMemo,'
+      + 'GetOutDate,GetOutTime,GetOutLat,GetOutLng,GetOutCountryCode,GetOutPostalCode,GetOutAddress,GetOutShortAddress,GetOutMemo,ViaData,ViaMemo)'
+      + ' VALUES('
+      + '"' + history["Date"] + '", '
+      + history["Number"] + ', '
+      + '"' + history["GetInDate"] + '", "' + history["GetInTime"] + '", "' + history["GetInLat"] + '", "' + history["GetInLng"]
+      + '", "' + history["GetInCountryCode"] + '", "' + history["GetInPostalCode"] + '", "' + history["GetInAddress"] + '", "' + history["GetInShortAddress"]
+      + '", "' + history["GetInMemo"] + '", '
+      + '"' + history["GetOutDate"] + '", "' + history["GetOutTime"] + '", "' + history["GetOutLat"] + '", "' + history["GetOutLng"]
+      + '", "' + history["GetOutCountryCode"] + '", "' + history["GetOutPostalCode"] + '", "' + history["GetOutAddress"] + '", "' + history["GetOutShortAddress"]
+      + '", "' + history["GetOutMemo"] + '", '
+      + "'" + history["ViaData"] + "'" + ', "' + history["ViaMemo"] + '"'
+      + ')';
+    console.log(queryString);
+    return this.query(queryString, [])
+      .then(stat => {
+        console.log(stat);
+      }).catch(err => {
+        console.log(err);
+      })
+      ;
+  }
   query(query: string, params: any[] = []): Promise<any> {
     return new Promise((resolve, reject) => {
       try {

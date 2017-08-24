@@ -36,7 +36,8 @@
         </ion-row>
         <ion-row>
             <ion-col>
-                <button ion-button block color="danger" (click)="deleteHistoryData()">この履歴を削除する</button>
+                <button ion-button block [disabled]="isExporting" color="danger" (click)="deleteHistoryData()">この履歴を削除する</button>
+                <button ion-button block [disabled]="isExporting" (click)="exportHistoryData()">この履歴をファイルに書き出す</button>
             </ion-col>
         </ion-row>
     </ion-grid>

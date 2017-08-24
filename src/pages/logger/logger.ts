@@ -21,7 +21,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
 })
 export class LoggerPage {
 
-  expiredDate: string = "2017-09-15"; // このアプリの利用期限の設定 : この期限を過ぎると新しいレコードを登録できない。
+  expiredDate: string = "2017-09-30"; // このアプリの利用期限の設定 : この期限を過ぎると新しいレコードを登録できない。
   latLngDiffRatio: number = 5000; // 移動を判断するためのパラメータ　以前は500。数字が大きいほどセンシティブ
   requests: number = 0;
   results: number = 0;
@@ -39,17 +39,17 @@ export class LoggerPage {
   logData: { [key: string]: string } = {};
 
   workingTime: string;
-  working: number = null;
+  working: any = null;
 
   isWorking: boolean = false;
 
   drivingTime: string;
-  driving: number = null;
+  driving: any = null;
 
   isDriving: boolean = false;
 
   breakTime: string;
-  break: number;
+  break: any;
 
   isBreak: boolean = false;
 
@@ -515,7 +515,7 @@ export class LoggerPage {
           // this.elapsedBreakTime = breakTime;
           this.hms = breakTime.split(':');
           this.secs = Number(this.hms[0]) * 60 * 60 + Number(this.hms[1]) * 60 + Number(this.hms[2]);
-          if (this.working !== undefined) {
+          if (this.working !== undefined && this.isBreak && breakTime === "00:00:01" && this.elapsedBreakTime !== undefined && this.elapsedBreakTime !== "00:00:00") { // this.working !== undefined && 
             this.secs++; // タイミングの問題で1秒足したほうが画面の時間表示が自然
           }
           this.hours = 0;

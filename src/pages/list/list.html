@@ -19,4 +19,11 @@
     <div *ngIf="!hasLog" text-center class="warning">
         乗務履歴はありません。
     </div>
+    <ion-grid>
+        <ion-row>
+            <ion-col>
+                <button ion-button block [disabled]="isImporting" (click)="importHistoryData()">履歴データをファイルから取り込む</button>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
 </ion-content>

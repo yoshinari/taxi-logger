@@ -3,6 +3,7 @@ import { AlertController, NavController, IonicPage, NavParams } from 'ionic-angu
 import { ToastController } from 'ionic-angular';
 import { DbProvider } from '../../../providers/db/db';
 import { ListPage } from '../../list/list';
+import { File } from '@ionic-native/file';
 @IonicPage()
 @Component({
   selector: 'page-history',
@@ -18,12 +19,15 @@ export class HistoryPage {
   viaHistory = new Set();
   errorMSG: string;
 
+  isExporting: boolean = false;
+
   constructor(
     public navParams: NavParams,
     public navCtrl: NavController,
     public alertCtrl: AlertController,
     public toastCtrl: ToastController,
     private db: DbProvider,
+    private file: File,
   ) {
     this.date = navParams.get('date');
     this.rootPage = ListPage;
@@ -74,6 +78,66 @@ export class HistoryPage {
   ionViewWillLeave() {
     console.log("Looks like I'm about to leave");
     // this.navCtrl.pop();
+  }
+  exportHistoryData() {
+    console.log('exportHistoryData');
+    this.isExporting = true; 
+    this.db.getLog(this.date, "asc")
+      .then(data => {
+        if (data === undefined) {
+          this.hasHistory = false;
+        } else {
+          this.hasHistory = true;
+          this.file.checkDir(this.file.externalRootDirectory, 'tokyo.itaxi.taxiLogger.history')
+            .then(_ => {
+              this.file.writeFile(this.file.externalRootDirectory + 'tokyo.itaxi.taxiLogger.history', this.date + '.json', JSON.stringify(data), { replace: true })
+                .then(stat => {
+                  console.log('Write OK!!');
+                  console.log(stat);
+                  console.log(stat['fullPath']);  // /tokyo.itaxi.taxiLogger.history/2017-07-12.json
+                  let alert = this.alertCtrl.create({
+                    title: '以下に履歴ファイルを出力しました',
+                    subTitle: stat['fullPath'],
+                    buttons: ['OK']
+                  });
+                  alert.present();
+                  this.isExporting = false;
+                  return;
+                })
+                .catch(err => {
+                  console.log('Write NG!!');
+                  console.log(err);
+                  this.isExporting = false;
+                  return;
+                });
+            })
+            .catch(err => {
+              this.file.createDir(this.file.externalRootDirectory, 'tokyo.itaxi.taxiLogger.history', false)
+                .then(_ => {
+                  console.log('Successfuly create directory: ' + this.file.externalRootDirectory + 'tokyo.itaxi.taxiLogger.history');
+                  this.file.writeFile(this.file.externalRootDirectory + 'tokyo.itaxi.taxiLogger.history', this.date + '.json', JSON.stringify(data), { replace: true })
+                    .then(stat => {
+                      console.log('Write OK!!');
+                      console.log(stat);
+                      console.log(stat['fullPath']);
+                      this.isExporting = false;
+                      return;
+                    })
+                    .catch(err => {
+                      console.log('Write NG!!');
+                      console.log(err);
+                      this.isExporting = false;
+                      return;
+                    });
+                })
+                .catch(err => {
+                  console.log('Error:');
+                  console.log(err);
+                  this.isExporting = false;
+                });
+            })
+        }
+      });
   }
   deleteHistoryData() {
     let alert = this.alertCtrl.create({

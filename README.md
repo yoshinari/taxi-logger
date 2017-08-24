@@ -26,12 +26,12 @@ Taxi-Loggerを作りながら[Ionic3](http://ionicframework.com/docs/) 等を勉
     - 不要な乗務履歴を削除できます。
     - Google Mapで経路を表示できます。
     - Twitter純正アプリ/TweetCaster/Lineアプリ/Facebook Messengerアプリがインストールされていれば、経路を元にしたメッセージを送れます。
+    - 日ごとにExport / Importできます。
 - イベントスケジュール:
     - 取り敢えずはハードコーディング
-- 設定
+- 設定:
     - トランク利用のリマインダーボタンを表示できます。他のボタンとロジカルに連携します。
 ## まだ出来ないこと
-- データのImport / Export
 - その他、色々と画策中
 
 #### 主に使っているpackage
@@ -40,5 +40,6 @@ Taxi-Loggerを作りながら[Ionic3](http://ionicframework.com/docs/) 等を勉
 
 #### その他
 - [備忘録](https://stackoverflow.com/questions/40918372/android-accept-the-license-agreements-of-sdk-google-repository-android-support)
+- [備忘録(ng.cordova.min.js)](https://selvakumar25.wordpress.com/2016/06/14/ionic-framework-with-sqlite-cordovasqlite/)
 ## デモ
 Android版のみになりますが、[taxi-loggerアプリのサイト](https://itaxi.tokyo/app/taxi-logger/)にて公開しています。
