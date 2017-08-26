@@ -54,6 +54,7 @@ export class LoggerPage {
   isBreak: boolean = false;
 
   elapsedBreakTime: string;
+  elapsedDisplayTime: string = "00:00:00";
 
 
   timer: Date;
@@ -430,6 +431,7 @@ export class LoggerPage {
         clearInterval(this.working);
         this.resetTimer("elapsedBreak");
         this.elapsedBreakTime = "00:00:00";
+        this.elapsedDisplayTime = "00:00:00";
         this.resetTimer("working");
         this.workingTime = "00:00:00";
         this.working = null;
@@ -515,13 +517,13 @@ export class LoggerPage {
           // this.elapsedBreakTime = breakTime;
           this.hms = breakTime.split(':');
           this.secs = Number(this.hms[0]) * 60 * 60 + Number(this.hms[1]) * 60 + Number(this.hms[2]);
-          if (this.working !== undefined && this.isBreak && breakTime === "00:00:01" && this.elapsedBreakTime !== undefined && this.elapsedBreakTime !== "00:00:00") { // this.working !== undefined && 
-            this.secs++; // タイミングの問題で1秒足したほうが画面の時間表示が自然
-          }
+          // if (this.working !== undefined && this.isBreak && this.elapsedBreakTime !== undefined && this.elapsedBreakTime !== "00:00:00") { // this.working !== undefined && 
+            // this.secs++; // タイミングの問題で1秒足したほうが画面の時間表示が自然
+          // }
           this.hours = 0;
           this.mins = 0;
           this.hours = Math.floor(this.secs / (60 * 60));
-          this.secs = this.secs - this.hours * 60 * 60;
+          this.secs = this.secs - this.hours * 60 * 60 + 1 ;
           this.mins = Math.floor(this.secs / 60);
           this.secs = this.secs - this.mins * 60;
           this.elapsedBreakTime = ("0" + this.hours).substr(-2) + ":" + ("0" + this.mins).substr(-2) + ":" + ("0" + this.secs).substr(-2);
@@ -531,10 +533,15 @@ export class LoggerPage {
           this.hours = 0;
           this.mins = 0;
           this.hours = Math.floor(this.secs / (60 * 60));
-          this.secs = this.secs - this.hours * 60 * 60;
+          this.secs = this.secs - this.hours * 60 * 60 + 1;
           this.mins = Math.floor(this.secs / 60);
           this.secs = this.secs - this.mins * 60;
           this.elapsedBreakTime = ("0" + this.hours).substr(-2) + ":" + ("0" + this.mins).substr(-2) + ":" + ("0" + this.secs).substr(-2);
+        }
+        if (this.elapsedBreakTime == "00:00:01"){
+          this.elapsedDisplayTime == "00:00:00";
+        } else {
+          this.elapsedDisplayTime = this.elapsedBreakTime;
         }
       });
   }

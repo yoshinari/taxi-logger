@@ -146,6 +146,12 @@ export class ListPage {
                       })
                       .catch(err => {
                         console.log(err);
+                        let alert = this.alertCtrl.create({
+                          title: 'エラー',
+                          subTitle: err.message,
+                          buttons: ['OK']
+                        });
+                        alert.present();
                         if (i == history.length) {
                           this.hasLog = false;
                         }
@@ -167,11 +173,23 @@ export class ListPage {
           })
           .catch(err => {
             console.log(err);
+            let alert = this.alertCtrl.create({
+              title: 'エラー',
+              subTitle: err.message,
+              buttons: ['OK']
+            });
+            alert.present();
             this.isImporting = false;
           })
       })
       .catch(err => {
         console.log(err);
+        let alert = this.alertCtrl.create({
+          title: 'エラー',
+          subTitle: err.message,
+          buttons: ['OK']
+        });
+        alert.present();
         this.isImporting = false;
       });
     this.isImporting = false;
