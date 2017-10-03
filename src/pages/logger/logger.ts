@@ -21,7 +21,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
 })
 export class LoggerPage {
 
-  expiredDate: string = "2017-09-30"; // このアプリの利用期限の設定 : この期限を過ぎると新しいレコードを登録できない。
+  expiredDate: string = "2017-12-31"; // このアプリの利用期限の設定 : この期限を過ぎると新しいレコードを登録できない。
   latLngDiffRatio: number = 5000; // 移動を判断するためのパラメータ　以前は500。数字が大きいほどセンシティブ
   requests: number = 0;
   results: number = 0;
@@ -109,6 +109,10 @@ export class LoggerPage {
 
   browser: any;
 
+  // regPCode: string = "";
+  regexp = new RegExp("^([0-9])");
+  outOfRegion: boolean = false;
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -132,7 +136,14 @@ export class LoggerPage {
       this.isExpired = true;
       console.log("expired");
     }
-
+    this.storage.get("regPCode")
+    .then(
+    stat => {
+      if (stat == null){
+        stat = "^([0-9])";
+      }
+      this.regexp = new RegExp(stat);
+    });
 
     this.storage.get("isRemindUsingTrunkRoom")
       .then(
@@ -175,7 +186,7 @@ export class LoggerPage {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad LoggerPage');
+    // console.log('ionViewDidLoad LoggerPage');
     // this.resetStorage();
 
     // 日付がストレージに保存されていない場合、今日の日付を設定する
@@ -263,10 +274,10 @@ export class LoggerPage {
     this.lat = this.lng = this.accuracy = this.speed = -1;
     let watch = this.geolocation.watchPosition();
     watch.subscribe((data) => {
-      console.log("data.coords:");
-      console.log(data.coords);
+      // console.log("data.coords:");
+      // console.log(data.coords);
       if (data.coords === undefined) {
-        console.warn("data.coords undefined");
+        // console.warn("data.coords undefined");
         this.tmpLat = this.tmpLng = this.accuracy = this.speed = -1;
       } else {
         this.tmpLat = data.coords.latitude;
@@ -283,7 +294,7 @@ export class LoggerPage {
           this.nativeGeocoder.reverseGeocode(this.tmpLat, this.tmpLng)
             .then((result: NativeGeocoderReverseResult) => {
               this.results++;
-              console.log(result);
+              // console.log(result);
               this.geoData = "city:" + result.city
                 + ", countryCode:" + result.countryCode
                 + ", countryName:" + result.countryName
@@ -327,6 +338,8 @@ export class LoggerPage {
                 this.postalCode = "";
               } else {
                 this.postalCode = result.postalCode;
+                var test = this.regexp.test(this.postalCode);
+                this.outOfRegion = !test;
                 if (
                   this.street.endsWith("丁目")
                 ) {
@@ -363,13 +376,13 @@ export class LoggerPage {
   }
 
   ionViewWillLeave() {
-    console.log("Looks like I'm about to WillLeave");
+    // console.log("Looks like I'm about to WillLeave");
   }
   ionViewDidLeave() {
-    console.log("Looks like I'm about to DidLeave");
+    // console.log("Looks like I'm about to DidLeave");
   }
   ionViewWillUnload() {
-    console.log("Looks like I'm about to WillUnload");
+    // console.log("Looks like I'm about to WillUnload");
   }
 
   // 時計

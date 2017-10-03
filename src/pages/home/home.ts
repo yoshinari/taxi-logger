@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { IonicPage, NavController, Platform } from 'ionic-angular';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
+import { SpinnerDialog } from '@ionic-native/spinner-dialog';
 
 @IonicPage()
 @Component({
@@ -13,8 +14,9 @@ export class HomePage implements OnInit {
     public navCtrl: NavController,
     private iab: InAppBrowser,
     private platform: Platform,
+    private spinnerDialog: SpinnerDialog,
   ) {
-
+    this.spinnerDialog.show("loading...","準備中です",true);
   }
 
   ionViewDidLoad() {
@@ -23,6 +25,10 @@ export class HomePage implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  ionViewDidEnter() {
+    this.spinnerDialog.hide();
   }
 
   openUrl(url) {

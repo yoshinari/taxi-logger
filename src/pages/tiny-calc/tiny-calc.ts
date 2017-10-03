@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Storage } from '@ionic/storage';
+import { Http } from '@angular/http';
 
 /**
  * Generated class for the TinyCalcPage page.
@@ -18,17 +20,43 @@ export class TinyCalcPage {
   dayFee: number;
   nightFee: number;
   adds: number;
+  region: { [key: string]: any; } = {};
+  regionName:string = "";
+  pos: number;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams,
+    private storage: Storage,
+    private http: Http,
+  ) {
+    this.storage.get("regSelected")
+    .then(
+    pos => {
+      if (pos == null || pos == 0){
+        // 未定義
+        this.regionName = "";
+        // console.log("return");
+        return;
+      }
+      this.pos = pos;
+      this.http.get('./assets/config/config.json')
+      .map((res) => {
+        this.region = res.json().region;
+        // console.log(this.region[pos]);
+        this.regionName = this.region[pos].name;
+      })
+      .subscribe();
+    });
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad TinyCalcPage');
+    // console.log('ionViewDidLoad TinyCalcPage');
   }
 
   changeDistance(distance) {
 
-    // 2017年1月30日からの計算式
+    // 2017年1月30日からの計算式(東京２３区、武蔵野三鷹)
     // 距離制運賃
 
     // 通常料金
@@ -44,23 +72,23 @@ export class TinyCalcPage {
     // 時間距離併用制 1分30秒 80円
 
     // 通常料金
-    this.dayFee = 410;
-    if (distance > 1.059) {
-      this.adds = Math.ceil((distance - 1.059) / 0.237);
-      this.dayFee += this.adds * 80;
+    this.dayFee = this.region[this.pos].dayFeeInit;
+    if (distance > this.region[this.pos].dayDistanceInit) {
+      this.adds = Math.ceil((distance - this.region[this.pos].dayDistanceInit) / this.region[this.pos].dayDistanceAdds);
+      this.dayFee += this.adds * this.region[this.pos].dayFeeAdds;
       // 長距離割引
-      if (this.dayFee > 9000) {
-        this.dayFee = 9000 + Math.ceil(((this.dayFee - 9000) * 0.9) / 90) * 90;
+      if (this.dayFee > this.region[this.pos].dayFeeDiscountStart) {
+        this.dayFee = this.region[this.pos].dayFeeDiscountStart + Math.ceil(((this.dayFee - this.region[this.pos].dayFeeDiscountStart) * this.region[this.pos].dayFeeDiscountRate) / this.region[this.pos].dayFeeAdds) * this.region[this.pos].dayFeeAdds;
       }
     }
     // 深夜料金
-    this.nightFee = 410;
-    if (distance > (1.059 * 0.8)) {
-      this.adds = Math.ceil((distance - 0.8472) / 0.1896);
-      this.nightFee += this.adds * 80;
+    this.nightFee = this.region[this.pos].nightFeeInit;
+    if (distance > this.region[this.pos].nightDistanceInit) {
+      this.adds = Math.ceil((distance - this.region[this.pos].nightDistanceInit) / this.region[this.pos].nightDistanceAdds);
+      this.nightFee += this.adds * this.region[this.pos].nightFeeAdds;
       // 長距離割引
-      if (this.nightFee > 9000) {
-        this.nightFee = 9000 + Math.ceil(((this.nightFee - 9000) * 0.9) / 80) * 80;
+      if (this.nightFee > this.region[this.pos].nightFeeDiscountStart) {
+        this.nightFee = this.region[this.pos].nightFeeDiscountStart + Math.ceil(((this.nightFee - this.region[this.pos].nightFeeDiscountStart) * this.region[this.pos].nightFeeDiscountRate) / this.region[this.pos].nightFeeAdds) * this.region[this.pos].nightFeeAdds;
       }
     }
   }

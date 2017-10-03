@@ -47,7 +47,7 @@
                 </ion-col>
                 <ion-col col-4>
                     <span *ngIf="!isDriving && !isBreak"><button block ion-button color="danger" [disabled]="ready != requires" (click)="startDrivingTime()">乗務開始</button></span>
-                    <span *ngIf="isDriving"><button block ion-button color="danger" [disabled]="isRemindUsingTrunkRoom && isUsingTrunkRoom || isBreak || ready != requires||!isGetIn" (click)="jobCloseoutConfirm()">乗務終了</button></span>
+                    <span *ngIf="isDriving || isBreak"><button block ion-button color="danger" [disabled]="isRemindUsingTrunkRoom && isUsingTrunkRoom || isBreak || ready != requires||!isGetIn" (click)="jobCloseoutConfirm()">乗務終了</button></span>
                     <span *ngIf="!isBreak"><button block ion-button [disabled]="isRemindUsingTrunkRoom && isUsingTrunkRoom || !isDriving || ready != requires||!isGetIn" (click)="startBreakTime()">休憩開始</button></span>
                     <span *ngIf="isBreak"><button block ion-button [disabled]="ready != requires||!isGetIn" (click)="stopBreakTime()">休憩終了</button></span>
                 </ion-col>
@@ -55,7 +55,7 @@
         </ion-grid>
         <ion-grid>
             <ion-row>
-                <ion-col class="address">
+                <ion-col class="address" [ngClass]="{'warning': outOfRegion == true}">
                     {{address}}
                     <div *ngIf="address==''" class="warning">住所を取得中です。長時間経過しても取得できない場合はアプリケーションを再起動してください。</div>
                 </ion-col>

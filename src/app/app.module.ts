@@ -31,6 +31,8 @@ import { AppAvailability } from '@ionic-native/app-availability';
 import { ReversePipe } from '../pipes/reverse/reverse';
 import { File } from '@ionic-native/file';
 import { FileChooser } from '@ionic-native/file-chooser';
+import { SpinnerDialog } from '@ionic-native/spinner-dialog';
+import { HttpModule } from '@angular/http';
 
 @NgModule({
   declarations: [
@@ -48,6 +50,7 @@ import { FileChooser } from '@ionic-native/file-chooser';
   ],
   imports: [
     BrowserModule,
+    HttpModule,
     IonicModule.forRoot(MyApp),
     IonicStorageModule.forRoot({
       name: 'taxiLoggerDB',
@@ -85,6 +88,7 @@ import { FileChooser } from '@ionic-native/file-chooser';
     ReversePipe,
     File,
     FileChooser,
+    SpinnerDialog,
   ]
 })
 export class AppModule {}

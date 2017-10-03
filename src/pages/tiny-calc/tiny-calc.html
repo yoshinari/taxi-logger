@@ -9,37 +9,43 @@
 
 <ion-content padding>
     <h3>簡易料金計算</h3>
-
-    <p class="warning">
-        走行距離からメーター料金を算出します。実際の料金には時間による加算料金が含まれます。東京２３区、三鷹、武蔵野地区の計算式です。
-    </p>
-    <br> 距離:
-    <ion-item>
-        <ion-label>距離を選択してください</ion-label>
-        <ion-select #dist (ionChange)="changeDistance(dist.value)">
-            <!--<ion-option value="">選択</ion-option>-->
-            <ion-option *ngFor="let km of kms" value="{{km}}">{{km}} km</ion-option>
-        </ion-select>
-    </ion-item>
-    <div *ngIf="dist.value!=''">
-        <ion-item-group>
-            <ion-item>概算料金 : {{dayFee | number}}円</ion-item>
-            <ion-item>概算料金(深夜)：{{nightFee | number}}円</ion-item>
-        </ion-item-group>
+    <div *ngIf="regionName==''" class="warning">
+        [設定]メニューで営業区域を設定してください。
     </div>
-    <br> 現行ルールは以下のとおり。
-    <ul>
-        <li>初乗り料金:410円 / 1.059kmまで (深夜は0.8472kmまで)</li>
-        <li>加算料金:80円 / 0.237km (深夜は0.1896km)</li>
-        <li>約2kmで730円</li>
-        <li>※ 時速10km以下の走行で1分30秒毎に80円加算されます。</li>
-        <li>※ 9,000円を超える金額は１割引きとなります。</li>
-    </ul>
-    <hr> 旧ルールは以下のとおり。
-    <ul>
-        <li>初乗り料金:730円 / 2.0kmまで (深夜は1.6kmまで)</li>
-        <li>加算料金:90円 / 0.28km (深夜は0.224km)</li>
-        <li>※ 時速10km以下の走行で1分45秒毎に90円加算されます。</li>
-        <li>※ 9,000円を超える金額は１割引きとなります。</li>
-    </ul>
+    <div *ngIf="regionName!='' && region[pos].dayFeeInit>0">
+        <p class="warning">
+            走行距離からメーター料金を算出します。実際の料金には時間による加算料金が含まれます。 {{regionName}}地区の計算式です。
+        </p>
+        <br> 距離:
+        <ion-item>
+            <ion-label>距離を選択してください</ion-label>
+            <ion-select #dist (ionChange)="changeDistance(dist.value)">
+                <!--<ion-option value="">選択</ion-option>-->
+                <ion-option *ngFor="let km of kms" value="{{km}}">{{km}} km</ion-option>
+            </ion-select>
+        </ion-item>
+        <div *ngIf="dist.value!=''">
+            <ion-item-group>
+                <ion-item>概算料金 : {{dayFee | number}}円</ion-item>
+                <ion-item>概算料金(深夜)：{{nightFee | number}}円</ion-item>
+            </ion-item-group>
+        </div>
+        <br> {{regionName}}地区の現行ルールは以下のとおり。
+        <ul>
+            <li>初乗り料金:{{region[pos].dayFeeInit}}円 / {{region[pos].dayDistanceInit}}kmまで (深夜は{{region[pos].nightDistanceInit}}kmまで)</li>
+            <li>加算料金:{{region[pos].dayFeeAdds}}円 / {{region[pos].dayDistanceAdds}}km (深夜は{{region[pos].nightDistanceAdds}}km)</li>
+            <li>{{region[pos].timeRate}}</li>
+            <li>{{region[pos].dayFeeDiscountStart}}円を超える金額は{{region[pos].dayFeeDiscountRate}}倍となります。
+                <div *ngIf="region[pos].dayFeeDiscountStart!=region[pos].nightFeeDiscountStart || region[pos].dayFeeDiscountRate!=region[pos].nightFeeDiscountRate">
+                    (深夜は{{region[pos].nightFeeDiscountStart}}円を超える金額は{{region[pos].nightFeeDiscountRate}}倍となります。)
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div *ngIf="regionName!='' && region[pos].dayFeeInit == undefined" class="warning">
+        {{regionName}}地区の計算式は未定義です。
+        <!--
+        <a href="https://github.com/yoshinari/taxi-logger/blob/master/src/assets/config/config.hjson">ここの定義を参考にして定義ファイルを作りませんか？</a>
+        -->
+    </div>
 </ion-content>
