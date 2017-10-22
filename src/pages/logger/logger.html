@@ -18,23 +18,23 @@
                     {{clock["gengou"]}}{{clock["clock"]}}
                 </ion-col>
             </ion-row>
-            <ion-row>
+            <ion-row class="datepicker">
                 <ion-col col-6>
                     乗務日<br>
                     <ion-item>
-                        <ion-datetime displayFormat="YYYY-MM-DD" [(ngModel)]="driveDate" (ngModelChange)="changeStrageValue('DriveDate', $event)"></ion-datetime>
+                        <button ion-button block color="light" [disabled]="isDriving" (click)="changeDriveDate()">{{driveDate}}</button>
                     </ion-item>
                 </ion-col>
                 <ion-col col-3>
                     出庫時刻<br>
                     <ion-item>
-                        <ion-datetime displayFormat="HH:mm" [(ngModel)]="CarUnloadingTime" (ngModelChange)="changeStrageValue('CarUnloadingTime', $event)" class="myStyle"></ion-datetime>
+                        <button ion-button block color="light" [disabled]="isDriving" (click)="changeTime('CarUnloadingTime')">{{CarUnloadingTime}}</button>
                     </ion-item>
                 </ion-col>
                 <ion-col col-3>
                     帰庫予定<br>
                     <ion-item>
-                        <ion-datetime displayFormat="HH:mm" [(ngModel)]="CarReturnBoxTime" (ngModelChange)="changeStrageValue('CarReturnBoxTime', $event)" class="myStyle"></ion-datetime>
+                        <button ion-button block color="light" [disabled]="isDriving" (click)="changeTime('CarReturnBoxTime')">{{CarReturnBoxTime}}</button>
                     </ion-item>
                 </ion-col>
             </ion-row>

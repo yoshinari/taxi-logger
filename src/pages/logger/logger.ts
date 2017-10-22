@@ -7,6 +7,7 @@ import { DbProvider } from '../../providers/db/db';
 import { Geolocation } from '@ionic-native/geolocation';
 import { NativeGeocoder, NativeGeocoderReverseResult } from '@ionic-native/native-geocoder';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
+import { DatePicker } from '@ionic-native/date-picker';
 
 /**
  * Generated class for the LoggerPage page.
@@ -32,8 +33,8 @@ export class LoggerPage {
   driveDate: any; // Date and String
   month: any; // Number and String
   day: any; // Number and String
-  CarUnloadingTime: string; // 出庫 Car unloading
-  CarReturnBoxTime: string; // 帰庫 Car return box
+  CarUnloadingTime: any; // 出庫 Car unloading
+  CarReturnBoxTime: any; // 帰庫 Car return box
 
   clock: { [key: string]: string } = {};
   logData: { [key: string]: string } = {};
@@ -125,6 +126,7 @@ export class LoggerPage {
     private nativeGeocoder: NativeGeocoder,
     private iab: InAppBrowser,
     private platform: Platform,
+    private datePicker: DatePicker,
   ) {
     // 使用期限の設定
     // expiredDate: string = "2017-08-05"; // このアプリの利用期限の設定 : この期限を過ぎると新しいレコードを登録できない。
@@ -728,5 +730,49 @@ export class LoggerPage {
       this.browser = this.iab.create(url);
       this.browser.show();
     });
+  }
+  changeDriveDate() {
+    var driveDate = this.driveDate.split("-");
+    this.datePicker.show({
+      date: new Date(driveDate[0],driveDate[1]-1,driveDate[2]),
+      mode: 'date',
+      androidTheme: this.datePicker.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT,
+      titleText: '乗務日',
+      todayText: '今日'
+    }).then(
+      date => {
+        this.driveDate = date.getFullYear() + "-" + ("0" + (date.getMonth() + 1)).substr(-2) + "-" + ("0" + date.getDate()).substr(-2);
+        this.changeStrageValue('DriveDate', this.driveDate);
+      },
+      err => console.log('Error occurred while getting date: ', err)
+    );
+  }
+  changeTime(timeType){
+    var driveDate = this.driveDate.split("-");
+    var driveTime = this.CarUnloadingTime.split(":");
+    var title = "出庫時間";
+    if (timeType == "CarReturnBoxTime"){
+      driveTime = this.CarReturnBoxTime.split(":");
+      title = "帰庫予定時間";
+    }
+    var changeTime = new Date(driveDate[0],driveDate[1],driveDate[2], driveTime[0], driveTime[1]);
+
+    this.datePicker.show({
+      date: changeTime,
+      mode: 'time',
+      androidTheme: this.datePicker.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT,
+      titleText: title
+    }).then(
+      date => {
+        if (timeType == "CarUnloadingTime"){
+          this.CarUnloadingTime = ("0" + date.getHours()).substr(-2) + ":" + ("0" + date.getMinutes()).substr(-2);
+          this.changeStrageValue('CarUnloadingTime', this.CarUnloadingTime);
+        } else {
+          this.CarReturnBoxTime = ("0" + date.getHours()).substr(-2) + ":" + ("0" + date.getMinutes()).substr(-2);
+          this.changeStrageValue('CarReturnBoxTime', this.CarReturnBoxTime);
+        }
+      },
+      err => console.log('Error occurred while getting date: ', err)
+    );
   }
 }

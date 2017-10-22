@@ -33,6 +33,7 @@ import { File } from '@ionic-native/file';
 import { FileChooser } from '@ionic-native/file-chooser';
 import { SpinnerDialog } from '@ionic-native/spinner-dialog';
 import { HttpModule } from '@angular/http';
+import { DatePicker } from '@ionic-native/date-picker';
 
 @NgModule({
   declarations: [
@@ -89,6 +90,7 @@ import { HttpModule } from '@angular/http';
     File,
     FileChooser,
     SpinnerDialog,
+    DatePicker,
   ]
 })
 export class AppModule {}

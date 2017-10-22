@@ -177,7 +177,19 @@ export class DetailPage {
               var appUrl = "https://itaxi.tokyo/app/taxi-logger/";
               var ymd = data[i]["GetInDate"].split('-');
               var hms = data[i]["GetInTime"].split(':');
-              this.tweetMSG = ymd[1] + "月" + ymd[2] + "日 " + hms[0] + "時" + hms[1] + "分に【" + data[i]["GetInShortAddress"] + "】で乗車され、【" + data[i]["GetOutShortAddress"] + "】までお送りしました。";
+              console.log("--- ViaData ---");
+              var via = JSON.parse(data[i]["ViaData"]);
+              var viaMSG="";
+              for (var j = 0; j < via.length; j++){
+                if (j!=0){
+                  viaMSG +="、";
+                }
+                viaMSG += "【" + via[j]["shortAddress"] + "】";
+                if (j==via.length-1){
+                  viaMSG += "を経由して、";
+                }
+              }
+              this.tweetMSG = ymd[1] + "月" + ymd[2] + "日 " + hms[0] + "時" + hms[1] + "分に【" + data[i]["GetInShortAddress"] + "】で乗車され、" + viaMSG + "【" + data[i]["GetOutShortAddress"] + "】までお送りしました。";
               this.tweetMSG += "#taxi_logger #タクログ";
               if (appName == 'com.twitter.android') {
                 this.socialSharing.shareViaTwitter(this.tweetMSG, "", appUrl)
