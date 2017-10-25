@@ -28,13 +28,13 @@
                 <ion-col col-3>
                     出庫時刻<br>
                     <ion-item>
-                        <button ion-button block color="light" [disabled]="isDriving" (click)="changeTime('CarUnloadingTime')">{{CarUnloadingTime}}</button>
+                        <button ion-button block color="light" [disabled]="isDriving && !isBreak" (click)="changeTime('CarUnloadingTime')">{{CarUnloadingTime}}</button>
                     </ion-item>
                 </ion-col>
                 <ion-col col-3>
                     帰庫予定<br>
                     <ion-item>
-                        <button ion-button block color="light" [disabled]="isDriving" (click)="changeTime('CarReturnBoxTime')">{{CarReturnBoxTime}}</button>
+                        <button ion-button block color="light" [disabled]="isDriving && !isBreak" (click)="changeTime('CarReturnBoxTime')">{{CarReturnBoxTime}}</button>
                     </ion-item>
                 </ion-col>
             </ion-row>

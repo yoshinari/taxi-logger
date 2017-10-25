@@ -737,7 +737,7 @@ export class LoggerPage {
       date: new Date(driveDate[0],driveDate[1]-1,driveDate[2]),
       mode: 'date',
       androidTheme: this.datePicker.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT,
-      titleText: '乗務日',
+      titleText: "乗務日\n(正しく設定してください。)",
       todayText: '今日'
     }).then(
       date => {
@@ -750,16 +750,17 @@ export class LoggerPage {
   changeTime(timeType){
     var driveDate = this.driveDate.split("-");
     var driveTime = this.CarUnloadingTime.split(":");
-    var title = "出庫時間";
+    var title = "出庫時刻\n(表示のみの備忘録です)";
     if (timeType == "CarReturnBoxTime"){
       driveTime = this.CarReturnBoxTime.split(":");
-      title = "帰庫予定時間";
+      title = "帰庫予定時刻\n(表示のみの目安です)";
     }
     var changeTime = new Date(driveDate[0],driveDate[1],driveDate[2], driveTime[0], driveTime[1]);
 
     this.datePicker.show({
       date: changeTime,
       mode: 'time',
+      is24Hour: true,
       androidTheme: this.datePicker.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT,
       titleText: title
     }).then(
