@@ -1,6 +1,7 @@
 import { Component, Injectable } from '@angular/core';
 import { IonicPage, NavController, NavParams, Platform } from 'ionic-angular';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
+import { Storage } from '@ionic/storage';
 
 /**
  * Generated class for the SettingsPage page.
@@ -17,10 +18,34 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
 export class EventsPage {
   browser: any;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private iab: InAppBrowser, public platform: Platform) {
+  linklist = new Set();
+  hasLinkList:boolean = false;
+
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams, 
+    private iab: InAppBrowser, 
+    public platform: Platform,
+    private storage: Storage,
+  ) {
   }
   ionViewDidLoad() {
-    console.log('ionViewDidLoad EventsPage');
+    // console.log('ionViewDidLoad EventsPage');
+    this.storage.get("linklist")
+    .then(
+    stat => {
+      // console.log("linklist:");
+      // console.log(stat);
+      var obj = JSON.parse(stat);
+      if (obj.length > 0) {
+        for (var j = 0; j < obj.length; j++) {
+          this.linklist.add(obj[j]);
+        }
+        // console.log("this.linklist:");
+        // console.log(this.linklist);
+        this.hasLinkList = true;
+      }
+    });
   }
   openUrl(url){
     this.platform.ready().then(() => {

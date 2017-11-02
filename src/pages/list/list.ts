@@ -54,24 +54,6 @@ export class ListPage {
         }
       });
   }
-  ionViewDidEnter() {
-    console.log("list.ts: ionViewDidEnter()");
-  }
-  ionViewWillLeave() {
-    console.log("list.ts: ionViewWillLeave");
-  }
-  ionViewDidLeave() {
-    console.log("list.ts: ionViewDidLeave()");
-  }
-  ionViewWillUnload() {
-    console.log("list.ts: ionViewWillUnload()");
-  }
-  ionViewCanEnter() {
-    console.log("list.ts: ionViewCanEnter()");
-  }
-  ionViewCanLeave() {
-    console.log("list.ts: ionViewCanLeave()");
-  }
 
   itemTapped(event, item, date) {
     this.navCtrl.push(item.page, { date: date });

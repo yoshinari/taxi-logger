@@ -16,7 +16,7 @@ export class PendingProvider {
   time: string;
 
   constructor() {
-    console.log('Hello PendingProvider Provider');
+    // console.log('Hello PendingProvider Provider');
   }
 
   public loadPending(pending) {
@@ -82,7 +82,7 @@ export class PendingProvider {
       case 'Via':
         pending["ViaData"].push({ date: this.date, time: this.time, lat: lat, lng: lng, country: countryCode, postal: postalCode, address: address, shortAddress: shortAddress, memo: "" });
     }
-    console.log(pending);
+    // console.log(pending);
     return pending;
   }
 

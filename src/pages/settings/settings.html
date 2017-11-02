@@ -31,19 +31,16 @@
     </ion-item>
 -->
     <h4>連続走行時間</h4>
-    休憩を押すと直ぐに連続走行時間をリセットするか、15分以上の休憩でリセットするかを選択します。
-    <ion-item>
-        <ion-label>15分以上の休憩でリセットする
-            <p class="warning">未実装</p>
-        </ion-label>
-        <ion-checkbox checked disabled="true"></ion-checkbox>
-    </ion-item>
+    何分連続して休憩すると連続走行時間をリセットするかを選択します。<br>
+    <select [(ngModel)]="brSelected" (change)="brOptionChange($event.target.value)">
+        <option *ngFor="let n of breakSelect; let j=index;" value="{{j}}">{{n}}</option>
+    </select> (HH:MM)
     <h4>営業区域</h4>
-    営業区域を設定します。
+    営業区域を設定します。<br>
     <select [(ngModel)]="regSelected" (change)="regOptionChange($event.target.value)">
         <option *ngFor="let n of regionSelect; let j=index;" value="{{j}}">{{n}}</option>
-</select>
-    <!-- p>
-        <a href="https://github.com/yoshinari/taxi-logger/blob/master/src/assets/config/config.hjson">ここの定義を参考にしてあなたの営業区域用の定義ファイルを作りませんか？</a>
-    </p -->
+    </select>
+    <h4>リンクリスト</h4>
+    リンクリストの定義ファイルを取り込みます。<br>
+    <button ion-button (click)="loadUrlList()">ファイル選択</button>
 </ion-content>

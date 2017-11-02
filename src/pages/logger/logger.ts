@@ -39,7 +39,7 @@ export class LoggerPage {
   clock: { [key: string]: string } = {};
   logData: { [key: string]: string } = {};
 
-  workingTime: string;
+  workingTime: string = "00:00:00";
   working: any = null;
 
   isWorking: boolean = false;
@@ -57,7 +57,7 @@ export class LoggerPage {
   elapsedBreakTime: string;
   elapsedDisplayTime: string = "00:00:00";
 
-
+  timerID: number;
   timer: Date;
   timeString: string;
 
@@ -107,6 +107,7 @@ export class LoggerPage {
   isRemindUsingTrunkRoom: boolean = false;
   isUsingTrunkRoom: boolean = false;
   isShowAltitude: boolean = false;
+  breakReset: string = "00:00:00";
 
   browser: any;
 
@@ -133,7 +134,7 @@ export class LoggerPage {
     //   isExpired: boolean = false;
     let date = new Date();
     let today = date.getFullYear() + "-" + ("0" + (date.getMonth() + 1)).substr(-2) + "-" + ("0" + date.getDate()).substr(-2);
-    console.log("today:" + today);
+    // console.log("today:" + today);
     if (today > this.expiredDate) {
       this.isExpired = true;
       console.log("expired");
@@ -163,6 +164,12 @@ export class LoggerPage {
       stat => {
         this.isShowAltitude = stat;
       });
+    this.storage.get("breakReset")
+      .then(
+      stat => {
+        this.breakReset = stat;
+      });
+    this.startTimer();
   }
   jobCloseoutConfirm() {
     let alert = this.alertCtrl.create({
@@ -377,59 +384,65 @@ export class LoggerPage {
     });
   }
 
-  ionViewWillLeave() {
-    // console.log("Looks like I'm about to WillLeave");
+  startTimer() {
+    // 全体のタイマー
+    this.timerID = setInterval(() => {
+      this.clock = this.timerProvider.showClock();  // 時計
+      if (this.isDriving || this.isBreak){
+        // 乗務時間
+        this.timerProvider.loadTimer("workingTime", "workingStartTime")
+        .then(
+          time => {
+            this.workingTime = time;
+          },
+          error => {
+            
+          });;
+        // 連続走行時間
+        this.timerProvider.loadTimer("drivingTime", "drivingStartTime")
+        .then(
+          time => {
+            this.drivingTime = time;
+          },
+          error => {
+
+          });;
+        // 休憩時間
+        if (this.isBreak) {
+          this.timerProvider.loadTimer("breakTime", "breakStartTime")
+          .then(
+            time => {
+              this.breakTime = time;
+            },
+            error => {
+
+          });;
+          this.loadElapsedBreakTime(this.breakTime);
+          if (this.breakTime >= this.breakReset) { // 設定時間以上連続して休憩したら、連続走行時間をリセットする。　"00:15:00") {  // 15分以上連続して休憩したら、連続走行時間をリセットする。
+            this.stopDrivingTime(false);
+          }
+        }
+      }
+    }, 1000);
   }
-  ionViewDidLeave() {
-    // console.log("Looks like I'm about to DidLeave");
-  }
-  ionViewWillUnload() {
-    // console.log("Looks like I'm about to WillUnload");
-  }
 
-  // 時計
-  timerId = setInterval(() => {
-    this.clock = this.timerProvider.showClock();
-  }, 1000);
-
-  // 経過時間
-  workingTimer = () => {
-    this.timerProvider.loadTimer("workingTime", "workingStartTime")
-      .then(
-      time => {
-        this.workingTime = time;
-      },
-      error => {
-
-      });;
-  };
-  // 運転時間
-  drivingTimer = () => {
-    this.timerProvider.loadTimer("drivingTime", "drivingStartTime")
-      .then(
-      time => {
-        this.drivingTime = time;
-      },
-      error => {
-
-      });;
-  };
   startDrivingTime(init: boolean = true) {
-    console.log("init:" + init);
-    console.log("driving:" + this.driving);
-    console.log("working:" + this.working);
+    // console.log("init:" + init);
+    // console.log("driving:" + this.driving);
+    // console.log("working:" + this.working);
     if (init || (this.driving === void 0) || (this.driving === null)) {
+      this.workingTime = "00:00:00";
       if (this.drivingTime === void 0 || this.drivingTime == "00:00:00") {
-        console.log("setTimer(drivingStartTime)");
+        // console.log("setTimer(drivingStartTime)");
         this.setTimer("drivingStartTime");
       }
       if (init) {
-        console.log("setTimer(workingStartTime)");
+        // console.log("setTimer(workingStartTime)");
         this.setTimer("workingStartTime");
       }
-      this.driving = setInterval(this.drivingTimer, 1000);
+      // this.driving = setInterval(this.drivingTimer, 1000);
       if (this.working === void 0 || (this.working == null)) {
-        this.working = setInterval(this.workingTimer, 1000);
+        // this.working = setInterval(this.workingTimer, 1000);
         this.isWorking = true;
       }
     }
@@ -453,42 +466,24 @@ export class LoggerPage {
       }
     }
   }
-  // 休憩時間
-  breakTimer = () => {
-    this.timerProvider.loadTimer("breakTime", "breakStartTime")
-      .then(
-      time => {
-        this.breakTime = time;
-      },
-      error => {
-
-      });;
-    // 総休憩時間をセットする
-    this.loadElapsedBreakTime(this.breakTime);
-    if (this.breakTime) {
-      if (this.breakTime >= "00:15:00") {  // 15分以上連続して休憩したら、連続走行時間をリセットする。
-        this.stopDrivingTime(false);
-      }
-    }
-  };
   startBreakTime(init: boolean = true) {
     if (init || (this.break === void 0)) {
       if (init) {
         this.setTimer("breakStartTime");
       }
-      this.break = setInterval(this.breakTimer, 1000);
+      // this.break = setInterval(this.breakTimer, 1000);
     }
     this.isBreak = true;
   }
   stopBreakTime(isAllReset: boolean = true) {
-    console.log("stopBreakTime");
+    // console.log("stopBreakTime");
     clearInterval(this.break);
     this.isBreak = false;
     this.saveElapsedBreak(this.breakTime);
     this.resetTimer("breakStartTime");
     this.breakTime = "00:00:00";
     if (!this.isDriving || this.isDriving === null) {
-      console.log("call startDrivingTime");
+      // console.log("call startDrivingTime");
       this.startDrivingTime(false);
     }
   }
@@ -523,40 +518,35 @@ export class LoggerPage {
 
   loadElapsedBreakTime(breakTime) {
     if (breakTime === void 0) {
-      breakTime = "00:00:00";
+      // breakTime = "00:00:00";
+      this.elapsedBreakTime = "00:00:00";
+      return;
     }
     this.storage.get("elapsedBreak")
       .then(
       time => {
         if (time == null) {
-          // this.elapsedBreakTime = breakTime;
           this.hms = breakTime.split(':');
-          this.secs = Number(this.hms[0]) * 60 * 60 + Number(this.hms[1]) * 60 + Number(this.hms[2]);
-          // if (this.working !== undefined && this.isBreak && this.elapsedBreakTime !== undefined && this.elapsedBreakTime !== "00:00:00") { // this.working !== undefined && 
-            // this.secs++; // タイミングの問題で1秒足したほうが画面の時間表示が自然
+          this.secs = Number(this.hms[0]) * 60 * 60 + Number(this.hms[1]) * 60 + Number(this.hms[2]) + 1;
+          this.hours = Math.floor(this.secs / (60 * 60));
+          this.secs = this.secs - this.hours * 60 * 60;
+          this.mins = Math.floor(this.secs / 60);
+          this.secs = this.secs - this.mins * 60;
+          this.elapsedBreakTime = ("0" + this.hours).substr(-2) + ":" + ("0" + this.mins).substr(-2) + ":" + ("0" + this.secs).substr(-2);
+          // this.elapsedDisplayTime = this.elapsedBreakTime;
+        } else {
+          this.hms = breakTime.split(':');
+          this.secs = Number(this.hms[0]) * 60 * 60 + Number(this.hms[1]) * 60 + Number(this.hms[2]) + 1 + Number(time);
+          this.hours = Math.floor(this.secs / (60 * 60));
+          this.secs = this.secs - this.hours * 60 * 60;
+          this.mins = Math.floor(this.secs / 60);
+          this.secs = this.secs - this.mins * 60;
+          this.elapsedBreakTime = ("0" + this.hours).substr(-2) + ":" + ("0" + this.mins).substr(-2) + ":" + ("0" + this.secs).substr(-2);
+          // if (this.elapsedBreakTime == "00:00:01" && this.workingTime == "00:00:00"){ // && breakTime == "00:00:00"){
+          //   this.elapsedDisplayTime = "00:00:00";
+          // } else {
+            // this.elapsedDisplayTime = this.elapsedBreakTime;
           // }
-          this.hours = 0;
-          this.mins = 0;
-          this.hours = Math.floor(this.secs / (60 * 60));
-          this.secs = this.secs - this.hours * 60 * 60 + 1 ;
-          this.mins = Math.floor(this.secs / 60);
-          this.secs = this.secs - this.mins * 60;
-          this.elapsedBreakTime = ("0" + this.hours).substr(-2) + ":" + ("0" + this.mins).substr(-2) + ":" + ("0" + this.secs).substr(-2);
-        } else {
-          this.hms = breakTime.split(':');
-          this.secs = Number(this.hms[0]) * 60 * 60 + Number(this.hms[1]) * 60 + Number(this.hms[2]) + Number(time);
-          this.hours = 0;
-          this.mins = 0;
-          this.hours = Math.floor(this.secs / (60 * 60));
-          this.secs = this.secs - this.hours * 60 * 60 + 1;
-          this.mins = Math.floor(this.secs / 60);
-          this.secs = this.secs - this.mins * 60;
-          this.elapsedBreakTime = ("0" + this.hours).substr(-2) + ":" + ("0" + this.mins).substr(-2) + ":" + ("0" + this.secs).substr(-2);
-        }
-        if (this.elapsedBreakTime == "00:00:01"){
-          this.elapsedDisplayTime == "00:00:00";
-        } else {
-          this.elapsedDisplayTime = this.elapsedBreakTime;
         }
       });
   }

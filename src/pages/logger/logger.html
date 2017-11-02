@@ -43,7 +43,7 @@
                     <div *ngIf="isDriving || isBreak">経過時間 : {{workingTime}}</div>
                     <div *ngIf="isDriving || isBreak">連続走行 : {{drivingTime}}</div>
                     <div *ngIf="isBreak">休憩時間 : {{breakTime}}<br></div>
-                    <div *ngIf="isDriving || isBreak">総休憩 : {{elapsedDisplayTime}}</div>
+                    <div *ngIf="isDriving || isBreak">総休憩 : {{elapsedBreakTime}}</div>
                 </ion-col>
                 <ion-col col-4>
                     <span *ngIf="!isDriving && !isBreak"><button block ion-button color="danger" [disabled]="ready != requires" (click)="startDrivingTime()">乗務開始</button></span>

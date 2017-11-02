@@ -27,7 +27,7 @@ export class TimerProvider {
   status: boolean;
 
   constructor(private storage: Storage) {
-    console.log('Hello TimerProvider Provider');
+    // console.log('Hello TimerProvider Provider');
   }
   public showClock() {
     this.timer = new Date();
@@ -68,7 +68,7 @@ export class TimerProvider {
       .then(
       time => {
         if (time === null) {
-          console.log("time is null;");
+          // console.log("time is null;");
           this.changeStrageValue(timeName, returnTime);
         } else {
           returnTime = time;
