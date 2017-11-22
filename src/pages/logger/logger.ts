@@ -6,6 +6,7 @@ import { PendingProvider } from '../../providers/pending/pending';
 import { DbProvider } from '../../providers/db/db';
 import { Geolocation } from '@ionic-native/geolocation';
 import { NativeGeocoder, NativeGeocoderReverseResult } from '@ionic-native/native-geocoder';
+import { Http } from '@angular/http';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { DatePicker } from '@ionic-native/date-picker';
 
@@ -107,6 +108,7 @@ export class LoggerPage {
   isRemindUsingTrunkRoom: boolean = false;
   isUsingTrunkRoom: boolean = false;
   isShowAltitude: boolean = false;
+  isUseZipCloud: boolean = false;
   breakReset: string = "00:00:00";
 
   browser: any;
@@ -128,6 +130,7 @@ export class LoggerPage {
     private iab: InAppBrowser,
     private platform: Platform,
     private datePicker: DatePicker,
+    private http: Http,
   ) {
     // 使用期限の設定
     // expiredDate: string = "2017-08-05"; // このアプリの利用期限の設定 : この期限を過ぎると新しいレコードを登録できない。
@@ -164,6 +167,12 @@ export class LoggerPage {
       stat => {
         this.isShowAltitude = stat;
       });
+    // isUseZipCloud
+    this.storage.get("isUseZipCloud")
+    .then(
+    stat => {
+      this.isUseZipCloud = stat;
+    });
     this.storage.get("breakReset")
       .then(
       stat => {
@@ -571,8 +580,44 @@ export class LoggerPage {
   }
   updatePending(key = null) {
     if (key != null) {
-      this.pending = this.pendingProvider.updatePending(this.pending, key, this.lat, this.lng, this.countryCode, this.postalCode, this.address, this.shortAddress);
-      this.storage.set("pending", this.pending);
+      if (this.isUseZipCloud){
+        this.http.get('http://zipcloud.ibsnet.co.jp/api/search?zipcode='+this.postalCode)
+        .map((res) => {
+          if (res.json().status == 200){
+            this.shortAddress = res.json().results[0].address1 + res.json().results[0].address2 + res.json().results[0].address3;
+            if (
+              this.street.endsWith("丁目")
+            ) {
+              this.address = this.shortAddress + this.street + this.houseNumber;
+            } else if (
+              this.street.endsWith("通り")
+              || this.street.endsWith("号線")
+              || this.street.endsWith("街道")
+            ) {
+              this.address = this.shortAddress + "(" + this.street + ")";
+            } else if (this.street == "Unnamed Road") {
+              this.address = this.shortAddress;
+            } else if (this.street == "") {
+              this.address = this.shortAddress + this.houseNumber;
+            } else {
+              this.address = this.shortAddress + "(" + this.street + ")" + this.houseNumber;
+            }
+            if (key == "updateCurrentAddress"){
+              return;
+            }
+            this.pending = this.pendingProvider.updatePending(this.pending, key, this.lat, this.lng, this.countryCode, this.postalCode, this.address, this.shortAddress);
+            this.storage.set("pending", this.pending);
+          } else {
+            this.pending = this.pendingProvider.updatePending(this.pending, key, this.lat, this.lng, this.countryCode, this.postalCode, this.address, this.shortAddress);
+            this.storage.set("pending", this.pending);
+          }
+        })
+        .subscribe(data => {},
+        err => console.log(err));
+      } else {
+        this.pending = this.pendingProvider.updatePending(this.pending, key, this.lat, this.lng, this.countryCode, this.postalCode, this.address, this.shortAddress);
+        this.storage.set("pending", this.pending);
+      }
     } else if (Object.keys(this.pending).length === 0) {
       this.pending = this.pendingProvider.initPending();
     }

@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController, Platform } from 'ionic-angular';
+import { Storage } from '@ionic/storage';
 import { DetailPage } from '../detail/detail';
 import { DbProvider } from '../../../providers/db/db';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { ToastController } from 'ionic-angular';
 import { NativeGeocoder, NativeGeocoderReverseResult } from '@ionic-native/native-geocoder';
+import { Http } from '@angular/http';
 
 
 /**
@@ -42,6 +44,7 @@ export class UpdatePage {
   countryCode: string;
   address: string;
   postalCode: string;
+  isUseZipCloud: boolean = false;
 
   browser: any;
 
@@ -49,15 +52,23 @@ export class UpdatePage {
     public navParams: NavParams,
     public navCtrl: NavController,
     public alertCtrl: AlertController,
+    private storage: Storage,
     private db: DbProvider,
     private iab: InAppBrowser,
     public toastCtrl: ToastController,
     public platform: Platform,
-    private nativeGeocoder: NativeGeocoder
+    private nativeGeocoder: NativeGeocoder,
+    private http: Http,
   ) {
     this.date = navParams.get('date');
     this.number = navParams.get('number');
     this.rootPage = DetailPage;
+    // isUseZipCloud
+    this.storage.get("isUseZipCloud")
+    .then(
+    stat => {
+      this.isUseZipCloud = stat;
+    });
   }
   ionViewDidLoad() {
     this.db.getDetailLog(this.date, this.number)
@@ -144,21 +155,32 @@ export class UpdatePage {
 
     this.nativeGeocoder.reverseGeocode(lat, lng)
       .then((result: NativeGeocoderReverseResult) => {
-        console.log(result);
-        var geoData = "city:" + result.city
-          + "<br>countryCode:" + result.countryCode
-          + "<br>countryName:" + result.countryName
-          + "<br>district:" + result.district
-          + "<br>houseNumber:" + result.houseNumber
-          + "<br>postalCode:" + result.postalCode
-          + "<br>street:" + result.street;
-        let alert = this.alertCtrl.create({
-          title: '位置情報',
-          subTitle: geoData,
-          buttons: ['OK']
-        });
-        alert.present();
-      })
+        var geoData = JSON.stringify(result);
+        if (this.isUseZipCloud && result.postalCode != ""){
+          this.http.get('http://zipcloud.ibsnet.co.jp/api/search?zipcode='+result.postalCode)
+          .map((res) => {
+            if (res.json().status == 200){
+              geoData = (geoData + "<br>" + JSON.stringify(res.json().results[0])).replace(/\,/g,"<br>").replace(/{/g,"{<br>").replace(/}/g,"<br>}");
+              }
+              let alert = this.alertCtrl.create({
+                title: '位置情報',
+                subTitle: geoData,
+                buttons: ['OK']
+              });
+              alert.present();
+            }
+          )
+          .subscribe(data => {},
+          err => console.log(err));
+          } else {
+            geoData = geoData.replace(/\,/g,"<br>").replace(/{/g,"{<br>").replace(/}/g,"<br>}");
+            let alert = this.alertCtrl.create({
+            title: '位置情報',
+            subTitle: geoData,
+            buttons: ['OK']
+          });
+          alert.present();
+        }})
       .catch((error: any) => {
         console.error(error);
         let alert = this.alertCtrl.create({

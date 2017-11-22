@@ -22,6 +22,7 @@ export class SettingsPage {
   isRemindUsingTrunkRoom: boolean = false;
   isUsingTrunkRoom: boolean = false;
   isShowAltitude: boolean = false;
+  isUseZipCloud: boolean = false;
   region: { [key: string]: any; } = {};
   regionSelect = new Set()
   regSelected: number = 0;
@@ -54,6 +55,13 @@ export class SettingsPage {
       stat => {
         this.isShowAltitude = stat;
       });
+      // isUseZipCloud
+      this.storage.get("isUseZipCloud")
+      .then(
+      stat => {
+        this.isUseZipCloud = stat;
+      });
+      // regSelected
       this.storage.get("regSelected")
       .then(
       stat => {
@@ -96,6 +104,11 @@ export class SettingsPage {
   }
   updateShowAltitude(){
     this.storage.set("isShowAltitude", this.isShowAltitude);
+  }
+  // "isUseZipCloud" (ionChange)="updateUsingZipCloud()"
+  updateUsingZipCloud(){
+    this.storage.set("isUseZipCloud", this.isUseZipCloud);
+    console.log("isUseZipCloud:"+this.isUseZipCloud);
   }
   regOptionChange(reg) {
     // console.log(reg);

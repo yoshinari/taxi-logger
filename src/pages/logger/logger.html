@@ -56,7 +56,8 @@
         <ion-grid>
             <ion-row>
                 <ion-col class="address" [ngClass]="{'warning': outOfRegion == true}">
-                    {{address}}
+                    <div *ngIf="isUseZipCloud" (click)="updatePending('updateCurrentAddress')">{{address}}</div>
+                    <div *ngIf="!isUseZipCloud">{{address}}</div>
                     <div *ngIf="address==''" class="warning">住所を取得中です。長時間経過しても取得できない場合はアプリケーションを再起動してください。</div>
                 </ion-col>
             </ion-row>

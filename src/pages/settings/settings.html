@@ -30,6 +30,12 @@
         <ion-checkbox disabled="true"></ion-checkbox>
     </ion-item>
 -->
+    <h4>郵便番号検索APIの利用</h4>
+    位置情報から住所を取得するNative Geocoderがイマイチのため、乗車、経由、降車の住所取得時に<a href="http://zipcloud.ibsnet.co.jp/doc/api">郵便番号検索API</a>を利用する。
+    <ion-item>
+        <ion-label>郵便番号検索APIの利用</ion-label>
+        <ion-checkbox [(ngModel)]="isUseZipCloud" (ionChange)="updateUsingZipCloud()"></ion-checkbox>
+    </ion-item>
     <h4>連続走行時間</h4>
     何分連続して休憩すると連続走行時間をリセットするかを選択します。<br>
     <select [(ngModel)]="brSelected" (change)="brOptionChange($event.target.value)">

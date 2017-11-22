@@ -38,10 +38,12 @@ Taxi-Loggerを作りながら[Ionic3](http://ionicframework.com/docs/) 等を勉
     - 何分連続して休憩すると、連続走行時間をリセットするかを設定出来ます。それまでは、休憩中でも連続走行時間を加算します。
     - 営業区域を選択できます。簡易料金計算とloggerの現在地に反映されます。
     - リンクリストを設定できます。
+    - 位置情報から住所を取得するNative Geocoderがイマイチのため、[郵便番号検索API](http://zipcloud.ibsnet.co.jp/doc/api)を利用する。
 
 #### 主に使っているpackage
 - [In App Browser](http://ionicframework.com/docs/native/in-app-browser/) : Google Mapやイベントスケジュール表示等に利用。
 - [Storage](https://ionicframework.com/docs/storage/) : localStorageから切り替えた。
+- [Native Geocoder](http://ionicframework.com/docs/native/native-geocoder/) : 位置情報から住所を取得。(イマイチ)
 
 #### その他
 - [備忘録](https://stackoverflow.com/questions/40918372/android-accept-the-license-agreements-of-sdk-google-repository-android-support)
