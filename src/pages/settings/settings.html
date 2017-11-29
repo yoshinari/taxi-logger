@@ -6,47 +6,56 @@
         <ion-title>設定</ion-title>
     </ion-navbar>
 </ion-header>
-
 <ion-content padding>
     <h3>設定</h3>
-    <h4>Taxi Logger画面設定</h4>
-    チェックした項目をTaxi Logger画面に表示します。
-    <ion-item>
-        <ion-label>GPSの高度の表示
-            <p class="warning">端末が対応していないと0mになります。</p>
-        </ion-label>
-        <ion-checkbox [(ngModel)]="isShowAltitude" (ionChange)="updateShowAltitude()"></ion-checkbox>
-    </ion-item>
-
-    <ion-item>
-        <ion-label>トランク使用中のリマインダ</ion-label>
-        <ion-checkbox [(ngModel)]="isRemindUsingTrunkRoom" [disabled]="isRemindUsingTrunkRoom && isUsingTrunkRoom" (ionChange)="updateUsingTrunkRoom()"></ion-checkbox>
-    </ion-item>
-    <!--
-    <ion-item>
-        <ion-label>BGMの再生/停止
-            <p class="warning">可能であれば実装します</p>
-        </ion-label>
-        <ion-checkbox disabled="true"></ion-checkbox>
-    </ion-item>
--->
-    <h4>郵便番号検索APIの利用</h4>
-    位置情報から住所を取得するNative Geocoderがイマイチのため、乗車、経由、降車の住所取得時に<a href="http://zipcloud.ibsnet.co.jp/doc/api">郵便番号検索API</a>を利用する。
-    <ion-item>
-        <ion-label>郵便番号検索APIの利用</ion-label>
-        <ion-checkbox [(ngModel)]="isUseZipCloud" (ionChange)="updateUsingZipCloud()"></ion-checkbox>
-    </ion-item>
-    <h4>連続走行時間</h4>
-    何分連続して休憩すると連続走行時間をリセットするかを選択します。<br>
-    <select [(ngModel)]="brSelected" (change)="brOptionChange($event.target.value)">
-        <option *ngFor="let n of breakSelect; let j=index;" value="{{j}}">{{n}}</option>
-    </select> (HH:MM)
-    <h4>営業区域</h4>
-    営業区域を設定します。<br>
-    <select [(ngModel)]="regSelected" (change)="regOptionChange($event.target.value)">
-        <option *ngFor="let n of regionSelect; let j=index;" value="{{j}}">{{n}}</option>
-    </select>
-    <h4>リンクリスト</h4>
-    リンクリストの定義ファイルを取り込みます。<br>
-    <button ion-button (click)="loadUrlList()">ファイル選択</button>
+    <ion-list>
+        <ion-item>
+            <button ion-button icon-only small item-start (click)="helpAltitude()"><ion-icon name="help"></ion-icon></button>
+            <ion-label>GPSの高度の表示
+            </ion-label>
+            <ion-toggle [(ngModel)]="isShowAltitude" (ionChange)="updateShowAltitude()"></ion-toggle>
+        </ion-item>
+        <ion-item>
+            <button ion-button icon-only small item-start (click)="helpRemindUsingTrunkRoom()"><ion-icon name="help"></ion-icon></button>
+            <ion-label>トランク使用中のリマインダ</ion-label>
+            <ion-toggle [(ngModel)]="isRemindUsingTrunkRoom" [disabled]="isRemindUsingTrunkRoom && isUsingTrunkRoom" (ionChange)="updateUsingTrunkRoom()"></ion-toggle>
+        </ion-item>
+        <ion-item>
+            <button ion-button icon-only small item-start (click)="helpZipCloud()"><ion-icon name="help"></ion-icon></button>
+            <ion-label>郵便番号検索APIの利用
+            </ion-label>
+            <ion-toggle [(ngModel)]="isUseZipCloud" (ionChange)="updateUsingZipCloud()"></ion-toggle>
+        </ion-item>
+        <ion-item>
+            <button ion-button icon-only small item-start (click)="helpBrOptionChange()"><ion-icon name="help"></ion-icon></button>
+            <ion-label>連続走行時間(HH:MM)
+            </ion-label>
+            <ion-select style="width:0px;margin:0px;padding:0px;visibility: hidden">
+            </ion-select>
+            <ion-select [(ngModel)]="brSelected" (change)="brOptionChange($event.target.value)">
+                <ion-option *ngFor="let n of breakSelect; let j=index;" value="{{j}}">{{n}}</ion-option>
+            </ion-select>
+        </ion-item>
+        <ion-item>
+            <button ion-button icon-only small item-start (click)="helpRegOptionChange()"><ion-icon name="help"></ion-icon></button>
+            <ion-label>営業区域</ion-label>
+            <ion-select style="width:0px;margin:0px;padding:0px;visibility: hidden">
+            </ion-select>
+            <ion-select [(ngModel)]="regSelected" (change)="regOptionChange($event.target.value)">
+                <ion-option *ngFor="let n of regionSelect; let j=index;" value="{{j}}">{{n}}</ion-option>
+            </ion-select>
+        </ion-item>
+        <ion-item>
+            <button ion-button icon-only small item-start (click)="helpLoadList('linklist')"><ion-icon name="help"></ion-icon></button>
+            <ion-label>リンクリスト
+            </ion-label>
+            <button ion-button small item-end (click)="loadList('linklist')">ファイル選択</button>
+        </ion-item>
+        <ion-item>
+            <button ion-button icon-only small item-start (click)="helpLoadList('phonebook')"><ion-icon name="help"></ion-icon></button>
+            <ion-label>電話帳
+            </ion-label>
+            <button ion-button small item-end (click)="loadList('phonebook')">ファイル選択</button>
+        </ion-item>
+    </ion-list>
 </ion-content>

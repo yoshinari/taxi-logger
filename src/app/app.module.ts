@@ -11,6 +11,7 @@ import { SettingsPage } from '../pages/settings/settings';
 import { ThanksPage } from '../pages/thanks/thanks';
 import { AboutPage } from '../pages/about/about';
 import { EventsPage } from '../pages/events/events';
+import { PhonelistPage } from '../pages/phonelist/phonelist';
 import { FeedbackPage } from '../pages/feedback/feedback';
 
 import { StatusBar } from '@ionic-native/status-bar';
@@ -34,6 +35,7 @@ import { FileChooser } from '@ionic-native/file-chooser';
 import { SpinnerDialog } from '@ionic-native/spinner-dialog';
 import { HttpModule } from '@angular/http';
 import { DatePicker } from '@ionic-native/date-picker';
+import { HashdialPipe } from '../pipes/hashdial/hashdial';
 
 @NgModule({
   declarations: [
@@ -46,8 +48,10 @@ import { DatePicker } from '@ionic-native/date-picker';
     ThanksPage,
     AboutPage,
     EventsPage,
+    PhonelistPage,
     FeedbackPage,
     ReversePipe,
+    HashdialPipe,
   ],
   imports: [
     BrowserModule,
@@ -69,6 +73,7 @@ import { DatePicker } from '@ionic-native/date-picker';
     ThanksPage,
     AboutPage,
     EventsPage,
+    PhonelistPage,
     FeedbackPage,
   ],
   providers: [

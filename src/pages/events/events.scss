@@ -1,5 +1,18 @@
 page-events {
+    h3 {
+        font-size: 2rem!important;
+    }
+    p.desc {
+        margin-top: -14px;
+        padding-left: 22px;
+        white-space: initial;
+    }
     .button {
+        margin-left: -18px;
         font-size: 18px;
+    }
+    ion-label {
+        margin-top: 0px!important;
+        margin-bottom: 0px!important;
     }
 }

@@ -1,0 +1,26 @@
+{
+    "region": [{
+            "name": "未設定/該当なし",
+            "pcode": ""
+        },
+        {
+            "name": "東京２３区、武蔵野三鷹",  // 営業区域
+            "pcode": "^(1[0-7]|18[0-1])",  // 営業区域の郵便番号(正規表現)
+            // 料金の定義
+            "dayFeeInit": 410,              // 初乗り料金
+            "dayDistanceInit": 1.059,       // 初乗り距離
+            "dayFeeAdds": 80,               // 加算料金
+            "dayDistanceAdds": 0.237,       // 加算距離
+            "dayFeeDiscountStart": 9000,    // 長距離割引開始料金
+            "dayFeeDiscountRate": 0.9,      // 割引率
+            // 深夜料金の定義
+            "nightFeeInit": 410,            // 初乗り料金
+            "nightDistanceInit": 0.8472,    // 初乗り距離
+            "nightFeeAdds": 80,             // 加算料金
+            "nightDistanceAdds": 0.1896,    // 加算距離
+            "nightFeeDiscountStart": 9000,  // 長距離割引開始料金
+            "nightFeeDiscountRate": 0.9,    // 割引率
+            "timeRate": "時速10km以下の走行で1分30秒毎に80円加算されます。" // 時間加算料金のコメント
+        }
+    ]
+}

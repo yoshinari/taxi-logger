@@ -1,31 +1,47 @@
 [{
-        "title": "日本武道館",
-        "url": "http://nipponbudokan.net/",
-        "desc": "年月を選んでください"
+        "category": "イベント",
+        "item": [{
+                "title": "日本武道館",
+                "url": "http://nipponbudokan.net/",
+                "desc": "年月を選んでください"
+            },
+            {
+                "title": "東京国際フォーラム",
+                "url": "https://www.t-i-forum.co.jp/calendar/"
+            },
+            {
+                "title": "東京ドーム",
+                "url": "https://www.tokyo-dome.co.jp/sp/schedule/"
+            },
+            {
+                "title": "明治神宮野球場",
+                "url": "http://www.jingu-stadium.com/event/",
+                "desc": "年月を選んでください"
+            },
+            {
+                "title": "国立劇場",
+                "url": "http://www.ntj.jac.go.jp/kokuritsu/thismonth.html"
+            },
+            {
+                "title": "新国立劇場",
+                "url": "http://www.nntt.jac.go.jp/performance/"
+            },
+            {
+                "title": "サントリーホール",
+                "url": "http://www.suntory.co.jp/suntoryhall/schedule/"
+            }
+        ]
     },
     {
-        "title": "東京国際フォーラム",
-        "url": "https://www.t-i-forum.co.jp/calendar/"
-    },
-    {
-        "title": "東京ドーム",
-        "url": "https://www.tokyo-dome.co.jp/sp/schedule/"
-    },
-    {
-        "title": "明治神宮野球場",
-        "url": "http://www.jingu-stadium.com/event/",
-        "desc": "年月を選んでください"
-    },
-    {
-        "title": "国立劇場",
-        "url": "http://www.ntj.jac.go.jp/kokuritsu/thismonth.html"
-    },
-    {
-        "title": "新国立劇場",
-        "url": "http://www.nntt.jac.go.jp/performance/"
-    },
-    {
-        "title": "サントリーホール",
-        "url": "http://www.suntory.co.jp/suntoryhall/schedule/"
+        "category": "ホテル予約",
+        "item": [{
+                "title": "trivago トリバゴ",
+                "url": "https://www.trivago.jp"
+            },
+            {
+                "title": "じゃらんnet",
+                "url": "https://www.jalan.net"
+            }
+        ]
     }
 ]

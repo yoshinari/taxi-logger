@@ -55,10 +55,14 @@
         </ion-grid>
         <ion-grid>
             <ion-row>
-                <ion-col class="address" [ngClass]="{'warning': outOfRegion == true}">
-                    <div *ngIf="isUseZipCloud" (click)="updatePending('updateCurrentAddress')">{{address}}</div>
-                    <div *ngIf="!isUseZipCloud">{{address}}</div>
-                    <div *ngIf="address==''" class="warning">住所を取得中です。長時間経過しても取得できない場合はアプリケーションを再起動してください。</div>
+                <ion-col>
+                    <ion-row>
+                        <ion-col class="address" [ngClass]="{'warning': outOfRegion == true}">
+                            <div *ngIf="isUseZipCloud" (click)="updatePending('updateCurrentAddress')">{{address}}</div>
+                            <div *ngIf="!isUseZipCloud">{{address}}</div>
+                            <div *ngIf="address==''" class="warning">住所を取得中です。長時間経過しても取得できない場合はアプリケーションを再起動してください。</div>
+                        </ion-col>
+                    </ion-row>
                 </ion-col>
             </ion-row>
             <ion-row class="reminder" *ngIf="isShowAltitude || isRemindUsingTrunkRoom">
@@ -72,36 +76,48 @@
         </ion-grid>
         <ion-grid *ngIf="isDriving && !isBreak">
             <ion-row>
-                <ion-col col-3 class="statusButton">
-                    <button ion-button block color="dark" [disabled]="ready != requires||!isCancel" (click)="removePendingData()">取消</button>
-                </ion-col>
-                <ion-col col-9 class="statusButton">
-                    <button ion-button block color="danger" [disabled]="isRemindUsingTrunkRoom && isUsingTrunkRoom || ready != requires||!isRegist" (click)="registPendingToDB()">登録</button>
+                <ion-col>
+                    <ion-row>
+                        <ion-col col-3 class="statusButton">
+                            <button ion-button block color="dark" [disabled]="ready != requires||!isCancel||isProcessing" (click)="removePendingData()">取消</button>
+                        </ion-col>
+                        <ion-col col-9 class="statusButton">
+                            <button ion-button block color="danger" [disabled]="isRemindUsingTrunkRoom && isUsingTrunkRoom || ready != requires||!isRegist || isProcessing" (click)="registPendingToDB()">登録</button>
+                        </ion-col>
+                    </ion-row>
                 </ion-col>
             </ion-row>
             <ion-row>
-                <ion-col col-4 class="statusButton">
-                    <button ion-button block [disabled]="isBreak || ready != requires||!isGetIn" (click)="updatePending('GetIn')">乗車</button>
-                </ion-col>
-                <ion-col col-4 class="statusButton">
-                    <button ion-button block [disabled]="ready != requires||!isVia" (click)="updatePending('Via')">経由</button>
-                </ion-col>
-                <ion-col col-4 class="statusButton">
-                    <button ion-button block [disabled]="ready != requires||!isGetOut" (click)="updatePending('GetOut')">降車</button>
+                <ion-col>
+                    <ion-row>
+                        <ion-col col-4 class="statusButton">
+                            <button ion-button block [disabled]="isBreak || ready != requires||!isGetIn||isProcessing" (click)="updatePending('GetIn')">乗車</button>
+                        </ion-col>
+                        <ion-col col-4 class="statusButton">
+                            <button ion-button block [disabled]="ready != requires||!isVia||isProcessing" (click)="updatePending('Via')">経由</button>
+                        </ion-col>
+                        <ion-col col-4 class="statusButton">
+                            <button ion-button block [disabled]="ready != requires||!isGetOut||isProcessing" (click)="updatePending('GetOut')">降車</button>
+                        </ion-col>
+                    </ion-row>
                 </ion-col>
             </ion-row>
             <!-- 登録中データの表示 -->
             <ion-row *ngIf="isDriving && !isBreak">
-                <ion-col col-4 *ngIf="pending['GetInTime']" class="wip">
-                    {{pending["GetInTime"]}}<br> <span *ngIf="pending['GetInTime']">{{pending["GetInAddress"]}}</span>
-                </ion-col>
-                <ion-col col-4 *ngIf="pending['GetOutTime'] || (pending['ViaData'] && pending['ViaData'][0])" class="wip">
-                    <div *ngFor="let via of pending['ViaData'] | reverse">
-                        {{via.time}}<br> {{via.address}}
-                    </div>
-                </ion-col>
-                <ion-col col-4 *ngIf="pending['GetOutTime']" class="wip">
-                    {{pending["GetOutTime"]}}<br> <span *ngIf="pending['GetOutTime']">{{pending["GetOutAddress"]}}</span>
+                <ion-col>
+                    <ion-row>
+                        <ion-col col-4 *ngIf="pending['GetInTime']" class="wip">
+                            {{pending["GetInTime"]}}<br> <span *ngIf="pending['GetInTime']">{{pending["GetInAddress"]}}</span>
+                        </ion-col>
+                        <ion-col col-4 *ngIf="pending['GetOutTime'] || (pending['ViaData'] && pending['ViaData'][0])" class="wip">
+                            <div *ngFor="let via of pending['ViaData'] | reverse">
+                                {{via.time}}<br> {{via.address}}
+                            </div>
+                        </ion-col>
+                        <ion-col col-4 *ngIf="pending['GetOutTime']" class="wip">
+                            {{pending["GetOutTime"]}}<br> <span *ngIf="pending['GetOutTime']">{{pending["GetOutAddress"]}}</span>
+                        </ion-col>
+                    </ion-row>
                 </ion-col>
             </ion-row>
         </ion-grid>

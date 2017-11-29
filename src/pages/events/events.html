@@ -3,37 +3,23 @@
         <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-        <ion-title>イベントスケジュール等リンクリスト</ion-title>
+        <ion-title>リンクリスト</ion-title>
     </ion-navbar>
 </ion-header>
 <ion-content padding>
     <div *ngIf="!hasLinkList">
-        <h3>イベントスケジュール</h3>
-        <dl>
-            <dt><button ion-button clear (click)="openUrl('http://nipponbudokan.net/')">日本武道館</button></dt>
-            <dd></dd>
-            <dt><button ion-button clear (click)="openUrl('https://www.t-i-forum.co.jp/calendar/')">東京国際フォーラム</button></dt>
-            <dd></dd>
-            <dt><button ion-button clear (click)="openUrl('https://www.tokyo-dome.co.jp/sp/schedule/')">東京ドーム</button></dt>
-            <dd></dd>
-            <dt><button ion-button clear (click)="openUrl('http://www.jingu-stadium.com/event/')">明治神宮野球場</button></dt>
-            <dd></dd>
-            <dt><button ion-button clear (click)="openUrl('http://www.ntj.jac.go.jp/kokuritsu/thismonth.html')">国立劇場</button></dt>
-            <dd></dd>
-            <dt><button ion-button clear (click)="openUrl('http://www.nntt.jac.go.jp/performance/')">新国立劇場</button></dt>
-            <dd></dd>
-            <dt><button ion-button clear (click)="openUrl('http://www.suntory.co.jp/suntoryhall/schedule/')">サントリーホール</button></dt>
-            <dd></dd>
-        </dl>
         <p>リンクリストを作成して設定から読み込むと、その内容でこのページを置き換えます。</p>
     </div>
     <div *ngIf="hasLinkList">
-        <h3>リンクリスト</h3>
-        <dl>
-            <span *ngFor="let n of linklist; let i=index; let first=first; let last=last">
-                <dt><button ion-button clear (click)="openUrl(n['url'])">{{n['title']}}</button></dt>
-                <dd *ngIf="n['desc']">{{n['desc']}}</dd>
-            </span>
-        </dl>
+        <ion-item-group *ngFor="let n of linklist; let i=index; let first=first; let last=last">
+            <ion-item-divider color="light">{{n['category']}}</ion-item-divider>
+            <ion-item *ngFor="let m of n['item']; let j=index; let first=first; let last=last">
+                <button ion-button large clear (click)="openUrl(n['item'][j]['url'])">{{n['item'][j]['title']}}</button>
+                <p class="desc" *ngIf="n['item'][j]['desc']">{{n['item'][j]['desc']}}</p>
+            </ion-item>
+        </ion-item-group>
     </div>
+    <hr>
+    <p><a href='https://github.com/yoshinari/taxi-logger/blob/master/sample_linklist.json'>サンプル</a><br> ※文字コード:UTF-8のjsonファイル形式で作成してください。
+    </p>
 </ion-content>

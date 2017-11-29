@@ -30,15 +30,19 @@ Taxi-Loggerを作りながら[Ionic3](http://ionicframework.com/docs/) 等を勉
     - Google Mapで経路を表示できます。
     - Twitter純正アプリ/TweetCaster/Lineアプリ/Facebook Messengerアプリがインストールされていれば、経路を元にしたメッセージを送れます。
     - 日ごとにExport / Importできます。
-- イベントスケジュール(リンクリスト):
-    - リンクリストファイルを準備し、設定から指定すると、そのリストを元にリンクリストを表示します。一度も呼び込んでいなかったりエラーがある場合は、初期値を表示します。
-    - [リンクリストのサンプル](./sample_linklist.json)を参照してください。titleとurlは必須で、descはオプションです。
+- リンクリスト:
+    - リンクリスト定義ファイルを準備し、設定から指定すると、そのリストを元にリンクリストを表示します。
+    - [リンクリストのサンプル](./sample_linklist.json)を参照してください。category / item / title / urlは必須で、descはオプションです。
+- 電話帳:
+    - 電話帳定義ファイルを準備し、設定から指定すると、そのリストを元に電話帳を表示します。
+    - [電話帳のサンプル](./sample_phonebook.json)を参照してください。category / item / title / telは必須で、descはオプションです。
 - 設定:
     - トランク利用のリマインダーボタンを表示できます。他のボタンとロジカルに連携します。
     - 何分連続して休憩すると、連続走行時間をリセットするかを設定出来ます。それまでは、休憩中でも連続走行時間を加算します。
     - 営業区域を選択できます。簡易料金計算とloggerの現在地に反映されます。
     - リンクリストを設定できます。
-    - 位置情報から住所を取得するNative Geocoderがイマイチのため、[郵便番号検索API](http://zipcloud.ibsnet.co.jp/doc/api)を利用する。
+    - 電話帳を設定できます。
+    - 位置情報から住所を取得するNative Geocoderがイマイチのため、[郵便番号検索API](http://zipcloud.ibsnet.co.jp/doc/api)を利用する設定が出来ます。
 
 #### 主に使っているpackage
 - [In App Browser](http://ionicframework.com/docs/native/in-app-browser/) : Google Mapやイベントスケジュール表示等に利用。

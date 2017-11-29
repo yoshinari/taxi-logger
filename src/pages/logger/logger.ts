@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component,Injectable } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController, Platform } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { TimerProvider } from '../../providers/timer/timer';
@@ -9,6 +9,10 @@ import { NativeGeocoder, NativeGeocoderReverseResult } from '@ionic-native/nativ
 import { Http } from '@angular/http';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { DatePicker } from '@ionic-native/date-picker';
+// import { Observable } from 'rxjs/Observable';
+// import { forkJoin } from "rxjs/observable/forkJoin";
+import 'rxjs/add/operator/map';
+// import 'rxjs/Rx';
 
 /**
  * Generated class for the LoggerPage page.
@@ -17,13 +21,14 @@ import { DatePicker } from '@ionic-native/date-picker';
  * on Ionic pages and navigation.
  */
 @IonicPage()
+@Injectable()
 @Component({
   selector: 'page-logger',
   templateUrl: 'logger.html',
 })
 export class LoggerPage {
 
-  expiredDate: string = "2017-12-31"; // このアプリの利用期限の設定 : この期限を過ぎると新しいレコードを登録できない。
+  expiredDate: string = "2018-01-31"; // このアプリの利用期限の設定 : この期限を過ぎると新しいレコードを登録できない。
   latLngDiffRatio: number = 5000; // 移動を判断するためのパラメータ　以前は500。数字が大きいほどセンシティブ
   requests: number = 0;
   results: number = 0;
@@ -111,6 +116,8 @@ export class LoggerPage {
   isUseZipCloud: boolean = false;
   breakReset: string = "00:00:00";
 
+  isProcessing: boolean = false;
+
   browser: any;
 
   // regPCode: string = "";
@@ -179,6 +186,7 @@ export class LoggerPage {
         this.breakReset = stat;
       });
     this.startTimer();
+    this.isProcessing = false;
   }
   jobCloseoutConfirm() {
     let alert = this.alertCtrl.create({
@@ -579,12 +587,21 @@ export class LoggerPage {
       });
   }
   updatePending(key = null) {
+    console.log('updatePending');
+    this.isProcessing = true;
     if (key != null) {
       if (this.isUseZipCloud){
+        // let zip = this.http.get('http://zipcloud.ibsnet.co.jp/api/search?zipcode='+this.postalCode);
+        // let hoge = this.http.get('http://.....');
+        // forkJoin([zip,hoge]).subscribe(results => {
+        //   console.log(results);
+        //   console.log(results[0]);
+        //   console.log(results[1]);
+        // });
         this.http.get('http://zipcloud.ibsnet.co.jp/api/search?zipcode='+this.postalCode)
-        .map((res) => {
-          if (res.json().status == 200){
-            this.shortAddress = res.json().results[0].address1 + res.json().results[0].address2 + res.json().results[0].address3;
+        .map(res => res.json()).subscribe(data => {
+          if (data.status == 200){
+            this.shortAddress = data.results[0].address1 + data.results[0].address2 + data.results[0].address3;
             if (
               this.street.endsWith("丁目")
             ) {
@@ -603,24 +620,36 @@ export class LoggerPage {
               this.address = this.shortAddress + "(" + this.street + ")" + this.houseNumber;
             }
             if (key == "updateCurrentAddress"){
+              this.isProcessing = false;
               return;
             }
-            this.pending = this.pendingProvider.updatePending(this.pending, key, this.lat, this.lng, this.countryCode, this.postalCode, this.address, this.shortAddress);
-            this.storage.set("pending", this.pending);
-          } else {
-            this.pending = this.pendingProvider.updatePending(this.pending, key, this.lat, this.lng, this.countryCode, this.postalCode, this.address, this.shortAddress);
-            this.storage.set("pending", this.pending);
           }
-        })
-        .subscribe(data => {},
+
+          this.pending = this.pendingProvider.updatePending(this.pending, key, this.lat, this.lng, this.countryCode, this.postalCode, this.address, this.shortAddress);
+          this.storage.set("pending", this.pending);
+          this.updatePendingStatus();
+          this.isProcessing = false;
+          return;
+        },
         err => console.log(err));
       } else {
         this.pending = this.pendingProvider.updatePending(this.pending, key, this.lat, this.lng, this.countryCode, this.postalCode, this.address, this.shortAddress);
         this.storage.set("pending", this.pending);
+        this.updatePendingStatus();
+        this.isProcessing = false;
       }
     } else if (Object.keys(this.pending).length === 0) {
       this.pending = this.pendingProvider.initPending();
+      this.updatePendingStatus();
+      this.isProcessing = false;
+    } else {
+      this.updatePendingStatus();
+      this.isProcessing = false;
     }
+    // this.updatePendingStatus();
+    // this.isProcessing = false;
+  }
+  updatePendingStatus(){
     var isGetOutRequired: boolean = false;
     var virLen: number = this.pending["ViaData"].length;
     if (virLen > 0 && this.pending["GetOutDate"].length > 0) {
@@ -644,6 +673,7 @@ export class LoggerPage {
       this.isVia = this.isGetOut = this.isCancel = true;
       this.isGetIn = this.isRegist = false;
     }
+    return;
   }
 
   async changeStrageValue(key, val) {

@@ -1,56 +1,51 @@
 import { Component, Injectable } from '@angular/core';
 import { IonicPage, NavController, NavParams, Platform } from 'ionic-angular';
-import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { Storage } from '@ionic/storage';
 
 /**
- * Generated class for the SettingsPage page.
+ * Generated class for the PhonelistPage page.
  *
  * See http://ionicframework.com/docs/components/#navigation for more info
  * on Ionic pages and navigation.
  */
-@IonicPage()
+@IonicPage({
+  // name: 'phonelist',
+  segment: 'phone-list'
+})
 @Injectable()
 @Component({
-  selector: 'page-events',
-  templateUrl: 'events.html',
+  selector: 'page-phonelist',
+  templateUrl: 'phonelist.html',
 })
-export class EventsPage {
+export class PhonelistPage {
   browser: any;
 
-  linklist = new Set();
-  hasLinkList:boolean = false;
+  phonelist = new Set();
+  hasPhoneList:boolean = false;
 
   constructor(
     public navCtrl: NavController, 
     public navParams: NavParams, 
-    private iab: InAppBrowser, 
     public platform: Platform,
     private storage: Storage,
   ) {
   }
+
   ionViewDidLoad() {
-    this.storage.get("linklist")
+    this.storage.get("phonebook")
     .then(
     stat => {
-      // console.log("linklist:");
-      // console.log(stat);
       if (stat === null){
         return;
       }
       var obj = JSON.parse(stat);
       if (obj.length > 0) {
         for (var j = 0; j < obj.length; j++) {
-          this.linklist.add(obj[j]);
+          this.phonelist.add(obj[j]);
         }
-        this.hasLinkList = true;
+        this.hasPhoneList = true;
       }
     });
   }
-  openUrl(url){
-    this.platform.ready().then(() => {
-      this.browser = this.iab.create(url);
-      this.browser.show();
-    });
-  }
 }
+

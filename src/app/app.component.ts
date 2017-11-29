@@ -11,6 +11,7 @@ import { SettingsPage } from '../pages/settings/settings';
 import { ThanksPage } from '../pages/thanks/thanks';
 import { AboutPage } from '../pages/about/about';
 import { EventsPage } from '../pages/events/events';
+import { PhonelistPage } from '../pages/phonelist/phonelist';
 import { FeedbackPage } from '../pages/feedback/feedback';
 
 @Component({
@@ -37,7 +38,8 @@ export class MyApp {
       { title: '簡易料金計算', component: TinyCalcPage },
       { title: '乗務履歴', component: ListPage },
       { title: '設定', component: SettingsPage },
-      { title: 'イベントスケジュール', component: EventsPage },
+      { title: 'リンクリスト', component: EventsPage },
+      { title: '電話帳', component: PhonelistPage },
       { title: 'Thanks', component: ThanksPage },
       { title: 'フィードバック', component: FeedbackPage },
       { title: 'Taxi Loggerについて', component: AboutPage },

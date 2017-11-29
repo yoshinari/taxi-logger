@@ -78,9 +78,6 @@ export class SettingsPage {
       });
       this.http.get('./assets/config/config.json')
       .map((res) => {
-        // res.json();
-        // console.log(res.json());
-        // this.region = res.json().region;
         this.regionSelect = new Set();
         for (var reg in res.json().region) {
           this.regionSelect.add(res.json().region[reg].name);
@@ -93,72 +90,98 @@ export class SettingsPage {
       // err => console.log(err));
     }
 
-
-  ionViewDidLoad() {
-    // console.log('ionViewDidLoad SettingsPage');
-  }
   updateUsingTrunkRoom() {
-    // console.log('updateUsingTrunkRoom:');
-    // console.log('isRemindUsingTrunkRoom:' + this.isRemindUsingTrunkRoom);
     this.storage.set("isRemindUsingTrunkRoom", this.isRemindUsingTrunkRoom);
+  }
+  helpRemindUsingTrunkRoom(){
+    let alert = this.alertCtrl.create({
+      title: 'トランク使用中のリマインダ',
+      subTitle: "トランク使用時にこのボタンを押すことにより、ボタンが緑色になり、リマインドします。 \
+      ボタンを再度押して灰色にしない限り、その乗務のログを登録できません。",
+      buttons: ['OK']
+    });
+    alert.present();
+    return;
   }
   updateShowAltitude(){
     this.storage.set("isShowAltitude", this.isShowAltitude);
   }
-  // "isUseZipCloud" (ionChange)="updateUsingZipCloud()"
+  helpAltitude(){
+    let alert = this.alertCtrl.create({
+      title: 'GPSの高度の表示',
+      subTitle: "端末が対応していないと0mになります。",
+      buttons: ['OK']
+    });
+    alert.present();
+    return;
+  }
   updateUsingZipCloud(){
     this.storage.set("isUseZipCloud", this.isUseZipCloud);
-    console.log("isUseZipCloud:"+this.isUseZipCloud);
+  }
+  helpZipCloud(){
+    let alert = this.alertCtrl.create({
+      title: '郵便番号検索API',
+      subTitle: "位置情報から住所を取得するNative Geocoderがイマイチのため、乗車、経由、降車の住所取得時に<a href='http://zipcloud.ibsnet.co.jp/doc/api'>郵便番号検索API</a>を利用します。",
+      buttons: ['OK']
+    });
+    alert.present();
+    return;
   }
   regOptionChange(reg) {
-    // console.log(reg);
     this.storage.set("regSelected", reg);
     if (reg == 0){
       this.storage.set("regPCode", "^([0-9])");
       return;
     }
-
     this.http.get('./assets/config/config.json')
     .map((res) => {
       this.region = res.json().region;
-      // console.log(this.region[reg].pcode);
       this.storage.set("regPCode", this.region[reg].pcode)
       .then(_ =>
       this.storage.get("regPCode")
       .then(
       stat => {
-        // console.log("regPCode:"+stat);
       }));
     })
     .subscribe();
-
-    var pcode = "123-4567";
-    var regexp = new RegExp('');
-    var test = regexp.test(pcode);
-    // console.log(test);
-    pcode = "112-1453";
-    test = regexp.test(pcode);
-    // console.log(test);
+  }
+  helpRegOptionChange(){
+    let alert = this.alertCtrl.create({
+      title: '営業区域',
+      subTitle: "営業区域を選択します。選択した営業区域の情報に基づき、営業区域外の判定や簡易料金計算の計算式を設定できます。 \
+      <br><br>登録されていない区域の定義を募集しています。サンプルを元に、作成してお知らせください。<br><br> \
+      <a href='https://github.com/yoshinari/taxi-logger/tree/master/src/assets/config/config.json'>現在の定義(コメント無し)</a> \
+      <br><br><a href='https://github.com/yoshinari/taxi-logger/tree/master/src/assets/config/config.hjson'>サンプル(コメント付き)</a><br><br> \
+      ※文字コード:UTF-8のjsonファイル形式で作成してください。",
+      buttons: ['OK']
+    });
+    alert.present();
+    return;
   }
   brOptionChange(br) {
-    // console.log("br:"+br);
     this.storage.set("brSelected", br);
     this.http.get('./assets/config/config.json')
     .map((res) => {
       this.breakReset = res.json().breakReset;
-      // console.log(this.region[reg].pcode);
       this.storage.set("breakReset", this.breakReset[br]+":00")
       .then(_ =>
       this.storage.get("brSelected")
       .then(
       stat => {
-        // console.log("brSelected:"+stat);
       }));
     })
     .subscribe();
   }
-  loadUrlList() {
-
+  helpBrOptionChange(){
+    let alert = this.alertCtrl.create({
+      title: '連続走行時間のリセット',
+      subTitle: "何分連続して休憩すると連続走行時間をリセットするかを選択します。",
+      buttons: ['OK']
+    });
+    alert.present();
+    return;
+  }
+  loadList(type) { // type: linklist / phonebook
     this.fileChooser.open()
     .then(uri => {
       console.log(uri);
@@ -172,36 +195,61 @@ export class SettingsPage {
         alert('このアプリケーションはサポートしていません。Yahoo File Manager等を使ってください。');
         return;
       }
-      console.log('uri:' + uri);
-      console.log(uri.substring(0, uri.lastIndexOf('/')));
-      console.log(uri.substring(uri.lastIndexOf('/') + 1));
+      // console.log('uri:' + uri);
+      // console.log(uri.substring(0, uri.lastIndexOf('/')));
+      // console.log(uri.substring(uri.lastIndexOf('/') + 1));
       // directoryとファイル名に分割してreadAsTextで読み込む
       this.file.readAsText(uri.substring(0, uri.lastIndexOf('/')), uri.substring(uri.lastIndexOf('/') + 1))
         .then(stat => {
-          // console.log(stat);
-          // console.log(JSON.parse(stat));
-          var linklist = JSON.parse(stat);
-          // console.log('linklist.length:' + linklist.length);
-          for (var i = 0; i < linklist.length; i++) {
-            if (!linklist[i]["title"]||!linklist[i]["url"]||linklist[i]["title"]==""||linklist[i]["url"]==""){
-              // console.log('JSON format error ... title');
-                // alert error message
-                let alert = this.alertCtrl.create({
-                  title: 'フォーマットが異なります',
-                  subTitle: (i+1)+'番目の定義にtitleもしくはurlが記述されていません。',
-                  buttons: ['OK']
-                });
-                alert.present();
-                return;
+          var list = JSON.parse(stat);
+          var i,j;
+          for (i = 0; i < list.length; i++) {
+            if (!list[i]["category"]||list[i]["category"]==""||!list[i]["category"]){
+              let alert = this.alertCtrl.create({
+                title: 'フォーマットが異なります',
+                subTitle: (i+1)+'番目の定義にcategoryもしくはitemが記述されていません。',
+                buttons: ['OK']
+              });
+              alert.present();
+              return;
             }
-            this.storage.set("linklist", stat)
-            .then(_ =>
-              this.storage.get("linklist")
-            .then(
-            stat => {
-              // console.log("linklist:");
-              // console.log(stat);
-            }));
+            if (type == "linklist"){
+              for (j = 0; j < list[i]["item"].length; j++) {
+                if (!list[i]["item"][j]["title"]||!list[i]["item"][j]["url"]||list[i]["item"][j]["title"]==""||list[i]["item"][j]["url"]==""){
+                  let alert = this.alertCtrl.create({
+                    title: 'フォーマットが異なります',
+                    subTitle: (i+1)+'番目の定義にtitleもしくはurlが記述されていません。',
+                    buttons: ['OK']
+                  });
+                  alert.present();
+                  return;
+                }
+              }
+              this.storage.set("linklist", stat)
+              .then(_ =>
+                this.storage.get("linklist")
+              .then(
+              stat => {
+              }));
+            } else if (type == "phonebook"){
+              for (j = 0; j < list[i]["item"].length; j++) {
+                if (!list[i]["item"][j]["title"]||!list[i]["item"][j]["tel"]||list[i]["item"][j]["title"]==""||list[i]["item"][j]["tel"]==""){
+                  let alert = this.alertCtrl.create({
+                    title: 'フォーマットが異なります',
+                    subTitle: (i+1)+'番目の定義にtitleもしくはtelが記述されていません。',
+                    buttons: ['OK']
+                  });
+                  alert.present();
+                  return;
+                }
+              }
+              this.storage.set("phonebook", stat)
+              .then(_ =>
+                this.storage.get("phonebook")
+              .then(
+              stat => {
+              }));
+            }
           }
         })
         .catch(err => {
@@ -212,6 +260,7 @@ export class SettingsPage {
             buttons: ['OK']
           });
           alert.present();
+          return;
         })
     })
     .catch(err => {
@@ -222,6 +271,25 @@ export class SettingsPage {
         buttons: ['OK']
       });
       alert.present();
+      return;
     });
+  }
+  helpLoadList(type){
+    if (type == "linklist"){
+      let alert = this.alertCtrl.create({
+        title: 'リンクリスト',
+        subTitle: "リンクリストの定義ファイルを取り込みます。<br><br><a href='https://github.com/yoshinari/taxi-logger/blob/master/sample_linklist.json'>サンプル</a><br><br> ※文字コード:UTF-8のjsonファイル形式で作成してください。",
+        buttons: ['OK']
+      });
+      alert.present();
+    } else if (type == "phonebook"){
+      let alert = this.alertCtrl.create({
+        title: '電話帳',
+        subTitle: "電話帳の定義ファイルを取り込みます。<br><br><a href='https://github.com/yoshinari/taxi-logger/blob/master/sample_phonebook.json'>サンプル</a><br><br> ※文字コード:UTF-8のjsonファイル形式で作成してください。",
+        buttons: ['OK']
+      });
+      alert.present();
+    }
+    return;
   }
 }

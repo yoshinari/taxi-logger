@@ -1,0 +1,30 @@
+{
+    "region": [{
+            "name": "未設定/該当なし",
+            "pcode": ""
+        },
+        {
+            "name": "東京２３区、武蔵野三鷹",
+            "pcode": "^(1[0-7]|18[0-1])",
+            "dayFeeInit": 410,
+            "dayDistanceInit": 1.059,
+            "dayFeeAdds": 80,
+            "dayDistanceAdds": 0.237,
+            "dayFeeDiscountStart": 9000,
+            "dayFeeDiscountRate": 0.9,
+            "nightFeeInit": 410,
+            "nightDistanceInit": 0.8472,
+            "nightFeeAdds": 80,
+            "nightDistanceAdds": 0.1896,
+            "nightFeeDiscountStart": 9000,
+            "nightFeeDiscountRate": 0.9,
+            "timeRate": "時速10km以下の走行で1分30秒毎に80円加算されます。"
+        }
+    ],
+    "breakReset": [
+        "00:00",
+        "00:05",
+        "00:10",
+        "00:15"
+    ]
+}
