@@ -12,6 +12,7 @@ import { ThanksPage } from '../pages/thanks/thanks';
 import { AboutPage } from '../pages/about/about';
 import { EventsPage } from '../pages/events/events';
 import { PhonelistPage } from '../pages/phonelist/phonelist';
+import { MemoPage } from '../pages/memo/memo';
 import { FeedbackPage } from '../pages/feedback/feedback';
 
 @Component({
@@ -40,6 +41,7 @@ export class MyApp {
       { title: '設定', component: SettingsPage },
       { title: 'リンクリスト', component: EventsPage },
       { title: '電話帳', component: PhonelistPage },
+      { title: 'メモ', component: MemoPage },
       { title: 'Thanks', component: ThanksPage },
       { title: 'フィードバック', component: FeedbackPage },
       { title: 'Taxi Loggerについて', component: AboutPage },

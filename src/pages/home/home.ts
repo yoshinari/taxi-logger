@@ -19,10 +19,10 @@ export class HomePage implements OnInit {
     this.spinnerDialog.show("loading...","準備中です",true);
   }
 
-  ionViewDidLoad() {
-    console.log("this.navigatorPlatform:");
-    console.log(this.platform.navigatorPlatform()); // MacIntel / Win32 / Win16 ならば、dbの手法を変える
-  }
+  // ionViewDidLoad() {
+  //   console.log("this.navigatorPlatform:");
+  //   console.log(this.platform.navigatorPlatform()); // MacIntel / Win32 / Win16 ならば、dbの手法を変える
+  // }
 
   ngOnInit() {
   }

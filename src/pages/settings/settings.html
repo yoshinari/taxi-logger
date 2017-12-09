@@ -57,5 +57,11 @@
             </ion-label>
             <button ion-button small item-end (click)="loadList('phonebook')">ファイル選択</button>
         </ion-item>
+        <ion-item>
+            <button ion-button icon-only small item-start (click)="helpLoadList('memo')"><ion-icon name="help"></ion-icon></button>
+            <ion-label>メモ
+            </ion-label>
+            <button ion-button small item-end (click)="loadList('memo')">ファイル選択</button>
+        </ion-item>
     </ion-list>
 </ion-content>

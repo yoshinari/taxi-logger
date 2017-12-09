@@ -1,0 +1,27 @@
+<ion-header>
+    <ion-navbar>
+        <button ion-button menuToggle>
+  <ion-icon name="menu"></ion-icon>
+</button>
+        <ion-title>メモ</ion-title>
+    </ion-navbar>
+</ion-header>
+<ion-content padding>
+    <div *ngIf="!hasMemo">
+        <p>メモを作成して設定から読み込むと、その内容でこのページを置き換えます。</p>
+    </div>
+    <div *ngIf="hasMemo">
+        <ion-item-group *ngFor="let n of memo; let i=index; let first=first; let last=last">
+            <ion-item-divider color="light">{{n['category']}}</ion-item-divider>
+            <ion-item *ngFor="let m of n['item']; let j=index; let first=first; let last=last">
+                <h3>
+                    {{n['item'][j]['title']}}
+                </h3>
+                <p>{{n['item'][j]['desc']}}</p>
+            </ion-item>
+        </ion-item-group>
+    </div>
+    <hr>
+    <p><a href='https://github.com/yoshinari/taxi-logger/blob/master/sample_memo.json'>サンプル</a><br> ※文字コード:UTF-8のjsonファイル形式で作成してください。
+    </p>
+</ion-content>

@@ -50,7 +50,7 @@ export class TimerProvider {
             + ("0" + (returnDate.getMonth() + 1)).substr(-2) + '-'
             + ("0" + returnDate.getDate()).substr(-2);
           this.changeStrageValue("DriveDate", returnDate); // Promissをクリティカルに処理する必要は無い
-          console.log("DriveDate=====>" + returnDate);
+          // console.log("DriveDate=====>" + returnDate);
         } else {
           returnDate = date;
         }
@@ -110,7 +110,9 @@ export class TimerProvider {
   async changeStrageValue(key, val) {
     await this.storage.set(key, val)
       .then(
-      () => console.log("Set " + val + " to " + key + "."),
+      () => {
+        // console.log("Set " + val + " to " + key + ".");
+      },
       error => console.log("Error")
       );
   }
@@ -120,10 +122,10 @@ export class TimerProvider {
       .then(
       status => {
         if (status == null) {
-          console.log("Null: return " + key + " as false.");
+          // console.log("Null: return " + key + " as false.");
           this.status = false;
         } else if (status == true) {
-          console.log("return " + key + " as true.");
+          // console.log("return " + key + " as true.");
           this.status = true;
         }
       }
@@ -134,7 +136,9 @@ export class TimerProvider {
   async setStatus(key, val) {
     await this.storage.set(key, val)
       .then(
-      () => console.log("set"),
+      () => {
+        // console.log("set");
+      },
       error => console.log("Error"),
     );
   }

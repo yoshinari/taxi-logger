@@ -1,7 +1,7 @@
 page-logger {
     .grid {
         // padding: 0;
-        padding: 5px;
+        padding: 1px;
     }
     ion-datetime {
         font-size: 18px;
@@ -17,8 +17,9 @@ page-logger {
         padding: 1px;
     }
     .wip {
-        background: palegreen;
+        background: aliceblue;
         padding: 0;
+        border: solid 1px #ccc;
     }
     .timer {
         text-align: right;
@@ -31,27 +32,38 @@ page-logger {
         padding: 0;
     }
     .address {
+        margin-top: -5px;
         font-size: 20px;
-        margin-top: -12px;
-        margin-bottom: 10px;
+    }
+    .logRow {
+        border-top: solid 1px #ccc;
+        border-bottom: solid 1px #ccc;
+        margin-bottom: -1px;
     }
     .logCol {
         font-size: 16px;
         padding-left: 15px;
         padding-top: 10px;
     }
+    .logIndent {
+        padding-left: 4em;
+        text-indent: -4em;
+    }
     .button-inner {
         font-size: 22px;
     }
+    .drive {
+        margin-top: -16px;
+    }
     .reminder {
-        margin-top: -14px;
-        margin-bottom: -14px;
+        margin-top: -15px;
     }
     .altitude {
         font-size: 20px;
         padding-top: 14px;
     }
     .datepicker {
+        margin-top: -6px;
         .item-inner {
             margin: -50px;
             padding-right: 0px!important;
@@ -64,6 +76,13 @@ page-logger {
         .button-innter {
             font-size: 18px;
         }
+    }
+    #reg {
+        margin-top: -12px;
+    }
+    #wip {
+        margin-top: -17px;
+        margin-bottom: -12px;
     }
     a[disabled],
     button[disabled],

@@ -12,6 +12,7 @@ import { ThanksPage } from '../pages/thanks/thanks';
 import { AboutPage } from '../pages/about/about';
 import { EventsPage } from '../pages/events/events';
 import { PhonelistPage } from '../pages/phonelist/phonelist';
+import { MemoPage } from '../pages/memo/memo';
 import { FeedbackPage } from '../pages/feedback/feedback';
 
 import { StatusBar } from '@ionic-native/status-bar';
@@ -49,6 +50,7 @@ import { HashdialPipe } from '../pipes/hashdial/hashdial';
     AboutPage,
     EventsPage,
     PhonelistPage,
+    MemoPage,
     FeedbackPage,
     ReversePipe,
     HashdialPipe,
@@ -74,6 +76,7 @@ import { HashdialPipe } from '../pipes/hashdial/hashdial';
     AboutPage,
     EventsPage,
     PhonelistPage,
+    MemoPage,
     FeedbackPage,
   ],
   providers: [

@@ -89,15 +89,15 @@ export class DbProvider {
   }
 
   insertLogger(date: string, pending: any): Promise<any> {
-    console.log("insertLogger");
+    // console.log("insertLogger");
     return this.query('SELECT Number FROM Logger where date="' + date + '"').then(data => {
-      console.log("data:");
-      console.log(data);
+      // console.log("data:");
+      // console.log(data);
       if (data.res.rows.length > 0) {
-        console.log("data.res.rows:");
-        console.log(data.res.rows);
-        console.log("data.res.rows[0]");
-        console.log(data.res.rows[0]);
+        // console.log("data.res.rows:");
+        // console.log(data.res.rows);
+        // console.log("data.res.rows[0]");
+        // console.log(data.res.rows[0]);
         // this.number = data.res.rows[0]["Number"] + 1;
         this.number = data.res.rows.length + 1;
       } else {
@@ -113,7 +113,7 @@ export class DbProvider {
         + '"' + pending.GetOutDate + '", "' + pending.GetOutTime + '", "' + pending.GetOutLat + '", "' + pending.GetOutLng + '", "' + pending.GetOutCountryCode + '", "' + pending.GetOutPostalCode + '", "' + pending.GetOutAddress + '", "' + pending.GetOutShortAddress + '", "' + pending.GetOutMemo + '", '
         + "'" + JSON.stringify(pending.ViaData) + "'" + ', "' + pending.ViaMemo + '"'
         + ')';
-      console.log(queryString);
+      // console.log(queryString);
       return this.query(queryString, []);
     });
   }
@@ -121,7 +121,7 @@ export class DbProvider {
     this.queryString = "Update Logger Set ";
     for (var key in update) {
       if (update.hasOwnProperty(key)) {
-        console.log(key, update[key]);
+        // console.log(key, update[key]);
         this.queryString += key + '="' + update[key] + '",';
       }
     }
@@ -130,9 +130,9 @@ export class DbProvider {
     }
     this.queryString = this.queryString.substring(0, this.queryString.length - 1);
     this.queryString += ' WHERE Date="' + date + '" and Number = ' + number;
-    console.log('queryString:' + this.queryString);
+    // console.log('queryString:' + this.queryString);
     return this.query(this.queryString).then(data => {
-      console.log(data);
+      // console.log(data);
     })
       .catch(error => {
         console.error(error);
@@ -142,8 +142,8 @@ export class DbProvider {
   getDetailLog(date: string, number: number): Promise<any> {
     return this.query('SELECT * FROM Logger where Date = "' + date + '" and Number = "' + number + '"').then(data => {
       if (data.res.rows.length > 0) {
-        console.log('getDetailLog: Rows found.');
-        console.log(data.res);
+        // console.log('getDetailLog: Rows found.');
+        // console.log(data.res);
         if (this.platform.is('cordova') && win.sqlitePlugin) {
           let result = [];
           for (let i = 0; i < data.res.rows.length; i++) {
@@ -161,8 +161,8 @@ export class DbProvider {
   getLog(date: string, order: string = "desc"): Promise<any> {
     return this.query('SELECT * FROM Logger where Date = "' + date + '" order by Number ' + order).then(data => {
       if (data.res.rows.length > 0) {
-        console.log('getLog; Rows found.');
-        console.log(data.res);
+        // console.log('getLog; Rows found.');
+        // console.log(data.res);
         if (this.platform.is('cordova') && win.sqlitePlugin) {
           let result = [];
           for (let i = 0; i < data.res.rows.length; i++) {
@@ -181,7 +181,7 @@ export class DbProvider {
   getLogs(): Promise<any> {
     return this.query('SELECT DISTINCT Date from Logger order by Date desc').then(data => {
       if (data.res.rows.length > 0) {
-        console.log('Rows found.');
+        // console.log('Rows found.');
         if (this.platform.is('cordova') && win.sqlitePlugin) {
           let result = [];
           for (let i = 0; i < data.res.rows.length; i++) {
@@ -200,7 +200,7 @@ export class DbProvider {
   deleteLog(date: string): Promise<any> {
     return this.query('DELETE from Logger where Date = "' + date + '"').then(data => {
       if (data.res.rows.length > 0) {
-        console.log('Rows found.');
+        // console.log('Rows found.');
         if (this.platform.is('cordova') && win.sqlitePlugin) {
           let result = [];
           for (let i = 0; i < data.res.rows.length; i++) {
@@ -217,7 +217,7 @@ export class DbProvider {
   }
 
   importLogger(history): Promise<any> {
-    console.log("importLogger");
+    // console.log("importLogger");
     var queryString = 'INSERT INTO Logger '
       + '(Date,Number,GetInDate,GetInTime,GetInLat,GetInLng,GetInCountryCode,GetInPostalCode,GetInAddress,GetInShortAddress,GetInMemo,'
       + 'GetOutDate,GetOutTime,GetOutLat,GetOutLng,GetOutCountryCode,GetOutPostalCode,GetOutAddress,GetOutShortAddress,GetOutMemo,ViaData,ViaMemo)'
@@ -232,10 +232,10 @@ export class DbProvider {
       + '", "' + history["GetOutMemo"] + '", '
       + "'" + history["ViaData"] + "'" + ', "' + history["ViaMemo"] + '"'
       + ')';
-    console.log(queryString);
+    // console.log(queryString);
     return this.query(queryString, [])
       .then(stat => {
-        console.log(stat);
+        // console.log(stat);
       }).catch(err => {
         console.log(err);
       })

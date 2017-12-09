@@ -249,6 +249,24 @@ export class SettingsPage {
               .then(
               stat => {
               }));
+            } else if (type == "memo"){
+              for (j = 0; j < list[i]["item"].length; j++) {
+                if (!list[i]["item"][j]["title"]||!list[i]["item"][j]["desc"]||list[i]["item"][j]["title"]==""||list[i]["item"][j]["desc"]==""){
+                  let alert = this.alertCtrl.create({
+                    title: 'フォーマットが異なります',
+                    subTitle: (i+1)+'番目の定義にtitleもしくはdescが記述されていません。',
+                    buttons: ['OK']
+                  });
+                  alert.present();
+                  return;
+                }
+              }
+              this.storage.set("memo", stat)
+              .then(_ =>
+                this.storage.get("memo")
+              .then(
+              stat => {
+              }));
             }
           }
         })
@@ -286,6 +304,13 @@ export class SettingsPage {
       let alert = this.alertCtrl.create({
         title: '電話帳',
         subTitle: "電話帳の定義ファイルを取り込みます。<br><br><a href='https://github.com/yoshinari/taxi-logger/blob/master/sample_phonebook.json'>サンプル</a><br><br> ※文字コード:UTF-8のjsonファイル形式で作成してください。",
+        buttons: ['OK']
+      });
+      alert.present();
+    } else if (type == "memo"){
+      let alert = this.alertCtrl.create({
+        title: 'メモ',
+        subTitle: "メモの定義ファイルを取り込みます。<br><br><a href='https://github.com/yoshinari/taxi-logger/blob/master/sample_memo.json'>サンプル</a><br><br> ※文字コード:UTF-8のjsonファイル形式で作成してください。",
         buttons: ['OK']
       });
       alert.present();

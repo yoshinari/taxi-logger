@@ -20,25 +20,25 @@
             </ion-row>
             <ion-row class="datepicker">
                 <ion-col col-6>
-                    乗務日<br>
+                    乗務日
                     <ion-item>
                         <button ion-button block color="light" [disabled]="isDriving" (click)="changeDriveDate()">{{driveDate}}</button>
                     </ion-item>
                 </ion-col>
                 <ion-col col-3>
-                    出庫時刻<br>
+                    出庫時刻
                     <ion-item>
                         <button ion-button block color="light" [disabled]="isDriving && !isBreak" (click)="changeTime('CarUnloadingTime')">{{CarUnloadingTime}}</button>
                     </ion-item>
                 </ion-col>
                 <ion-col col-3>
-                    帰庫予定<br>
+                    帰庫予定
                     <ion-item>
                         <button ion-button block color="light" [disabled]="isDriving && !isBreak" (click)="changeTime('CarReturnBoxTime')">{{CarReturnBoxTime}}</button>
                     </ion-item>
                 </ion-col>
             </ion-row>
-            <ion-row>
+            <ion-row class="drive">
                 <ion-col col-8 class="timer">
                     <div *ngIf="isDriving || isBreak">経過時間 : {{workingTime}}</div>
                     <div *ngIf="isDriving || isBreak">連続走行 : {{drivingTime}}</div>
@@ -54,7 +54,15 @@
             </ion-row>
         </ion-grid>
         <ion-grid>
-            <ion-row>
+            <ion-row class="reminder" *ngIf="isShowAltitude || isRemindUsingTrunkRoom">
+                <ion-col *ngIf="isShowAltitude" class="altitude">
+                    高度:{{altitude}}m
+                </ion-col>
+                <ion-col *ngIf="isRemindUsingTrunkRoom">
+                    <button ion-button block [disabled]="isBreak || !isDriving" [style.color]="isUsingTrunkRoom ? 'black' : 'black'" [style.backgroundColor]="isUsingTrunkRoom ? 'lightgreen' : 'gray'" (click)="reminderTrunkReverse()">トランク</button>
+                </ion-col>
+            </ion-row>
+            <ion-row class="address">
                 <ion-col>
                     <ion-row>
                         <ion-col class="address" [ngClass]="{'warning': outOfRegion == true}">
@@ -65,17 +73,9 @@
                     </ion-row>
                 </ion-col>
             </ion-row>
-            <ion-row class="reminder" *ngIf="isShowAltitude || isRemindUsingTrunkRoom">
-                <ion-col *ngIf="isShowAltitude" class="altitude">
-                    高度:{{altitude}}m
-                </ion-col>
-                <ion-col *ngIf="isRemindUsingTrunkRoom">
-                    <button ion-button block [disabled]="isBreak || !isDriving" [style.color]="isUsingTrunkRoom ? 'black' : 'black'" [style.backgroundColor]="isUsingTrunkRoom ? 'lightgreen' : 'gray'" (click)="reminderTrunkReverse()">トランク</button>
-                </ion-col>
-            </ion-row>
         </ion-grid>
         <ion-grid *ngIf="isDriving && !isBreak">
-            <ion-row>
+            <ion-row id="reg">
                 <ion-col>
                     <ion-row>
                         <ion-col col-3 class="statusButton">
@@ -87,7 +87,7 @@
                     </ion-row>
                 </ion-col>
             </ion-row>
-            <ion-row>
+            <ion-row id="wip">
                 <ion-col>
                     <ion-row>
                         <ion-col col-4 class="statusButton">
@@ -122,22 +122,22 @@
             </ion-row>
         </ion-grid>
         <!-- LOG -->
-        <div *ngIf="!hasHistory" text-center class="warning">
+        <div *ngIf="!hasHistory && isGetIn" text-center class="warning">
             {{driveDate}}の乗務記録はありません。
         </div>
         <ion-grid *ngIf="hasHistory">
-            <ion-row *ngFor="let n of history" align-items-start>
+            <ion-row *ngFor="let n of history;" align-items-start class="logRow">
                 <ion-col col-1>
                     <button ion-button block color="secondary" class="logSelect" [disabled]="isDriving && !isBreak" (click)="showDetail($event, driveDate, n.Number)">{{n["Number"]}}</button>
                 </ion-col>
                 <ion-col col-11 class="logCol">
-                    <div>{{n["GetInTime"]}} {{n["GetInAddress"]}}</div>
+                    <div class="logIndent">{{n["GetInTime"]}} {{n["GetInAddress"]}}</div>
                     <span *ngFor="let x of viaHistory">
-                    <div *ngIf="n['Number'] == x['history']">
+                    <div *ngIf="n['Number'] == x['history']" class="logIndent">
                         {{x["time"]}} {{x["address"]}}
                     </div>
                 </span>
-                    <div>{{n["GetOutTime"]}} {{n["GetOutAddress"]}}</div>
+                    <div class="logIndent">{{n["GetOutTime"]}} {{n["GetOutAddress"]}}</div>
                 </ion-col>
             </ion-row>
         </ion-grid>

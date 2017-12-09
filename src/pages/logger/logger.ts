@@ -13,6 +13,8 @@ import { DatePicker } from '@ionic-native/date-picker';
 // import { forkJoin } from "rxjs/observable/forkJoin";
 import 'rxjs/add/operator/map';
 // import 'rxjs/Rx';
+import {ViewChild} from '@angular/core';
+import {Content} from 'ionic-angular';
 
 /**
  * Generated class for the LoggerPage page.
@@ -123,6 +125,7 @@ export class LoggerPage {
   // regPCode: string = "";
   regexp = new RegExp("^([0-9])");
   outOfRegion: boolean = false;
+  @ViewChild(Content) content: Content;
 
   constructor(
     public navCtrl: NavController,
@@ -587,7 +590,8 @@ export class LoggerPage {
       });
   }
   updatePending(key = null) {
-    console.log('updatePending');
+    // console.log('updatePending');
+    this.content.scrollToTop();
     this.isProcessing = true;
     if (key != null) {
       if (this.isUseZipCloud){
@@ -624,14 +628,20 @@ export class LoggerPage {
               return;
             }
           }
-
           this.pending = this.pendingProvider.updatePending(this.pending, key, this.lat, this.lng, this.countryCode, this.postalCode, this.address, this.shortAddress);
           this.storage.set("pending", this.pending);
           this.updatePendingStatus();
           this.isProcessing = false;
           return;
         },
-        err => console.log(err));
+        err => {
+          console.log(err);
+          this.pending = this.pendingProvider.updatePending(this.pending, key, this.lat, this.lng, this.countryCode, this.postalCode, this.address, this.shortAddress);
+          this.storage.set("pending", this.pending);
+          this.updatePendingStatus();
+          this.isProcessing = false;
+          return;
+        });
       } else {
         this.pending = this.pendingProvider.updatePending(this.pending, key, this.lat, this.lng, this.countryCode, this.postalCode, this.address, this.shortAddress);
         this.storage.set("pending", this.pending);
@@ -689,6 +699,7 @@ export class LoggerPage {
       );
   }
   registPendingToDB() {
+    this.content.scrollToTop();
     this.db.insertLogger(this.driveDate, this.pending)
       .then(data => {
         // remove pending data from storage
