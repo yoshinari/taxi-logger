@@ -69,6 +69,10 @@ export class PendingProvider {
         pending["GetInMemo"] = "";
         break;
       case 'GetOut':
+        if (!("GetInDate" in pending)) {  // 処理が遅い場合、まれにGetOutのみpendingに記録されてしまうので、その予防
+          console.log("Duplicate GetOut Ignored.");
+          break;
+        }
         pending["GetOutDate"] = this.date;
         pending["GetOutTime"] = this.time;
         pending["GetOutLat"] = lat;

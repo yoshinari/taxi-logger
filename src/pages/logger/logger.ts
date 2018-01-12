@@ -9,10 +9,12 @@ import { NativeGeocoder, NativeGeocoderReverseResult } from '@ionic-native/nativ
 import { Http } from '@angular/http';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { DatePicker } from '@ionic-native/date-picker';
+// https://forum.ionicframework.com/t/ionic-http-request-timeout/38912/9
 // import { Observable } from 'rxjs/Observable';
 // import { forkJoin } from "rxjs/observable/forkJoin";
 import 'rxjs/add/operator/map';
 // import 'rxjs/Rx';
+import 'rxjs/add/operator/timeout';
 import {ViewChild} from '@angular/core';
 import {Content} from 'ionic-angular';
 
@@ -30,7 +32,7 @@ import {Content} from 'ionic-angular';
 })
 export class LoggerPage {
 
-  expiredDate: string = "2018-01-31"; // このアプリの利用期限の設定 : この期限を過ぎると新しいレコードを登録できない。
+  expiredDate: string = "2018-03-31"; // このアプリの利用期限の設定 : この期限を過ぎると新しいレコードを登録できない。
   latLngDiffRatio: number = 5000; // 移動を判断するためのパラメータ　以前は500。数字が大きいほどセンシティブ
   requests: number = 0;
   results: number = 0;
@@ -63,7 +65,7 @@ export class LoggerPage {
   isBreak: boolean = false;
 
   elapsedBreakTime: string;
-  elapsedDisplayTime: string = "00:00:00";
+  // elapsedDisplayTime: string = "00:00:00";
 
   timerID: number;
   timer: Date;
@@ -479,7 +481,7 @@ export class LoggerPage {
         clearInterval(this.working);
         this.resetTimer("elapsedBreak");
         this.elapsedBreakTime = "00:00:00";
-        this.elapsedDisplayTime = "00:00:00";
+        // this.elapsedDisplayTime = "00:00:00";
         this.resetTimer("working");
         this.workingTime = "00:00:00";
         this.working = null;
@@ -537,15 +539,20 @@ export class LoggerPage {
   }
 
   loadElapsedBreakTime(breakTime) {
-    if (breakTime === void 0) {
-      // breakTime = "00:00:00";
-      this.elapsedBreakTime = "00:00:00";
-      return;
-    }
     this.storage.get("elapsedBreak")
       .then(
       time => {
-        if (time == null) {
+        if (breakTime === void 0){
+          if (time == null){
+            this.elapsedBreakTime = "00:00:00";
+          } else {
+            this.hours = Math.floor(time / (60 * 60));
+            time = time - this.hours * 60 * 60;
+            this.mins = Math.floor(time / 60);
+            time = time - this.mins * 60;
+            this.elapsedBreakTime = ("0" + this.hours).substr(-2) + ":" + ("0" + this.mins).substr(-2) + ":" + ("0" + time).substr(-2);
+          }
+        } else if (time == null) {
           this.hms = breakTime.split(':');
           this.secs = Number(this.hms[0]) * 60 * 60 + Number(this.hms[1]) * 60 + Number(this.hms[2]) + 1;
           this.hours = Math.floor(this.secs / (60 * 60));
@@ -603,6 +610,7 @@ export class LoggerPage {
         //   console.log(results[1]);
         // });
         this.http.get('http://zipcloud.ibsnet.co.jp/api/search?zipcode='+this.postalCode)
+        .timeout(5000)
         .map(res => res.json()).subscribe(data => {
           if (data.status == 200){
             this.shortAddress = data.results[0].address1 + data.results[0].address2 + data.results[0].address3;
@@ -657,7 +665,7 @@ export class LoggerPage {
       this.isProcessing = false;
     }
     // this.updatePendingStatus();
-    // this.isProcessing = false;
+    this.isProcessing = false;
   }
   updatePendingStatus(){
     var isGetOutRequired: boolean = false;
