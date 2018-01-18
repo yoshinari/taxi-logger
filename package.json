@@ -1,6 +1,6 @@
 {
     "name": "taxi-logger",
-    "version": "0.5.3",
+    "version": "0.5.4",
     "author": "itaxi.tokyo",
     "homepage": "https://itaxi.tokyo/",
     "private": true,
@@ -71,7 +71,7 @@
     },
     "devDependencies": {
         "@ionic/app-scripts": "1.3.12",
-        "ionic": "3.19.0",
+        "ionic": "3.19.1",
         "typescript": "2.3.4"
     },
     "description": "An Ionic project",

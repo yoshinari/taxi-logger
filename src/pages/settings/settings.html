@@ -32,7 +32,7 @@
             </ion-label>
             <ion-select style="width:0px;margin:0px;padding:0px;visibility: hidden">
             </ion-select>
-            <ion-select [(ngModel)]="brSelected" (change)="brOptionChange($event.target.value)">
+            <ion-select [(ngModel)]="brSelected" (ionChange)="brOptionChange($event)">
                 <ion-option *ngFor="let n of breakSelect; let j=index;" value="{{j}}">{{n}}</ion-option>
             </ion-select>
         </ion-item>
@@ -41,7 +41,7 @@
             <ion-label>営業区域</ion-label>
             <ion-select style="width:0px;margin:0px;padding:0px;visibility: hidden">
             </ion-select>
-            <ion-select [(ngModel)]="regSelected" (change)="regOptionChange($event.target.value)">
+            <ion-select [(ngModel)]="regSelected" (ionChange)="regOptionChange($event)">
                 <ion-option *ngFor="let n of regionSelect; let j=index;" value="{{j}}">{{n}}</ion-option>
             </ion-select>
         </ion-item>
