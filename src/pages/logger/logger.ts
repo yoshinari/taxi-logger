@@ -32,7 +32,7 @@ import {Content} from 'ionic-angular';
 })
 export class LoggerPage {
 
-  expiredDate: string = "2018-03-31"; // このアプリの利用期限の設定 : この期限を過ぎると新しいレコードを登録できない。
+  expiredDate: string = "2018-12-31"; // このアプリの利用期限の設定 : この期限を過ぎると新しいレコードを登録できない。
   latLngDiffRatio: number = 5000; // 移動を判断するためのパラメータ　以前は500。数字が大きいほどセンシティブ
   requests: number = 0;
   results: number = 0;
